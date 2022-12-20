@@ -1,24 +1,45 @@
-import chamonix from './assets/chamonix.svg';
-import lotfourteen from './assets/lotfourteen.svg';
+import React, {useEffect, useState} from 'react'
+import { User } from '../types';
 import './App.css';
+import SvgChamonix from './assets/svg/chamonix';
+import SvgLotfourteen from './assets/svg/lotfourteen';
+
+const user: User = {
+  userID: 1,
+  firstName: 'finn',
+  lastName: 'holland',
+  email: 'finn.holland@chamonix.com',
+  company: 'chamonix',
+  trendPoints: 0,
+  profileImageUrl: ''
+}
 
 function App() {
+  const [apiMessage, setApiMessage] = useState('')
+  useEffect(() => {
+    fetch("http://localhost:9000/test")
+        .then(res => res.text())
+      .then(res => {
+        console.log(res);
+        setApiMessage(res)
+      });
+  }, [])
   return (
     <div className="App">
       <header className="App-header">
         <div className='lotfourteen'>
-          <img src={lotfourteen} style={{height: '40%', color: 'white'}} alt="logo" a/>
+          <SvgLotfourteen/>
         </div>
         <div className='titleContainer'>
           <p className='title'>fromeroad</p>
         </div>
         <div className='chamonix' style={{justifyContent: 'flex-end'}}>
-          <img src={chamonix} style={{ height: '30%' }} alt="logo" />
+          <SvgChamonix/>
         </div>
         
       </header>
       <div style={{ flex: 1, display: 'flex', padding: 40, flexDirection: 'column'}}>
-        <body id='body' style={{ flexDirection: 'row', display: 'flex', }}>
+        <div id='body' style={{ flexDirection: 'row', display: 'flex', }}>
           
           <div id='recentPosters' style={{ flex: 1 }}>
             <div className='titleDiv'>
@@ -47,7 +68,7 @@ function App() {
             <hr className='subline'/>
           </div>
 
-        </body>
+        </div>
 
         <footer>
           <div id='trendsTitle' className='titleDiv'>
