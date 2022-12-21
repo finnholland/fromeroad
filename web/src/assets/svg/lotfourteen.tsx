@@ -1,17 +1,9 @@
 import * as React from "react";
-const SvgLotfourteen = (props) => (
+export const SvgLotfourteen: React.FC<React.SVGProps<SVGSVGElement>> = (props: any) => (
   <svg
-    className="lotfourteen_svg__fill-current"
-    id="lotfourteen_svg__Layer_1_639c060eae419"
-    xmlns="http://www.w3.org/2000/svg"
     x={0}
     y={0}
-    width="1em"
-    height="1em"
     viewBox="0 0 51 48"
-    style={{
-      enableBackground: "new 0 0 51 48",
-    }}
     xmlSpace="preserve"
     {...props}
   >

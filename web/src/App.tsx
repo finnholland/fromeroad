@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState, SVGProps } from 'react'
 import { User } from '../types';
 import './App.css';
 import SvgChamonix from './assets/svg/chamonix';
@@ -27,15 +27,16 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div className='lotfourteen'>
-          <SvgLotfourteen/>
-        </div>
+          <a href='http://www.lotfourteen.com.au' className='lotfourteen'>
+            <SvgLotfourteen height={25} />
+          </a>
+
         <div className='titleContainer'>
           <p className='title'>fromeroad</p>
         </div>
-        <div className='chamonix' style={{justifyContent: 'flex-end'}}>
-          <SvgChamonix/>
-        </div>
+        <a href='http://www.chamonix.com.au' className='chamonix' style={{ justifyContent: 'flex-end' }}>
+          <SvgChamonix height={20}/>
+        </a>
         
       </header>
       <div style={{ flex: 1, display: 'flex', padding: 40, flexDirection: 'column'}}>
