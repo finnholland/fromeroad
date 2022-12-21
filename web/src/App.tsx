@@ -3,27 +3,39 @@ import { User } from '../types';
 import './App.css';
 import SvgChamonix from './assets/svg/chamonix';
 import SvgLotfourteen from './assets/svg/lotfourteen';
+import Axios from 'axios';
 
-const user: User = {
-  userID: 1,
-  firstName: 'finn',
-  lastName: 'holland',
-  email: 'finn.holland@chamonix.com',
-  company: 'chamonix',
+const initialUser: User = {
+  userID: 0,
+  firstName: '',
+  lastName: '',
+  email: '',
+  company: '',
   trendPoints: 0,
   profileImageUrl: ''
 }
 
 function App() {
   const [apiMessage, setApiMessage] = useState('')
+  const [user, setUser] = useState<User>(initialUser)
   useEffect(() => {
-    fetch("http://localhost:9000/test")
-        .then(res => res.text())
-      .then(res => {
-        console.log(res);
-        setApiMessage(res)
-      });
+    
   }, [])
+
+  const getUsers = () => {
+    console.log('calling api')
+    Axios.get("http://localhost:9000/recentPosters").then(res => {
+      setUser(res.data[0] as User);
+      console.log(res)
+    })
+  }
+  const getLoggedInUser = () => {
+    console.log('calling api')
+    Axios.get(`http://localhost:9000/user/${1}`).then(res => {
+      setUser(res.data[0] as User);
+      console.log(res)
+    })
+  }
   return (
     <div className="App">
       <header className="App-header">
@@ -47,6 +59,8 @@ function App() {
               <p className='sectionTitle'>recent posters</p>
               <hr className='line'/>
             </div>
+            <button onClick={() => getUsers()}>get users</button>
+            <button onClick={() => getLoggedInUser()}>get logged in</button>
           </div>
 
           <div id='feed' className='feed'>
@@ -63,8 +77,8 @@ function App() {
             </div>
             <div>
               <img src={require('./assets/images/aws.jpg')} alt='profile' className='profileImage'/>
-              <span>hello</span>
-              <span>world</span>
+              <span>{user.firstName}</span>
+              <span>{user.lastName}</span>
             </div>
             <hr className='subline'/>
           </div>

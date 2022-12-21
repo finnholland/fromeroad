@@ -1,12 +1,14 @@
 var createError = require('http-errors');
 var express = require('express');
+const mysql = require('mysql2');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require("cors");
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var recentPostersRouter = require('./routes/recentPosters');
+var userRouter = require('./routes/user');
 var testAPIRouter = require("./routes/test");
 
 var app = express();
@@ -23,7 +25,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/recentPosters', recentPostersRouter);
+app.use('/user', userRouter);
 app.use("/test", testAPIRouter);
 
 // catch 404 and forward to error handler
