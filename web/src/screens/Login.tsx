@@ -7,12 +7,12 @@ const Login = () => {
   const [company, setCompany] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const login = () => {
-    if (password !== confirmPassword) {
+  const signUp = () => {
+    if (password !== confirmPassword || password === '' || !password) {
       alert('passowrds no matchy');
       return;
     }
-    Axios.post('http://localhost:9000/createUser', {
+    Axios.post('http://localhost:9000/user/createUser', {
       name: name,
       email: email,
       company: company,
@@ -29,7 +29,9 @@ const Login = () => {
       <input placeholder='Company' value={company} onChange={(e) => setCompany(e.target.value)} />
       <input placeholder='Password'value={password} onChange={(e) => setPassword(e.target.value)} />
       <input placeholder='Confirm Password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-      <button onClick={() => login()}>log in</button>
+      <button onClick={() => signUp()}>log in</button>
+      <button onClick={() => signUp()}>log in</button>
+      
     </div>
 
   )
