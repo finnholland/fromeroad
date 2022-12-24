@@ -39,7 +39,7 @@ app.post('/login', async (req, res) => {
       console.log('error occurred: ' + err)
       res.sendStatus(err.code)
     } else if (result.length <= 0) {
-      res.sendStatus(401).send({
+      res.status(401).send({
           msg:'email or password is incorrect'
       })
     } else {

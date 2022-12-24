@@ -1,6 +1,9 @@
 import Axios from 'axios'
 import React, { useState } from 'react'
-import { Link } from "react-router-dom";
+import '../App.css';
+import './Login.css';
+import SvgChamonix from '../assets/svg/chamonix';
+import SvgLotfourteen from '../assets/svg/lotfourteen';
 
 
 const Login = () => {
@@ -40,9 +43,9 @@ const Login = () => {
       if (res.status !== 200) {
         alert('incorrect email or password')
       } else {
-        // <Link to={`/`}>Your Name</Link>
+        localStorage.setItem('token', res.data.token)
       }
-      localStorage.setItem('token', res.data.token)
+      
       console.log(res)
     })
   }
@@ -61,16 +64,50 @@ const Login = () => {
   }
 
   return (
-    <div>
-      <input placeholder='Name' value={name} onChange={(e) => setName(e.target.value)}/>
-      <input placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)}/>
-      <input placeholder='Company' value={company} onChange={(e) => setCompany(e.target.value)} />
-      <input placeholder='Password'value={password} onChange={(e) => setPassword(e.target.value)} />
-      <input placeholder='Confirm Password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-      <button onClick={() => signUp()}>sign up</button>
-      <button onClick={() => login()}>log in</button>
-      <button onClick={() => getTest()}>test</button>
-      
+    <div className="App">
+      <header className="App-header">
+        <a href='http://www.lotfourteen.com.au' className='lotfourteen'>
+          <SvgLotfourteen height={25} />
+        </a>
+
+        <div className='titleContainer'>
+          <p className='title'>fromeroad</p>
+        </div>
+        <a href='http://www.chamonix.com.au' className='chamonix' style={{ justifyContent: 'flex-end' }}>
+          <SvgChamonix height={20}/>
+        </a>
+        
+      </header>
+      <div className='body'>
+        <div className='inputDiv'>
+          <span className='label'>name</span>
+          <input className='input' value={name} onChange={(e) => setName(e.target.value)}/>
+        </div>
+        <div className='inputDiv'>
+          <span className='label'>email</span>
+          <input className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
+        </div>
+        <div className='inputDiv'>
+          <span className='label'>company</span>
+          <input className='input' value={company} onChange={(e) => setCompany(e.target.value)} />
+        </div>
+        <div className='inputDiv'>
+          <span className='label'>password</span>
+          <input className='input' value={password} onChange={(e) => setPassword(e.target.value)} />
+        </div>
+        <div className='inputDiv'>
+          <span className='label'>confirm password</span>
+          <input className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+        </div>
+        <div className='buttonDiv'>
+          <button className='button' onClick={() => signUp()}>
+            sign up
+          </button>
+          <button className='button' onClick={() => login()}>
+            login
+          </button>
+        </div>
+      </div>
     </div>
 
   )
