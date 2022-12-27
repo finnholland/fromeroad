@@ -4,6 +4,8 @@ import '../App.css';
 import './Login.css';
 import SvgChamonix from '../assets/svg/chamonix';
 import SvgLotfourteen from '../assets/svg/lotfourteen';
+import { useNavigate } from 'react-router-dom';
+import { setUser, getUser } from '../userData'
 
 
 const Login = () => {
@@ -13,6 +15,8 @@ const Login = () => {
   const [company, setCompany] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+
+  const navigate = useNavigate();
 
   const signUp = async () => {
     if (password !== confirmPassword || password === '' || !password) {
@@ -35,7 +39,7 @@ const Login = () => {
     })
   }
 
-  const login = async () => {
+  const login = () => {
     Axios.post('http://localhost:9000/user/login', {
       email: email,
       password: password
@@ -45,8 +49,9 @@ const Login = () => {
       } else {
         localStorage.setItem('token', res.data.token)
       }
-      
-      console.log(res)
+      setUser(res.data.user)
+      console.log(getUser())
+      navigate("../home", { replace: true });
     })
   }
 

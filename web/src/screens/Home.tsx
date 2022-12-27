@@ -5,19 +5,11 @@ import SvgChamonix from '../assets/svg/chamonix';
 import SvgLotfourteen from '../assets/svg/lotfourteen';
 import Axios from 'axios';
 
-const initialUser: User = {
-  userID: 1,
-  firstName: '',
-  lastName: '',
-  email: '',
-  company: '',
-  trendPoints: 0,
-  profileImageUrl: ''
-}
+import { getUser, setUser } from '../userData';
 
 function App() {
   const [profileImage, setProfileImage] = useState('../assets/images/aws');
-  const [user, setUser] = useState<User>(initialUser)
+  const [user, setUser] = useState<User>(getUser)
   useEffect(() => {
     
   }, [])
@@ -99,7 +91,7 @@ function App() {
             <div>
               <input type={'file'} name="file" onChange={uploadImage}/>
                 
-              <img src={profileImage} alt='profile' className='profileImage'/>
+              <img src={'http://localhost:9000'+user.profileImageUrl} alt='profile' className='profileImage'/>
               <button onClick={() => getImage(1)}>get image</button>
               <span>{user.firstName}</span>
               <span>{user.lastName}</span>

@@ -43,7 +43,7 @@ app.post('/login', async (req, res) => {
     } else {
       bcrypt.compare(password, result[0].password, function (err, valid) {
         if (err) {
-
+          return err
         }
         if (valid) {
           const encryptToken = jwt.sign({ userID: result[0].userID.toString() }, process.env.SECRET, { algorithm: 'HS256' });
