@@ -40,17 +40,22 @@ function App() {
   }
 
   const uploadImage = (e: any) => {
-    console.log(e.target.files[0])
     const fd = new FormData();
-
     fd.append('file', e.target.files[0])
     fd.append('userID', user.userID.toString())
     setProfileImage(URL.createObjectURL(e.target.files[0]));
-    console.log(fd.get('file'))
-    Axios.post('http://localhost:9000/image', fd, {
+    console.log(user.userID)
+    Axios.post(`http://localhost:9000/image/${user.userID}`, fd, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
+    })
+  }
+
+  const getImage = (userID: number) => {
+    Axios.get(`http://localhost:9000/image/profileImage/${userID}`).then(res => {
+      setProfileImage('http://localhost:9000' + res.data[0].profileImageUrl)
+      console.log(res)
     })
   }
   return (
@@ -96,7 +101,7 @@ function App() {
               <input type={'file'} name="file" onChange={uploadImage}/>
                 
               <img src={profileImage} alt='profile' className='profileImage'/>
-              
+              <button onClick={() => getImage(1)}>get image</button>
               <span>{user.firstName}</span>
               <span>{user.lastName}</span>
             </div>
