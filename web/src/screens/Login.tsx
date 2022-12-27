@@ -50,19 +50,6 @@ const Login = () => {
     })
   }
 
-  const getTest = async () => {
-    Axios.get('http://localhost:9000/user/2', {
-      headers: {
-        authorisation: `Bearer ${localStorage.getItem('token')}`
-      }
-    }).then(res => {
-      if (res.status !== 200) {
-        alert('incorrect email or password')
-      }
-      console.log(res)
-    })
-  }
-
   return (
     <div className="App">
       <header className="App-header">

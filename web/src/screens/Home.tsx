@@ -17,7 +17,6 @@ const initialUser: User = {
 
 function App() {
   const [profileImage, setProfileImage] = useState('../assets/images/aws');
-  const [apiMessage, setApiMessage] = useState('')
   const [user, setUser] = useState<User>(initialUser)
   useEffect(() => {
     
