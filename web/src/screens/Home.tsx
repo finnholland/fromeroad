@@ -6,7 +6,7 @@ import SvgLotfourteen from '../assets/svg/lotfourteen';
 import Axios from 'axios';
 
 const initialUser: User = {
-  userID: 0,
+  userID: 1,
   firstName: '',
   lastName: '',
   email: '',
@@ -16,6 +16,7 @@ const initialUser: User = {
 }
 
 function App() {
+  const [profileImage, setProfileImage] = useState('../assets/images/aws');
   const [apiMessage, setApiMessage] = useState('')
   const [user, setUser] = useState<User>(initialUser)
   useEffect(() => {
@@ -29,11 +30,27 @@ function App() {
       console.log(res)
     })
   }
+
   const getLoggedInUser = () => {
     console.log('calling api')
     Axios.get(`http://localhost:9000/user/${1}`).then(res => {
       setUser(res.data[0] as User);
       console.log(res)
+    })
+  }
+
+  const uploadImage = (e: any) => {
+    console.log(e.target.files[0])
+    const fd = new FormData();
+
+    fd.append('file', e.target.files[0])
+    fd.append('userID', user.userID.toString())
+    setProfileImage(URL.createObjectURL(e.target.files[0]));
+    console.log(fd.get('file'))
+    Axios.post('http://localhost:9000/image', fd, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     })
   }
   return (
@@ -76,7 +93,10 @@ function App() {
               <hr className='line' />
             </div>
             <div>
-              <img src={require('../assets/images/aws.jpg')} alt='profile' className='profileImage'/>
+              <input type={'file'} name="file" onChange={uploadImage}/>
+                
+              <img src={profileImage} alt='profile' className='profileImage'/>
+              
               <span>{user.firstName}</span>
               <span>{user.lastName}</span>
             </div>

@@ -5,11 +5,9 @@ app = express()
 var db = require('..');
 const cors = require('cors')
 const bcrypt = require("bcrypt")
-const CryptoJS = require("crypto-js")
 const jwt = require('jsonwebtoken');
 const salt = 10
 app.use(cors());
-const keys = require('../privatepublickey');
 
 
 // ROUTES RELATING TO USER ~~~~ api/user/{route}
