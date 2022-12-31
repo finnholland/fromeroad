@@ -13,13 +13,26 @@ app.use(cors());
 // ROUTES RELATING TO USER ~~~~ api/user/{route}
 
 // get user by ID
-app.get('/:id', (req, res) => {
+app.get('/userID/:id', (req, res) => {
   let token = req.headers['authorisation']
   token = token && token.split(' ')[1]
-  console.log(JSON.stringify(req.headers));
   const decryptToken = jwt.verify(token, process.env.SECRET, { algorithms: ["HS256"] });
   console.log("\nJWT verification result: " + JSON.stringify(decryptToken));
   db.query('select * from users where userID = ?', [req.params.id], (err, result, fields) => {
+    if (err) {
+      console.log('error occurred: '+ err)
+    } else {
+      res.send(result)
+    }
+  })
+})
+
+// get user from token
+app.get('/autoLogin', (req, res) => {
+  let token = req.headers['authorisation']
+  token = token && token.split(' ')[1]
+  const decryptToken = jwt.verify(token, process.env.SECRET, { algorithms: ["HS256"] });
+  db.query('select * from users where userID = ?', [decryptToken.userID], (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)
     } else {

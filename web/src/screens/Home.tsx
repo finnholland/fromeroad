@@ -11,8 +11,18 @@ function App() {
   const [profileImage, setProfileImage] = useState('../assets/images/aws');
   const [user, setUser] = useState<User>(getUser)
   useEffect(() => {
-    
+    getUserFromToken();
   }, [])
+
+  const getUserFromToken = () => {
+    Axios.get('http://localhost:9000/user/autoLogin', {
+      headers: {
+        authorisation: `Bearer ${localStorage.getItem('token')}`
+      }
+    }).then(res => {
+      setUser(res.data[0] as User);
+    })
+  }
 
   const getUsers = () => {
     console.log('calling api')
@@ -24,9 +34,11 @@ function App() {
 
   const getLoggedInUser = () => {
     console.log('calling api')
-    Axios.get(`http://localhost:9000/user/${1}`).then(res => {
+    Axios.get(`http://localhost:9000/user/userID/${1}`, {headers: {authorisation: `Bearer ${localStorage.getItem('token')}`}}).then(res => {
       setUser(res.data[0] as User);
       console.log(res)
+    }).catch(err => {
+      console.log(err)
     })
   }
 
