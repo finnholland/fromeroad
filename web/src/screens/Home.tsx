@@ -15,6 +15,7 @@ function App() {
   const [user, setUser] = useState<User>(getUser);
   const [profileImageUrl, setProfileImageUrl] = useState(getUser().profileImageUrl);
   const [removeSvgHover, setRemoveSvgHover] = useState(false);
+  const [addSvgHover, setAddSvgHover] = useState(false);
 
   const ref = useRef<HTMLInputElement>(null);
   const handleClick = (e: any) => {
@@ -144,7 +145,8 @@ function App() {
             </div>
             <div className='addInterestDiv'>
               <input type={'text'} placeholder='add interests' className='interestInput'/>
-              <SvgAddButton stroke='#AC80D9' height={40}/>
+              <SvgAddButton fill={addSvgHover ? '#B27D00' : '#DECCF0'} stroke={addSvgHover ? '#B27D00' : '#AC80D9'} height={40} onMouseEnter={() => setAddSvgHover(true)}
+                  onMouseLeave={() => setAddSvgHover(false)}/>
             </div>
             <hr className='subline'/>
           </div>
