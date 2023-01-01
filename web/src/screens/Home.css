@@ -33,3 +33,40 @@
 .interestDiv:hover {
   color: #B27D00;
 }
+
+.addInterestDiv {
+  justify-content: space-between; 
+  align-items: center; 
+  display: flex; 
+  background-color: #DECCF0; 
+  height: 40px; 
+  border-radius: 20px; 
+  padding-left: 15px; 
+  margin-top: 20px
+}
+
+.interestInput {
+  flex: 1; 
+  margin-right: 10px; 
+  background-color:#DECCF0; 
+  border: none; 
+  border-bottom: 2px solid #AC80D9;
+  color: white;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: white;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: white;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: white;
+}
+
+textarea:focus, input:focus{
+    outline: none;
+}

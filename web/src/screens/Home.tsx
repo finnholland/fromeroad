@@ -5,6 +5,7 @@ import './Home.css'
 import SvgChamonix from '../assets/svg/chamonix';
 import SvgLotfourteen from '../assets/svg/lotfourteen';
 import SvgRemoveButton from '../assets/svg/removeButton';
+import SvgAddButton from '../assets/svg/SvgAddButton';
 import Axios from 'axios';
 
 import { getUser, setUser } from '../userData';
@@ -140,6 +141,10 @@ function App() {
                   height={20} stroke={removeSvgHover ? '#B27D00' : '#AC80D9'} />
               </div>
 
+            </div>
+            <div className='addInterestDiv'>
+              <input type={'text'} placeholder='add interests' className='interestInput'/>
+              <SvgAddButton stroke='#AC80D9' height={40}/>
             </div>
             <hr className='subline'/>
           </div>
