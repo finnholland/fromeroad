@@ -9,13 +9,15 @@ import SvgAddButton from '../assets/svg/SvgAddButton';
 import Axios from 'axios';
 
 import { getUser, setUser } from '../userData';
-import { url } from 'inspector';
+
+const api = 'http://localhost:9000'
 
 function App() {
   const [user, setUser] = useState<User>(getUser);
   const [profileImageUrl, setProfileImageUrl] = useState(getUser().profileImageUrl);
   const [removeSvgHover, setRemoveSvgHover] = useState(false);
   const [addSvgHover, setAddSvgHover] = useState(false);
+  const [interest, setInterest] = useState('false');
 
   const ref = useRef<HTMLInputElement>(null);
   const handleClick = (e: any) => {
@@ -26,7 +28,6 @@ function App() {
 
   useEffect(() => {
     getUserFromToken();
-    console.log(profileImageUrl)
   }, [])
 
   const getUserFromToken = () => {
@@ -81,6 +82,25 @@ function App() {
       console.log(res)
     })
   }
+
+  const addInterest = (interest: string) => {
+    const params = {
+      userID: user.userID,
+      name: interest.trim(),
+    }
+    Axios.post(`${api}/user/interests/addInterests`, params, {
+      headers:
+        { authorisation: `Bearer ${localStorage.getItem('token')}` }
+    })
+  }
+
+  const getInterests = () => {
+    Axios.get(`${api}/user/interests/getInterest/${user.userID}`, {
+      headers:
+        { authorisation: `Bearer ${localStorage.getItem('token')}` }
+    })
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -124,7 +144,9 @@ function App() {
               <div>
                 <input ref={ref} type={'file'} name="file" onChange={uploadImage} hidden/>
                 <div className='profileImage' onClick={handleClick} style={{ backgroundImage: `url(http://localhost:9000${profileImageUrl})`, backgroundSize: 'cover' }}>
-                  <div className='profileImageOverlay'>change</div>
+                  <div className='profileImageOverlay'>
+                    <span style={{alignItems: 'center', display:'flex', marginBottom: 5}}>change</span>
+                  </div>
                 </div>
               </div>
               <div className='detailsDiv'>
@@ -144,9 +166,9 @@ function App() {
 
             </div>
             <div className='addInterestDiv'>
-              <input type={'text'} placeholder='add interests' className='interestInput'/>
+              <input type={'text'} placeholder='add interests' className='interestInput' onChange={(e) => setInterest(e.target.value)}/>
               <SvgAddButton fill={addSvgHover ? '#B27D00' : '#DECCF0'} stroke={addSvgHover ? '#B27D00' : '#AC80D9'} height={40} onMouseEnter={() => setAddSvgHover(true)}
-                  onMouseLeave={() => setAddSvgHover(false)}/>
+                onMouseLeave={() => setAddSvgHover(false)} onClick={() => addInterest(interest)} />
             </div>
             <hr className='subline'/>
           </div>

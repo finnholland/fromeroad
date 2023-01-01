@@ -111,4 +111,40 @@ app.post('/signup', async (req, res) => {
   })
 })
 
+// add interest
+app.post('/interests/addInterests/', (req, res) => {
+  const interestName = req.body.name;
+  const userID = req.body.userID;
+  console.log(interestName, userID)
+  let interestID = 0;
+
+  db.query('select interestID from interests where name = ?', [interestName], async (err, result, fields) => {
+    if (err) throw (err)
+    else {
+      interestID = result[0]?.interestID
+      console.log(result[0]?.interestID)
+    }
+
+    if (!interestID || interestID === 0) {
+      db.promise.query('insert into interests (name) values (?); select LAST_INSERT_ID();', [interestName], (err, result, fields) => {
+        if (err) throw (err)
+        console.log(result[0]?.insertID)
+        interestID = result[0]?.insertID
+      })
+    } 
+    db.query('insert into userinterests (userID, interestID) values (?, ?)', [userID, interestID], (err, result, fields) => {
+      if (err) throw (err)
+      else {
+        return res.sendStatus(200)
+      }
+    })
+  })  
+})
+
+// get interest
+app.get('/interests/getInterests', (req, res) => {
+  const userID = req.body.userID;
+  console.log(userID)
+})
+
 module.exports = app;
