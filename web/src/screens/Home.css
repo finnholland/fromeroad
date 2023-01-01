@@ -1,0 +1,35 @@
+.name {
+  font-size: 1rem;
+  font-weight:600;
+  color: #5900B2;
+  margin: 0;
+  margin-bottom: 5px;
+}
+
+.company {
+  font-size: 1rem;
+  color: #AC80D9;
+  margin: 0;
+  margin-top: 5px;
+}
+
+.detailsDiv {
+  margin-left: 15px;
+  text-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.interestDiv {
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  flex: 1;
+  color: #AC80D9;
+  cursor: pointer;
+}
+
+.interestDiv:hover {
+  color: #B27D00;
+}

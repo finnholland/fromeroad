@@ -4,20 +4,11 @@ import './App.css';
 import SvgChamonix from './assets/svg/chamonix';
 import SvgLotfourteen from './assets/svg/lotfourteen';
 import Axios from 'axios';
-
-const initialUser: User = {
-  userID: 0,
-  firstName: '',
-  lastName: '',
-  email: '',
-  company: '',
-  trendPoints: 0,
-  profileImageUrl: ''
-}
+import { getUser, setUser } from './userData';
 
 function App() {
   const [apiMessage, setApiMessage] = useState('')
-  const [user, setUser] = useState<User>(initialUser)
+  const [user, setUser] = useState<User>(getUser)
   useEffect(() => {
     
   }, [])
@@ -77,8 +68,6 @@ function App() {
             </div>
             <div>
               <img src={require('./assets/images/aws.jpg')} alt='profile' className='profileImage'/>
-              <span>{user.firstName}</span>
-              <span>{user.lastName}</span>
             </div>
             <hr className='subline'/>
           </div>

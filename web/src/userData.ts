@@ -1,8 +1,7 @@
 import { User } from '../types'
 let userData: User = {
   userID: 0,
-  firstName: '',
-  lastName: '',
+  name: '',
   email: '',
   company: '',
   trendPoints: 0,

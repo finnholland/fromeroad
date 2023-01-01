@@ -63,7 +63,8 @@
 .sectionTitle {
   font-size: 20px; 
   color: #5900B2;
-  margin-right: 0.8rem
+  margin: 0;
+  margin-right: 0.8rem;
 }
 
 .feed {
@@ -85,20 +86,23 @@
   background-color: #AC80D9; 
   height: 1; 
   flex: 1; 
-  margin: 0
+  margin: 0;
+  margin-top: 2rem;
 }
 
 .titleDiv {
   flex-direction: row;
   display: flex;
-  align-items: center
+  align-items: center;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
 }
 
 .profileImage {
   aspect-ratio: 1/1;
   width: 80px;
   border-radius: 80px;
-  border: 2px solid #fff;
+  border: 3px solid #fff;
   box-shadow: 0px 1px 3px #888;
   justify-content: center;
   align-items: flex-end;

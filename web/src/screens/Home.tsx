@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { User } from '../../types';
 import '../App.css';
+import './Home.css'
 import SvgChamonix from '../assets/svg/chamonix';
 import SvgLotfourteen from '../assets/svg/lotfourteen';
+import SvgRemoveButton from '../assets/svg/removeButton';
 import Axios from 'axios';
 
 import { getUser, setUser } from '../userData';
@@ -11,6 +13,7 @@ import { url } from 'inspector';
 function App() {
   const [user, setUser] = useState<User>(getUser);
   const [profileImageUrl, setProfileImageUrl] = useState(getUser().profileImageUrl);
+  const [removeSvgHover, setRemoveSvgHover] = useState(false);
 
   const ref = useRef<HTMLInputElement>(null);
   const handleClick = (e: any) => {
@@ -115,13 +118,28 @@ function App() {
               <p className='sectionTitle'>me</p>
               <hr className='line' />
             </div>
-            <div>
-              <input ref={ref} type={'file'} name="file" onChange={uploadImage} hidden/>
-              <div className='profileImage' onClick={handleClick} style={{ backgroundImage: `url(http://localhost:9000${profileImageUrl})`, backgroundSize: 'cover' }}>
-                <div className='profileImageOverlay'>change</div>
+            <div style={{ flexDirection: 'row', display: 'flex'}}>
+              <div>
+                <input ref={ref} type={'file'} name="file" onChange={uploadImage} hidden/>
+                <div className='profileImage' onClick={handleClick} style={{ backgroundImage: `url(http://localhost:9000${profileImageUrl})`, backgroundSize: 'cover' }}>
+                  <div className='profileImageOverlay'>change</div>
+                </div>
               </div>
-              <span>{user.firstName}</span>
-              <span>{user.lastName}</span>
+              <div className='detailsDiv'>
+                <p className='name'>{user.name}</p>
+                <p className='company'>{user.company}</p>
+              </div>
+
+            </div>
+            <hr className='subline' />
+            <div style={{ display: 'flex', flex: 1, padding: 10, }}>
+              <div className='interestDiv' onMouseEnter={() => setRemoveSvgHover(true)}
+                  onMouseLeave={() => setRemoveSvgHover(false)} onClick={() => console.log('weee')}>
+                <span className='interestTitle'>react/native</span>
+                <SvgRemoveButton 
+                  height={20} stroke={removeSvgHover ? '#B27D00' : '#AC80D9'} />
+              </div>
+
             </div>
             <hr className='subline'/>
           </div>

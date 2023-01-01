@@ -1,7 +1,6 @@
 export interface User {
   userID: number,
-  firstName: string,
-  lastName: string,
+  name: string,
   email: string,
   company: string,
   trendPoints: number,
