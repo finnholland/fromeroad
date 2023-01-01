@@ -24,7 +24,7 @@ const upload = multer({
   storage: storage
 })
 
-app.post('/:userID', upload.single('file'), (req, res) => {
+app.post('/profileImage/:userID', upload.single('file'), (req, res) => {
   console.log(req.params.userID)
   if (!req.file) {
     console.log("No file upload");
@@ -43,7 +43,7 @@ app.post('/:userID', upload.single('file'), (req, res) => {
 
 app.get('/profileImage/:userID', (req, res) => {
   console.log(req.body)
-  db.query('select profileImageUrl from users where userID = ?', [req.params.userID], (err, result, fields) => {
+  db.query('select profileImageUrl from users where userID = ?', req.params.userID, (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)
     } else {

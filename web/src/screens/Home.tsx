@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { User } from '../../types';
 import '../App.css';
 import SvgChamonix from '../assets/svg/chamonix';
@@ -8,10 +8,19 @@ import Axios from 'axios';
 import { getUser, setUser } from '../userData';
 
 function App() {
-  const [profileImage, setProfileImage] = useState('../assets/images/aws');
-  const [user, setUser] = useState<User>(getUser)
+  const [user, setUser] = useState<User>(getUser);
+  const [profileImageUrl, setProfileImageUrl] = useState(getUser().profileImageUrl);
+
+  const ref = useRef<HTMLInputElement>(null);
+  const handleClick = (e: any) => {
+    if (ref.current) {
+      ref.current.click();
+    }
+  }
+
   useEffect(() => {
     getUserFromToken();
+    console.log(profileImageUrl)
   }, [])
 
   const getUserFromToken = () => {
@@ -21,6 +30,7 @@ function App() {
       }
     }).then(res => {
       setUser(res.data[0] as User);
+      setProfileImageUrl(res.data[0].profileImageUrl)
     })
   }
 
@@ -46,18 +56,22 @@ function App() {
     const fd = new FormData();
     fd.append('file', e.target.files[0])
     fd.append('userID', user.userID.toString())
-    setProfileImage(URL.createObjectURL(e.target.files[0]));
     console.log(user.userID)
-    Axios.post(`http://localhost:9000/image/${user.userID}`, fd, {
+    Axios.post(`http://localhost:9000/image/profileImage/${user.userID}`, fd, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
+    }).then(() => {
+      Axios.get(`http://localhost:9000/image/profileImage/${user.userID}`).then(res => {
+        console.log(res.data[0].profileImageUrl)
+        setProfileImageUrl(res.data[0].profileImageUrl)
+      })
+      
     })
   }
 
   const getImage = (userID: number) => {
     Axios.get(`http://localhost:9000/image/profileImage/${userID}`).then(res => {
-      setProfileImage('http://localhost:9000' + res.data[0].profileImageUrl)
       console.log(res)
     })
   }
@@ -101,10 +115,9 @@ function App() {
               <hr className='line' />
             </div>
             <div>
-              <input type={'file'} name="file" onChange={uploadImage}/>
+              <input ref={ref} type={'file'} name="file" onChange={uploadImage} hidden/>
                 
-              <img src={'http://localhost:9000'+user.profileImageUrl} alt='profile' className='profileImage'/>
-              <button onClick={() => getImage(1)}>get image</button>
+              <img src={'http://localhost:9000' + profileImageUrl} alt='profile' onClick={handleClick} className='profileImage'/>
               <span>{user.firstName}</span>
               <span>{user.lastName}</span>
             </div>
