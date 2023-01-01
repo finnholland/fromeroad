@@ -6,6 +6,7 @@ import SvgLotfourteen from '../assets/svg/lotfourteen';
 import Axios from 'axios';
 
 import { getUser, setUser } from '../userData';
+import { url } from 'inspector';
 
 function App() {
   const [user, setUser] = useState<User>(getUser);
@@ -116,8 +117,9 @@ function App() {
             </div>
             <div>
               <input ref={ref} type={'file'} name="file" onChange={uploadImage} hidden/>
-                
-              <img src={'http://localhost:9000' + profileImageUrl} alt='profile' onClick={handleClick} className='profileImage'/>
+              <div className='profileImage' onClick={handleClick} style={{ backgroundImage: `url(http://localhost:9000${profileImageUrl})`, backgroundSize: 'cover' }}>
+                <div className='profileImageOverlay'>change</div>
+              </div>
               <span>{user.firstName}</span>
               <span>{user.lastName}</span>
             </div>
