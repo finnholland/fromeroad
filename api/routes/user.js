@@ -132,7 +132,7 @@ app.post('/interests/addInterests/', (req, res) => {
         interestID = result.insertId
 
         db.query('insert into userinterests (userID, interestID) values (?, ?)', [userID, interestID], (err, result, fields) => {
-          if (err) throw (err)
+          if (err) return res.sendStatus(409)
           else {
             return res.sendStatus(200)
           }
@@ -140,7 +140,7 @@ app.post('/interests/addInterests/', (req, res) => {
       })
     } else {
       db.query('insert into userinterests (userID, interestID) values (?, ?)', [userID, interestID], (err, result, fields) => {
-        if (err) throw (err)
+        if (err) return res.sendStatus(409)
         else {
           return res.sendStatus(200)
         }
