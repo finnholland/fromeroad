@@ -108,13 +108,22 @@ function App() {
   const addInterest = (interest: string) => {
     const params = {
       userID: user.userID,
-      name: interest.trim(),
+      name: interest,
     }
     Axios.post(`${api}/user/interests/addInterests`, params, {
       headers:
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
-    }).then(() => {
-      getInterests(user.userID)
+    }).then((res) => {
+      console.log(res)
+      if (res.status !== 409) {
+        getInterests(user.userID)
+        setRemoveSvgHover(-1)
+      } else {
+        alert('interest already exists')
+      }
+    }).catch(err => {
+      alert('error: ' + err.response.status + ' - interest already added')
+      console.log(err.response.status)
     })
   }
 
@@ -189,7 +198,7 @@ function App() {
             <div className='addInterestDiv'>
               <input type={'text'} placeholder='add interests' className='interestInput' onChange={(e) => setInterest(e.target.value)}/>
               <SvgAddButton fill={addSvgHover ? '#B27D00' : '#DECCF0'} stroke={addSvgHover ? '#B27D00' : '#AC80D9'} height={40} onMouseEnter={() => setAddSvgHover(true)}
-                onMouseLeave={() => setAddSvgHover(false)} onClick={() => addInterest(interest)} />
+                onMouseLeave={() => setAddSvgHover(false)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
             </div>
             <hr className='subline'/>
           </div>
