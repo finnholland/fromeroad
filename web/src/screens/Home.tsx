@@ -16,9 +16,10 @@ function App() {
   const [user, setUser] = useState<User>(getUser);
   const [profileImageUrl, setProfileImageUrl] = useState(getUser().profileImageUrl);
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
-  const [addSvgHover, setAddSvgHover] = useState(false);
+  const [addSvgHover, setAddSvgHover] = useState(-2);
   const [interest, setInterest] = useState('');
   const [interestList, setInterestList] = useState<Interest[]>([]);
+  const [interestSearch, setInterestSearch] = useState<Interest[]>([]);
 
   const ref = useRef<HTMLInputElement>(null);
   const handleClick = (e: any) => {
@@ -32,11 +33,20 @@ function App() {
       <div className='interestDiv' onMouseEnter={() => setRemoveSvgHover(i.interestID)}
           onMouseLeave={() => setRemoveSvgHover(-1)} onClick={() => removeInterest(i.interestID)}>
         <span className='interestTitle'>{i.name}</span>
-        <SvgRemoveButton 
-          height={20} stroke={removeSvgHover === i.interestID ? '#B27D00' : '#AC80D9'} />
+        <SvgRemoveButton height={20} stroke={removeSvgHover === i.interestID ? '#B27D00' : '#AC80D9'} />
       </div>
     )
-    });
+  });
+
+  const interestSearchResults = interestSearch.map((i) => {
+    return (
+      <div className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestID)}
+          onMouseLeave={() => setAddSvgHover(-2)} onClick={() => removeInterest(i.interestID)}>
+        <span className='interestTitle'>{i.name}</span>
+          <SvgAddButton height={20} stroke={addSvgHover === i.interestID ? '#B27D00' : '#AC80D9'} />
+      </div>
+    )
+  });
 
   useEffect(() => {
     getUserFromToken();
@@ -137,6 +147,23 @@ function App() {
     })
   }
 
+  const changeInterestSearch = (search: string) => {
+    setInterest(search);
+    if (!search || search === '') {
+      setInterestSearch([])
+    } else {
+      Axios.get(`${api}/user/interests/searchInterests/${search}`, {
+        headers:
+          { authorisation: `Bearer ${localStorage.getItem('token')}` }
+      }).then((res) => {
+        console.log(res.data)
+        setInterestSearch(res.data)
+      })
+    }
+    
+
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -157,7 +184,7 @@ function App() {
           
           <div id='recentPosters' style={{ flex: 1 }}>
             <div className='titleDiv'>
-              <p className='sectionTitle'>recent posters</p>
+              <p className='sectionTitle'>activity</p>
               <hr className='line'/>
             </div>
             <button onClick={() => getUsers()}>get users</button>
@@ -196,16 +223,21 @@ function App() {
               {interestItems}
             </div>
             <div className='addInterestDiv'>
-              <input type={'text'} placeholder='add interests' className='interestInput' onChange={(e) => setInterest(e.target.value)}/>
-              <SvgAddButton fill={addSvgHover ? '#B27D00' : '#DECCF0'} stroke={addSvgHover ? '#B27D00' : '#AC80D9'} height={40} onMouseEnter={() => setAddSvgHover(true)}
-                onMouseLeave={() => setAddSvgHover(false)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
+              <input type={'text'} placeholder='add interests' className='interestInput' onChange={(e) => changeInterestSearch(e.target.value)}/>
+              <SvgAddButton fill={addSvgHover === -1 ? '#B27D00' : '#DECCF0'} stroke={addSvgHover === -1 ? '#B27D00' : '#AC80D9'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
+                onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
+
+            </div>
+            <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column', textAlign: 'left' }}>
+              {interestSearchResults.length !== 0 ? <span style={{ fontSize: 12 }}>suggestions:</span> : null}
+              {interestSearchResults}
             </div>
             <hr className='subline'/>
           </div>
 
         </div>
 
-        <footer>
+        <footer style={{justifySelf: 'end'}}>
           <div id='trendsTitle' className='titleDiv'>
             <p className='sectionTitle'>trends</p>
             <hr className='line'/>

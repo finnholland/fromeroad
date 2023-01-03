@@ -178,4 +178,17 @@ app.delete('/interests/removeInterests/:userID/:interestID', (req, res) => {
   })
 })
 
+// get interest
+app.get('/interests/searchInterests/:searchQuery', (req, res) => {
+  const searchQuery = req.params.searchQuery;
+  console.log(searchQuery)
+  
+  db.query('SELECT * FROM interests WHERE name like ?', searchQuery+'%', (err, result, fields) => {
+    if (err) throw (err)
+    else {
+      return res.status(200).send(result)
+    }
+  })
+})
+
 module.exports = app;
