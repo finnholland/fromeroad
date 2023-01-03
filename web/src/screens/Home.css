@@ -28,6 +28,8 @@
   flex: 1;
   color: #AC80D9;
   cursor: pointer;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .interestDiv:hover {

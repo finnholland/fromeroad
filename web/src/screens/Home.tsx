@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { User } from '../../types';
+import { User, Interest } from '../../types';
 import '../App.css';
 import './Home.css'
 import SvgChamonix from '../assets/svg/chamonix';
@@ -15,9 +15,10 @@ const api = 'http://localhost:9000'
 function App() {
   const [user, setUser] = useState<User>(getUser);
   const [profileImageUrl, setProfileImageUrl] = useState(getUser().profileImageUrl);
-  const [removeSvgHover, setRemoveSvgHover] = useState(false);
+  const [removeSvgHover, setRemoveSvgHover] = useState(-1);
   const [addSvgHover, setAddSvgHover] = useState(false);
-  const [interest, setInterest] = useState('false');
+  const [interest, setInterest] = useState('');
+  const [interestList, setInterestList] = useState<Interest[]>([]);
 
   const ref = useRef<HTMLInputElement>(null);
   const handleClick = (e: any) => {
@@ -26,9 +27,29 @@ function App() {
     }
   }
 
+  const interestItems = interestList.map((i) => {
+    return (
+      <div className='interestDiv' onMouseEnter={() => setRemoveSvgHover(i.interestID)}
+          onMouseLeave={() => setRemoveSvgHover(-1)} onClick={() => removeInterest(i.interestID)}>
+        <span className='interestTitle'>{i.name}</span>
+        <SvgRemoveButton 
+          height={20} stroke={removeSvgHover === i.interestID ? '#B27D00' : '#AC80D9'} />
+      </div>
+    )
+    });
+
   useEffect(() => {
     getUserFromToken();
   }, [])
+
+  const removeInterest = (interestID: number) => {
+    Axios.delete(`${api}/user/interests/removeInterests/${user.userID}/${interestID}`, {
+      headers:
+        { authorisation: `Bearer ${localStorage.getItem('token')}` }
+    }).then(() => {
+      getInterests(user.userID)
+    })
+  }
 
   const getUserFromToken = () => {
     Axios.get('http://localhost:9000/user/autoLogin', {
@@ -37,7 +58,8 @@ function App() {
       }
     }).then(res => {
       setUser(res.data[0] as User);
-      setProfileImageUrl(res.data[0].profileImageUrl)
+      setProfileImageUrl(res.data[0].profileImageUrl);
+      getInterests(res.data[0].userID);
     })
   }
 
@@ -78,7 +100,7 @@ function App() {
   }
 
   const getImage = (userID: number) => {
-    Axios.get(`http://localhost:9000/image/profileImage/${userID}`).then(res => {
+    Axios.get(`${api}/image/profileImage/${userID}`).then(res => {
       console.log(res)
     })
   }
@@ -92,15 +114,16 @@ function App() {
       headers:
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then(() => {
-      getInterests()
+      getInterests(user.userID)
     })
   }
 
-  const getInterests = () => {
-    Axios.get(`${api}/user/interests/getInterests/${user.userID}`, {
+  const getInterests = (userID: number) => {
+    Axios.get(`${api}/user/interests/getInterests/${userID}`, {
       headers:
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
+      setInterestList(res.data)
       console.log(res.data)
     })
   }
@@ -160,21 +183,14 @@ function App() {
 
             </div>
             <hr className='subline' />
-            <div style={{ display: 'flex', flex: 1, padding: 10, }}>
-              <div className='interestDiv' onMouseEnter={() => setRemoveSvgHover(true)}
-                  onMouseLeave={() => setRemoveSvgHover(false)} onClick={() => console.log('weee')}>
-                <span className='interestTitle'>react/native</span>
-                <SvgRemoveButton 
-                  height={20} stroke={removeSvgHover ? '#B27D00' : '#AC80D9'} />
-              </div>
-
+            <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column' }}>
+              {interestItems}
             </div>
             <div className='addInterestDiv'>
               <input type={'text'} placeholder='add interests' className='interestInput' onChange={(e) => setInterest(e.target.value)}/>
               <SvgAddButton fill={addSvgHover ? '#B27D00' : '#DECCF0'} stroke={addSvgHover ? '#B27D00' : '#AC80D9'} height={40} onMouseEnter={() => setAddSvgHover(true)}
                 onMouseLeave={() => setAddSvgHover(false)} onClick={() => addInterest(interest)} />
             </div>
-            <button onClick={() => getInterests()}>get interests</button>
             <hr className='subline'/>
           </div>
 

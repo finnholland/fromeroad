@@ -6,3 +6,9 @@ export interface User {
   trendPoints: number,
   profileImageUrl: string
 }
+
+export interface Interest {
+  interestID: number,
+  name: string,
+  userID: number
+}
