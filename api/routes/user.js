@@ -164,4 +164,18 @@ app.get('/interests/getInterests/:userID', (req, res) => {
   })
 })
 
+// remove interest
+app.delete('/interests/removeInterests/:userID/:interestID', (req, res) => {
+  const userID = req.params.userID;
+  const interestID = req.params.interestID;
+  console.log(userID)
+  
+  db.query('delete from userinterests where userID = ? and interestID = ?', [userID, interestID], (err, result, fields) => {
+    if (err) throw (err)
+    else {
+      return res.status(200).send(result)
+    }
+  })
+})
+
 module.exports = app;
