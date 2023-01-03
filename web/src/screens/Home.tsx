@@ -91,13 +91,17 @@ function App() {
     Axios.post(`${api}/user/interests/addInterests`, params, {
       headers:
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
+    }).then(() => {
+      getInterests()
     })
   }
 
   const getInterests = () => {
-    Axios.get(`${api}/user/interests/getInterest/${user.userID}`, {
+    Axios.get(`${api}/user/interests/getInterests/${user.userID}`, {
       headers:
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
+    }).then((res) => {
+      console.log(res.data)
     })
   }
 
@@ -170,6 +174,7 @@ function App() {
               <SvgAddButton fill={addSvgHover ? '#B27D00' : '#DECCF0'} stroke={addSvgHover ? '#B27D00' : '#AC80D9'} height={40} onMouseEnter={() => setAddSvgHover(true)}
                 onMouseLeave={() => setAddSvgHover(false)} onClick={() => addInterest(interest)} />
             </div>
+            <button onClick={() => getInterests()}>get interests</button>
             <hr className='subline'/>
           </div>
 
