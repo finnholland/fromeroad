@@ -116,7 +116,7 @@ app.post('/interests/addInterests/', (req, res) => {
   const interestName = req.body.name;
   const userID = req.body.userID;
   console.log(interestName, userID)
-  let interestID = 0;
+  let interestID = null;
 
   db.query('select interestID from interests where name = ?', [interestName], async (err, result, fields) => {
     if (err) throw (err)
@@ -126,25 +126,42 @@ app.post('/interests/addInterests/', (req, res) => {
     }
 
     if (!interestID || interestID === 0) {
-      db.promise.query('insert into interests (name) values (?); select LAST_INSERT_ID();', [interestName], (err, result, fields) => {
+      db.query('insert into interests (name) values (?)', interestName, (err, result, fields) => {
         if (err) throw (err)
-        console.log(result[0]?.insertID)
-        interestID = result[0]?.insertID
+        console.log(result.insertId)
+        interestID = result.insertId
+
+        db.query('insert into userinterests (userID, interestID) values (?, ?)', [userID, interestID], (err, result, fields) => {
+          if (err) throw (err)
+          else {
+            return res.sendStatus(200)
+          }
+        })
       })
-    } 
-    db.query('insert into userinterests (userID, interestID) values (?, ?)', [userID, interestID], (err, result, fields) => {
-      if (err) throw (err)
-      else {
-        return res.sendStatus(200)
-      }
-    })
+    } else {
+      db.query('insert into userinterests (userID, interestID) values (?, ?)', [userID, interestID], (err, result, fields) => {
+        if (err) throw (err)
+        else {
+          return res.sendStatus(200)
+        }
+      })
+    }
+    
+
   })  
 })
 
 // get interest
-app.get('/interests/getInterests', (req, res) => {
-  const userID = req.body.userID;
+app.get('/interests/getInterests/:userID', (req, res) => {
+  const userID = req.params.userID;
   console.log(userID)
+  
+  db.query('SELECT * FROM interests JOIN userinterests ON interests.interestID = userinterests.interestID WHERE userinterests.userID = ?', userID, (err, result, fields) => {
+    if (err) throw (err)
+    else {
+      return res.status(200).send(result)
+    }
+  })
 })
 
 module.exports = app;
