@@ -41,12 +41,21 @@ function App() {
   const interestSearchResults = interestSearch.map((i) => {
     return (
       <div className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestID)}
-          onMouseLeave={() => setAddSvgHover(-2)} onClick={() => addInterest(i.name)}>
+          onMouseLeave={() => setAddSvgHover(-2)} onClick={() => addInterestHelper(i)}>
         <span className='interestTitle'>{i.name}</span>
           <SvgAddButton height={20} stroke={addSvgHover === i.interestID ? '#B27D00' : '#AC80D9'} />
       </div>
     )
   });
+  const addInterestHelper = (interest: Interest) => {
+    if (interest.interestID) {
+      let removalArray: Interest[] = interestSearch
+      removalArray = removalArray.filter(i => i.interestID !== interest.interestID)
+      setInterestSearch(removalArray)
+    }
+    addInterest(interest.name)
+  }
+
 
   useEffect(() => {
     getUserFromToken();
