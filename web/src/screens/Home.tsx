@@ -41,7 +41,7 @@ function App() {
   const interestSearchResults = interestSearch.map((i) => {
     return (
       <div className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestID)}
-          onMouseLeave={() => setAddSvgHover(-2)} onClick={() => removeInterest(i.interestID)}>
+          onMouseLeave={() => setAddSvgHover(-2)} onClick={() => addInterest(i.name)}>
         <span className='interestTitle'>{i.name}</span>
           <SvgAddButton height={20} stroke={addSvgHover === i.interestID ? '#B27D00' : '#AC80D9'} />
       </div>
