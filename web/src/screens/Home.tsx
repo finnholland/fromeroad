@@ -47,6 +47,7 @@ function App() {
       </div>
     )
   });
+
   const addInterestHelper = (interest: Interest) => {
     if (interest.interestID) {
       let removalArray: Interest[] = interestSearch
@@ -194,8 +195,8 @@ function App() {
         </a>
         
       </header>
-      <div style={{ flex: 1, display: 'flex', padding: 40, flexDirection: 'column'}}>
-        <div id='body' style={{ flexDirection: 'row', display: 'flex', }}>
+      <div style={{ flex: 1, display: 'flex', padding: 40, paddingTop: 20, flexDirection: 'column'}}>
+        <div id='body' style={{ flexDirection: 'row', display: 'flex', flex: 6}}>
           
           <div id='recentPosters' style={{ flex: 1 }}>
             <div className='titleDiv'>
@@ -260,7 +261,7 @@ function App() {
 
         </div>
 
-        <footer style={{justifySelf: 'end'}}>
+        <footer style={{justifySelf: 'end', flex: 1}}>
           <div id='trendsTitle' className='titleDiv'>
             <p className='sectionTitle'>trends</p>
             <hr className='line'/>
