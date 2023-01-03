@@ -157,7 +157,13 @@ function App() {
           { authorisation: `Bearer ${localStorage.getItem('token')}` }
       }).then((res) => {
         console.log(res.data)
-        setInterestSearch(res.data)
+        const tempArr: Interest[] = []
+        res.data.forEach((interest: Interest) => {
+          if (interestList.findIndex(i => i.interestID === interest.interestID) === -1) {
+            tempArr.push(interest)
+          }
+        });
+        setInterestSearch(tempArr)
       })
     }
     
