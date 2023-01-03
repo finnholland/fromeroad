@@ -19,40 +19,46 @@ const Login = () => {
   const navigate = useNavigate();
 
   const signUp = async () => {
-    if (password !== confirmPassword || password === '' || !password) {
+    if (!email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
+      alert('invalid email format')
+    }
+    else if (password !== confirmPassword || password === '' || !password) {
       alert('passowrds no matchy');
-      return;
     }
-    if (name === '' || email === '' || company === '') {
+    else if (name === '' || email === '' || company === '') {
       alert('form must be filled!');
-      return;
+    } else {
+      Axios.post('http://localhost:9000/user/signup', {
+        name: name,
+        email: email,
+        company: company,
+        password: password
+      }).catch(function (error) {
+        console.log(error)
+      }).then((res) => {
+        console.log(res)
+      })
     }
-    Axios.post('http://localhost:9000/user/signup', {
-      name: name,
-      email: email,
-      company: company,
-      password: password
-    }).catch(function (error) {
-      console.log(error)
-    }).then((res) => {
-      console.log(res)
-    })
   }
 
   const login = () => {
-    Axios.post('http://localhost:9000/user/login', {
-      email: email,
-      password: password
-    }).then(res => {
-      if (res.status !== 200) {
-        alert('incorrect email or password')
-      } else {
-        localStorage.setItem('token', res.data.token)
-      }
-      setUser(res.data.user)
-      console.log(getUser())
-      navigate("../home", { replace: true });
-    })
+    if (!email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
+      alert('invalid email format')
+    } else {
+      Axios.post('http://localhost:9000/user/login', {
+        email: email,
+        password: password
+      }).then(res => {
+        if (res.status !== 200) {
+          alert('incorrect email or password')
+        } else {
+          localStorage.setItem('token', res.data.token)
+        }
+        setUser(res.data.user)
+        console.log(getUser())
+        navigate("../", { replace: true });
+      })
+    }
   }
 
   return (

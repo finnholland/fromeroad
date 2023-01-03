@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const ext = file.mimetype.split('/')[1]
-    cb(null, file.originalname)
+    cb(null, file.originalname.replace(' ', '_'))
   }
 })
 
@@ -30,7 +30,7 @@ app.post('/profileImage/:userID', upload.single('file'), (req, res) => {
     console.log("No file upload");
     res.sendStatus(403)
   } else {
-    const imgsrc = `/images/${req.body.userID}/${req.file.filename}`
+    const imgsrc = `/images/${req.body.userID}/${req.file.filename.replace(' ', '_')}`
     db.query('update users set profileImageUrl = ? where userID = ?', [imgsrc, req.body.userID], (err, result, fields) => {
       if (err) {
         console.log('error occurred: '+ err)
