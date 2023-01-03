@@ -183,14 +183,14 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-          <a href='http://www.lotfourteen.com.au' className='lotfourteen'>
+          <a target="_blank" rel="noreferrer" href='http://www.lotfourteen.com.au' className='lotfourteen'>
             <SvgLotfourteen height={25} />
           </a>
 
         <div className='titleContainer'>
           <p className='title'>fromeroad</p>
         </div>
-        <a href='http://www.chamonix.com.au' className='chamonix' style={{ justifyContent: 'flex-end' }}>
+        <a target="_blank" rel="noreferrer" href='http://www.chamonix.com.au' className='chamonix' style={{ justifyContent: 'flex-end' }}>
           <SvgChamonix height={20}/>
         </a>
         
