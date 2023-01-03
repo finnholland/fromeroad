@@ -223,13 +223,21 @@ function App() {
               {interestItems}
             </div>
             <div className='addInterestDiv'>
-              <input type={'text'} placeholder='add interests' className='interestInput' onChange={(e) => changeInterestSearch(e.target.value)}/>
+              <input type={'text'} placeholder='add interests' className='interestInput' value={interest} onChange={(e) => changeInterestSearch(e.target.value)}/>
               <SvgAddButton fill={addSvgHover === -1 ? '#B27D00' : '#DECCF0'} stroke={addSvgHover === -1 ? '#B27D00' : '#AC80D9'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
                 onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
 
             </div>
             <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column', textAlign: 'left' }}>
-              {interestSearchResults.length !== 0 ? <span style={{ fontSize: 12 }}>suggestions:</span> : null}
+              {
+                interestSearchResults.length !== 0 ?
+                  <div style={{justifyContent: 'space-between', display: 'flex'}}>
+                    <span style={{ fontSize: 12 }}>suggestions:</span>
+                    <span style={{ fontSize: 12, color: 'red', cursor: 'pointer' }} onClick={() => changeInterestSearch('')}>clear</span>
+                  </div>
+                
+                : null
+              }
               {interestSearchResults}
             </div>
             <hr className='subline'/>
