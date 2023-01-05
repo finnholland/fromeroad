@@ -10,7 +10,7 @@ const fs = require('fs')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const path = `./images/${req.params.userID}/`
+    const path = `./images/user/${req.params.userID}/`
     fs.mkdirSync(path, { recursive: true })
     cb(null, path)
   },
@@ -30,7 +30,7 @@ app.post('/profileImage/:userID', upload.single('file'), (req, res) => {
     console.log("No file upload");
     res.sendStatus(403)
   } else {
-    const imgsrc = `/images/${req.body.userID}/${req.file.filename.replace(' ', '_')}`
+    const imgsrc = `/images/user/${req.body.userID}/${req.file.filename.replace(' ', '_')}`
     db.query('update users set profileImageUrl = ? where userID = ?', [imgsrc, req.body.userID], (err, result, fields) => {
       if (err) {
         console.log('error occurred: '+ err)

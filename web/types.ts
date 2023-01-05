@@ -12,3 +12,22 @@ export interface Interest {
   name: string,
   userID: number
 }
+
+export interface Post {
+  postID: number,
+  body: string,
+  imageUrl: string | undefined,
+  trendPoints: number,
+}
+
+export interface Poster {
+  userID: number,
+  name: string,
+  profileImageUrl: string,
+  company: string
+}
+
+export interface PostItem {
+  post: Post,
+  poster: Poster
+}
