@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { User, Interest } from '../../types';
+import { User, Interest, PostItem, Poster } from '../../types';
 import '../App.css';
 import './Home.css'
 import SvgChamonix from '../assets/svg/chamonix';
@@ -7,6 +7,8 @@ import SvgLotfourteen from '../assets/svg/lotfourteen';
 import SvgRemoveButton from '../assets/svg/removeButton';
 import SvgAddButton from '../assets/svg/SvgAddButton';
 import Axios from 'axios';
+
+import { Post } from '../components/Post';
 
 import { getUser, setUser } from '../userData';
 
@@ -20,6 +22,10 @@ function App() {
   const [interest, setInterest] = useState('');
   const [interestList, setInterestList] = useState<Interest[]>([]);
   const [interestSearch, setInterestSearch] = useState<Interest[]>([]);
+
+  const [posts, setPosts] = useState<PostItem[]>([]);
+
+  
 
   const ref = useRef<HTMLInputElement>(null);
   const handleClick = (e: any) => {
@@ -45,6 +51,12 @@ function App() {
         <span className='interestTitle'>{i.name}</span>
           <SvgAddButton height={20} stroke={addSvgHover === i.interestID ? '#B27D00' : '#AC80D9'} />
       </div>
+    )
+  });
+
+  const postItem = posts.map((i) => {
+    return (
+      <Post post={i.post} poster={i.poster}/>
     )
   });
 
@@ -106,7 +118,7 @@ function App() {
     fd.append('file', e.target.files[0])
     fd.append('userID', user.userID.toString())
     console.log(user.userID)
-    Axios.post(`http://localhost:9000/image/profileImage/${user.userID}`, fd, {
+    Axios.post(`${api}/image/profileImage/${user.userID}`, fd, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -180,6 +192,47 @@ function App() {
 
   }
 
+  const createPost = () => {
+    const post = {
+      body:'hello world!',
+      userID: user.userID
+    }
+    Axios.post(`${api}/post/create`, post, {
+      headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
+    }).then(res => {
+      console.log(res)
+    })
+  }
+
+  const getPosts = () => {
+    Axios.get(`${api}/post/get`, {
+      headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
+    }).then(res => {
+      const tempPosts: PostItem[] = []
+      res.data.forEach((p: any) => {
+        const poster: Poster = {
+          userID: p.userID,
+          name: p.name,
+          profileImageUrl: p.profileImageUrl,
+          company: p.company
+        }
+        const post: PostItem = {
+          post: {
+            postID: p.postID,
+            body: p.body,
+            trendPoints: p.trendPoints,
+            imageUrl: p.imageUrl || undefined,
+          },
+          poster: poster
+        }
+        tempPosts.push(post);
+      });
+
+      console.log(tempPosts)
+      setPosts(tempPosts)
+    })
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -212,6 +265,9 @@ function App() {
               <p className='sectionTitle'>feed</p>
               <hr className='line'/>
             </div>
+            <button onClick={() => createPost()}>create post</button>
+            <button onClick={() => getPosts()}>get post</button>
+            {postItem}
           </div>
 
           <div id='profile' style={{ flex: 1 }}>

@@ -1,0 +1,55 @@
+.post {
+  border: 3px solid #5900B2;
+  border-radius: 20px;
+  width: 90%;
+  height: fit-content;
+  padding: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.postImage {
+  border: 2px solid #5900B2;
+  border-radius: 20px;
+  width: 40%;
+  aspect-ratio: 1/1;
+}
+
+.postProfileImage {
+  border: 2px solid #5900B2;
+  border-radius: 50%;
+  height: 60px;
+  aspect-ratio: 1/1;
+  margin-right: 1rem;
+}
+
+.header {
+  height: 4rem;
+  align-items: center;
+  display: flex;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.headerTextName {
+  color: #5900B2;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.headerTextCompany {
+  color: #5900B2;
+  font-size: .9rem;
+  font-weight: 100;
+}
+
+.body {
+  display: flex;
+  width: 100%;
+  justify-content: start;
+  align-items: flex-start;
+}
+
+.bodyText {
+  color: #5900B2;
+  font-size: 1.5rem;
+}
