@@ -16,7 +16,17 @@ export const Post: React.FC<PostItem> = ({  post,  poster}) => {
       <div id='body' className='body'>
         <span className='bodyText'>{post.body}</span>
       </div>
-      <div id='footer'>+1</div>
+      <div id='footer' className='footer'>
+        <div style={{ backgroundColor: '#00FFA3', justifyContent: 'space-between', width: 'fit-content', display: 'flex', borderRadius: 30, alignItems: 'center'}}>
+          <span style={{paddingLeft: 15, paddingRight: 15}}>100</span>
+          <div className='upvoteButton'>
+            +1
+          </div>
+        </div>
+
+      </div>
     </div>
   )
 }
+
+// needs upvote button + image posts + post editor + comments)

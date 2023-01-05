@@ -53,3 +53,23 @@
   color: #5900B2;
   font-size: 1.5rem;
 }
+
+.footer {
+  display: flex;
+  width: 100%;
+  justify-content: start;
+  align-items: center;
+  height: 3rem;
+}
+
+.upvoteButton {
+  height: 30px;
+  width: 30px; 
+  border-radius: 30px; 
+  border: 2px solid #00FFA3;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  cursor: pointer;
+}
