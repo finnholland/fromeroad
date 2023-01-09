@@ -3,6 +3,7 @@ import { PostItem } from '../../types'
 import './Post.css'
 import Axios from 'axios';
 import { useAppSelector } from '../redux/Actions';
+import SvgAddButton from '../assets/svg/SvgAddButton';
 
 
 const api = 'http://localhost:9000'
@@ -40,12 +41,12 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
       </div>
       <div id='footer' className='footer'>
         <div className='upvoteButtonPill' onClick={() => upvotePost()}>
-          <span style={{paddingLeft: 15, paddingRight: 15}}>{trendPoints}</span>
+          <span style={{paddingLeft: 15, paddingRight: 10}}>{trendPoints}</span>
           <div className='upvoteButton'>
-            {post.voted ? '-' : '+'}
+            <SvgAddButton height={30} fontVariant={post.voted ? 'hidden' : 'visible'} stroke={'#00FFA3'}/>
           </div>
         </div>
-
+    <input color='#00FFA3' style={{backgroundColor: '#CCFFED', border: 0, height: 30, flex: 1, marginLeft: 15, borderRadius: 15, paddingLeft: 15}}  placeholder='comment something'/>
       </div>
     </div>
   )
