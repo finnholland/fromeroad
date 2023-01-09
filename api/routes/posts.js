@@ -25,13 +25,17 @@ const upload = multer({
 app.post('/create', upload.single('file'), (req, res) => {
   const userID = req.body.userID;
   const body = req.body.body;
+  const initialUpvoteValue = 0;
   console.log(req.body)
   if (!req.file) {
     db.query('insert into posts (body, createdAt, userID) values (?, now(), ?)', [body, userID], (err, result, fields) => {
       if (err) {
         console.log('error occurred: '+ err)
       } else {
-        res.send(result)
+        db.query('insert into postvotes (postID, userID, vote) values (?, ?, ?)', [result.insertId, userID, initialUpvoteValue], (err, result, fields) => {
+          if (err) return err.code
+          res.send(result)
+        })
       }
     })
   } else {
@@ -40,23 +44,44 @@ app.post('/create', upload.single('file'), (req, res) => {
       if (err) {
         console.log('error occurred: '+ err)
       } else {
-        res.send(result)
+          db.query('insert into postvotes (postID, userID, vote) values (?, ?, ?)', [result.insertId, userID, initialUpvoteValue], (err, result, fields) => {
+            if (err) return err.code
+            res.send(result)
+        })
       }
     })
   }
 });
 
 app.get('/get', (req, res) => {
-  db.query(`select posts.*, name, company, profileImageUrl from posts
+  const userID = req.query.userID
+  db.query(`SELECT posts.*, name, company, profileImageUrl, IFNULL(vote, 0) as vote FROM posts
             inner join users on posts.userID = users.userID
+            LEFT JOIN postvotes ON postvotes.postID = posts.postID AND postvotes.userID = ?
             where TIMESTAMPDIFF(day, createdAt, NOW()) < 7
-            order by createdAt desc;`,
+            GROUP BY postID
+            order by createdAt desc;`, userID,
     (err, result, fields) => {
     if (err) {
-      console.log('error occurred: '+ err)
+      console.log('error occurred: ' + err)
+      return err.code
     } else {
       res.send(result)
     }
+  })
+})
+
+app.post('/upvote/:postID/', (req, res) => {
+  const postID = req.params.postID;
+  const upvoteValue = 1 
+  db.query(`INSERT INTO postvotes (postID, userID, vote) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE vote = not vote;
+            update posts set trendpoints = (SELECT SUM(vote) FROM postvotes WHERE postID = ?) where postID = ?`, [postID, req.body.userID, upvoteValue, postID, postID], (err, result, fields) => {
+    if (err) return err.code
+    else {
+      return res.status(200).send({
+        votes: result,
+      })
+    } 
   })
 })
 
