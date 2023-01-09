@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { User, Interest, PostItem, Poster } from '../../types';
+import { User, Interest, PostItem, Poster, RecentPosterType } from '../../types';
 import '../App.css';
 import './Home.css'
 import SvgChamonix from '../assets/svg/chamonix';
@@ -13,18 +13,23 @@ import { setUser } from '../redux/slices/userSlice';
 import { Post } from '../components/Post';
 
 import { getUser } from '../userData';
+import { RecentPoster } from '../components/RecentPoster';
 
 const api = 'http://localhost:9000'
 
 function App() {
   const [user, setUserState] = useState<User>(getUser);
   const [profileImageUrl, setProfileImageUrl] = useState(getUser().profileImageUrl);
+
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
   const [addSvgHover, setAddSvgHover] = useState(-2);
+
   const [interest, setInterest] = useState('');
   const [interestList, setInterestList] = useState<Interest[]>([]);
   const [interestSearch, setInterestSearch] = useState<Interest[]>([]);
   const [posts, setPosts] = useState<PostItem[]>([]);
+  const [recentPosters, setRecentPosters] = useState<RecentPosterType[]>([]);
+
 
   const selector = useAppSelector(state => state)
   const dispatch = useAppDispatch()
@@ -56,6 +61,12 @@ function App() {
     )
   });
 
+  const recentPostersItems = recentPosters.map((i) => {
+    return (
+      <RecentPoster user={i} />
+    )
+  });
+
   const postItem = posts.map((i) => {
     return (
       <Post post={i.post} poster={i.poster} />
@@ -74,6 +85,8 @@ function App() {
 
   useEffect(() => {
     getUserFromToken();
+    getPosts();
+    getRecentPosters();
   }, [])
 
   const removeInterest = (interestID: number) => {
@@ -98,8 +111,15 @@ function App() {
     })
   }
 
-  const getUsers = () => {
-    console.log('calling api')
+  const getRecentPosters = () => {
+        Axios.get(`${api}/recentPosters`, {
+      headers: {
+        authorisation: `Bearer ${localStorage.getItem('token')}`
+      }
+        }).then(res => {
+      console.log(res.data)
+      setRecentPosters(res.data)
+    })
   }
 
   const uploadImage = (e: any) => {
@@ -177,7 +197,7 @@ function App() {
 
   const createPost = () => {
     const post = {
-      body:'hello world!',
+      body:'this is my 2nd post',
       userID: user.userID
     }
     Axios.post(`${api}/post/create`, post, {
@@ -242,7 +262,7 @@ function App() {
               <p className='sectionTitle'>activity</p>
               <hr className='line'/>
             </div>
-            <button onClick={() => getUsers()}>get users</button>
+            {recentPostersItems}
           </div>
 
           <div id='feed' className='feed'>
@@ -251,7 +271,6 @@ function App() {
               <hr className='line'/>
             </div>
             <button onClick={() => createPost()}>create post</button>
-            <button onClick={() => getPosts()}>get post</button>
             {postItem}
           </div>
 

@@ -73,9 +73,12 @@ app.get('/get', (req, res) => {
 
 app.post('/upvote/:postID/', (req, res) => {
   const postID = req.params.postID;
+  const posterID = req.body.posterID;
   const upvoteValue = 1 
-  db.query(`INSERT INTO postvotes (postID, userID, vote) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE vote = not vote;
-            update posts set trendpoints = (SELECT SUM(vote) FROM postvotes WHERE postID = ?) where postID = ?`, [postID, req.body.userID, upvoteValue, postID, postID], (err, result, fields) => {
+  db.query(`update users set trendpoints = trendpoints - (SELECT IFNULL(SUM(vote), 0) as vote FROM postvotes WHERE postID = ?) where userID = ?;
+            INSERT INTO postvotes (postID, userID, vote) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE vote = not vote;
+            update posts set trendpoints = (SELECT SUM(vote) FROM postvotes WHERE postID = ?) where postID = ?;
+            update users set trendpoints = trendpoints + (SELECT IFNULL(SUM(vote), 0) as vote FROM postvotes WHERE postID = ?) where userID = ?;`, [postID, posterID, postID, req.body.userID, upvoteValue, postID, postID, postID, posterID], (err, result, fields) => {
     if (err) return err.code
     else {
       return res.status(200).send({
