@@ -7,25 +7,27 @@ import SvgLotfourteen from '../assets/svg/lotfourteen';
 import SvgRemoveButton from '../assets/svg/removeButton';
 import SvgAddButton from '../assets/svg/SvgAddButton';
 import Axios from 'axios';
+import { useAppSelector, useAppDispatch } from '../redux/Actions';
+import { setUser } from '../redux/slices/userSlice';
 
 import { Post } from '../components/Post';
 
-import { getUser, setUser } from '../userData';
+import { getUser } from '../userData';
 
 const api = 'http://localhost:9000'
 
 function App() {
-  const [user, setUser] = useState<User>(getUser);
+  const [user, setUserState] = useState<User>(getUser);
   const [profileImageUrl, setProfileImageUrl] = useState(getUser().profileImageUrl);
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
   const [addSvgHover, setAddSvgHover] = useState(-2);
   const [interest, setInterest] = useState('');
   const [interestList, setInterestList] = useState<Interest[]>([]);
   const [interestSearch, setInterestSearch] = useState<Interest[]>([]);
-
   const [posts, setPosts] = useState<PostItem[]>([]);
 
-  
+  const selector = useAppSelector(state => state)
+  const dispatch = useAppDispatch()
 
   const ref = useRef<HTMLInputElement>(null);
   const handleClick = (e: any) => {
@@ -56,7 +58,7 @@ function App() {
 
   const postItem = posts.map((i) => {
     return (
-      <Post post={i.post} poster={i.poster}/>
+      <Post post={i.post} poster={i.poster} />
     )
   });
 
@@ -89,7 +91,8 @@ function App() {
         authorisation: `Bearer ${localStorage.getItem('token')}`
       }
     }).then(res => {
-      setUser(res.data[0] as User);
+      setUserState(res.data[0] as User);
+      dispatch(setUser(res.data[0]));
       setProfileImageUrl(res.data[0].profileImageUrl);
       getInterests(res.data[0].userID);
     })
@@ -97,20 +100,6 @@ function App() {
 
   const getUsers = () => {
     console.log('calling api')
-    Axios.get("http://localhost:9000/recentPosters").then(res => {
-      setUser(res.data[0] as User);
-      console.log(res)
-    })
-  }
-
-  const getLoggedInUser = () => {
-    console.log('calling api')
-    Axios.get(`http://localhost:9000/user/userID/${1}`, {headers: {authorisation: `Bearer ${localStorage.getItem('token')}`}}).then(res => {
-      setUser(res.data[0] as User);
-      console.log(res)
-    }).catch(err => {
-      console.log(err)
-    })
   }
 
   const uploadImage = (e: any) => {
@@ -128,12 +117,6 @@ function App() {
         setProfileImageUrl(res.data[0].profileImageUrl)
       })
       
-    })
-  }
-
-  const getImage = (userID: number) => {
-    Axios.get(`${api}/image/profileImage/${userID}`).then(res => {
-      console.log(res)
     })
   }
 
@@ -206,8 +189,10 @@ function App() {
 
   const getPosts = () => {
     Axios.get(`${api}/post/get`, {
+      params: { userID: selector.user.userID },
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => {
+     console.log(res)
       const tempPosts: PostItem[] = []
       res.data.forEach((p: any) => {
         const poster: Poster = {
@@ -222,6 +207,7 @@ function App() {
             body: p.body,
             trendPoints: p.trendPoints,
             imageUrl: p.imageUrl || undefined,
+            voted: !!p.vote
           },
           poster: poster
         }
@@ -257,7 +243,6 @@ function App() {
               <hr className='line'/>
             </div>
             <button onClick={() => getUsers()}>get users</button>
-            <button onClick={() => getLoggedInUser()}>get logged in</button>
           </div>
 
           <div id='feed' className='feed'>

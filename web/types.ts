@@ -18,6 +18,7 @@ export interface Post {
   body: string,
   imageUrl: string | undefined,
   trendPoints: number,
+  voted: boolean,
 }
 
 export interface Poster {
