@@ -32,3 +32,15 @@ export interface PostItem {
   post: Post,
   poster: Poster
 }
+
+export interface RecentPosterType {
+  userID: number,
+  name: string,
+  company: string,
+  postCount: number,
+  profileImageUrl: string,
+}
+
+export interface RecentPosterProps {
+  user: RecentPosterType
+}
