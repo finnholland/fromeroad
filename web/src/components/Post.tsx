@@ -15,6 +15,13 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
   const selector = useAppSelector(state => state)
   const [trendPoints, setTrendPoints] = useState(post.trendPoints)
   const [comments, setComments] = useState<CommentType[]>([])
+  const [comment, setComment] = useState('')
+  const [editingComment, setEditingComment] = useState(-1)
+
+  
+  useEffect(() => {
+    getComments();
+  }, [])
 
   const upvotePost = () => {
     const params = {
@@ -37,16 +44,17 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
     return pointString
   }
 
-  const commentItems = comments.map((i) => {
-    return (
-      <Comment comment={i} lastCommentID={comments[comments.length-1].commentID} />
-    )
-  });
-
-  useEffect(() => {
-    getComments();
-  }, [])
-
+  const postComment = () => {
+    Axios.post(`${api}/post/comments/post`, {
+      postID: post.postID,
+      userID: selector.user.userID,
+      body: comment
+    }).then(res => {
+      setComment('')
+      getComments()
+    })
+  }
+  
   const getComments = () => {
     Axios.get(`${api}/post/comments/get/${post.postID}`, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` }
@@ -55,6 +63,19 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
       setComments(res.data)
     })
   }
+
+  const editComment = (id: number) => {
+    setEditingComment(id)
+    const commentToEdit = comments.filter(c => c.commentID === id)[0]
+    alert('comment is: ' + commentToEdit.body)
+    setComment(commentToEdit.body)
+  }
+
+  const commentItems = comments.map((i) => {
+    return (
+      <Comment comment={i} lastCommentID={comments[comments.length - 1].commentID} getComments={getComments} editComment={editComment} />
+    )
+  });
 
   if (post.imageUrl && post.imageUrl !== '') {
     return (
@@ -92,7 +113,8 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
               <SvgAddButton height={30} fontVariant={post.voted ? 'hidden' : 'visible'} stroke={'#00FFA3'}/>
             </div>
           </div>
-          <input color='#00FFA3' style={{backgroundColor: '#CCFFED', border: 0, height: 30, flex: 1, marginLeft: 15, borderRadius: 15, paddingLeft: 15}}  placeholder='comment something'/>
+          <input color='#00FFA3' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />
+          <button onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
         </div>
       </div>
     )

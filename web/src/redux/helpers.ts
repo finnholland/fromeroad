@@ -3,7 +3,6 @@ import moment from "moment";
 export const getMessageAge = (createdAt: Date) => {
     const now = moment(new Date()); //todays date
     const end = moment(createdAt);
-    console.log(now)
     const duration = moment.duration(now.diff(end)).asMinutes();
     let ageString = ''
     if (duration < 1) {

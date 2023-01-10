@@ -83,3 +83,7 @@
   align-items: center;
   cursor: pointer;
 }
+
+.commentInput {
+  background-color: #CCFFED; border: 0; height: 30; flex: 1; margin-left: 15; border-radius: 15; padding-left: 15
+}
