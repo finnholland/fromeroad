@@ -8,8 +8,8 @@ export const SvgRemoveButton: React.FC<React.SVGProps<SVGSVGElement>> = (props: 
     {...props}
   >
     <circle cx="10" cy="10" r="9.5" style={{stroke: props.stroke, fill: "white"}}/>
-    <path d="M13.1821 13.182L6.81817 6.81803" stroke-linecap="round" style={{stroke: props.stroke}}/>
-    <path d="M6.81787 13.182L13.1818 6.81803" stroke-linecap="round" style={{stroke: props.stroke}}/>
+    <path d="M13.1821 13.182L6.81817 6.81803" strokeLinecap="round" style={{stroke: props.stroke}}/>
+    <path d="M6.81787 13.182L13.1818 6.81803" strokeLinecap="round" style={{stroke: props.stroke}}/>
   </svg>
 );
 export default SvgRemoveButton;

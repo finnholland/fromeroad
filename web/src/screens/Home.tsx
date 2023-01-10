@@ -17,6 +17,7 @@ import { RecentPoster } from '../components/RecentPoster';
 import { TrendingUser } from '../components/TrendingUser';
 
 const api = 'http://localhost:9000'
+const HOUR = 60000 * 60
 
 function App() {
   const [user, setUserState] = useState<User>(getUser);
@@ -95,6 +96,12 @@ function App() {
     getPosts();
     getRecentPosters();
     getTrendingUsers();
+    const trendInterval = setInterval(() => {
+      console.log('Logs every minute');
+      getTrendingUsers();
+    }, HOUR);
+
+  return () => clearInterval(trendInterval);
   }, [])
 
   const removeInterest = (interestID: number) => {
@@ -125,7 +132,6 @@ function App() {
         authorisation: `Bearer ${localStorage.getItem('token')}`
       }
         }).then(res => {
-      console.log(res.data)
       setRecentPosters(res.data)
     })
   }
@@ -134,14 +140,12 @@ function App() {
     const fd = new FormData();
     fd.append('file', e.target.files[0])
     fd.append('userID', user.userID.toString())
-    console.log(user.userID)
     Axios.post(`${api}/image/profileImage/${user.userID}`, fd, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     }).then(() => {
       Axios.get(`http://localhost:9000/image/profileImage/${user.userID}`).then(res => {
-        console.log(res.data[0].profileImageUrl)
         setProfileImageUrl(res.data[0].profileImageUrl)
       })
       
@@ -157,7 +161,6 @@ function App() {
       headers:
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
-      console.log(res)
       if (res.status !== 409) {
         getInterests(user.userID)
         setRemoveSvgHover(-1)
@@ -176,7 +179,6 @@ function App() {
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
       setInterestList(res.data)
-      console.log(res.data)
     })
   }
 
@@ -189,7 +191,6 @@ function App() {
         headers:
           { authorisation: `Bearer ${localStorage.getItem('token')}` }
       }).then((res) => {
-        console.log(res.data)
         const tempArr: Interest[] = []
         res.data.forEach((interest: Interest) => {
           if (interestList.findIndex(i => i.interestID === interest.interestID) === -1) {
@@ -210,8 +211,6 @@ function App() {
     }
     Axios.post(`${api}/post/create`, post, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
-    }).then(res => {
-      console.log(res)
     })
   }
 
@@ -220,7 +219,6 @@ function App() {
       params: { userID: selector.user.userID },
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => {
-     console.log(res)
       const tempPosts: PostItem[] = []
       res.data.forEach((p: any) => {
         const poster: Poster = {
@@ -235,14 +233,13 @@ function App() {
             body: p.body,
             trendPoints: p.trendPoints,
             imageUrl: p.imageUrl || undefined,
+            createdAt: p.createdAtUnix,
             voted: !!p.vote
           },
           poster: poster
         }
         tempPosts.push(post);
       });
-
-      console.log(tempPosts)
       setPosts(tempPosts)
     })
   }
@@ -253,7 +250,6 @@ function App() {
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
       setTrendingUsers(res.data)
-      console.log(res.data)
     })
   }
 
@@ -265,7 +261,7 @@ function App() {
           </a>
 
         <div className='titleContainer'>
-          <p className='title'>fromeroad</p>
+          <p className='title'>frome_road</p>
         </div>
         <a target="_blank" rel="noreferrer" href='http://www.chamonix.com.au' className='chamonix' style={{ justifyContent: 'flex-end' }}>
           <SvgChamonix height={20}/>
@@ -282,7 +278,6 @@ function App() {
             </div>
             {recentPostersItems}
           </div>
-
           <div id='feed' className='feed'>
             <div className='titleDiv'>
               <p className='sectionTitle'>feed</p>
@@ -339,11 +334,10 @@ function App() {
 
         </div>
 
-        <footer style={{justifySelf: 'end', flex: 1}}>
-          <div id='trendsTitle' className='titleDiv'>
+        <footer style={{justifySelf: 'end', flex: 1, position: 'fixed', bottom: 0, left: 40, right: 40, display: 'flex', backgroundColor: 'white', flexDirection: 'column'}}>
+          <div id='trendsTitle' className='titleDiv' style={{marginTop: 0}}>
             <p className='sectionTitle'>trends</p>
             <hr className='line'/>
-
           </div>
           <div style={{flexDirection: 'row', display: 'flex', justifyContent: 'space-between'}}>
             {trendingUserItem}

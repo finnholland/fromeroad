@@ -18,6 +18,7 @@ export interface Post {
   body: string,
   imageUrl: string | undefined,
   trendPoints: number,
+  createdAt: number,
   voted: boolean,
 }
 
@@ -41,9 +42,6 @@ export interface RecentPosterType {
   profileImageUrl: string,
 }
 
-export interface RecentPosterProps {
-  user: RecentPosterType
-}
 
 export interface TrendingUserType {
   userID: number,
@@ -54,6 +52,14 @@ export interface TrendingUserType {
   company: string,
   profileImageUrl: string
 }
-export interface TrendingUserProps {
-  user: TrendingUserType
+
+export interface CommentType {
+  commentID: number,
+  postID: number,
+  userID: number,
+  body: string,
+  createdAt: number,
+  name: string,
+  company: string
+  profileImageUrl: string
 }
