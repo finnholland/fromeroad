@@ -44,3 +44,16 @@ export interface RecentPosterType {
 export interface RecentPosterProps {
   user: RecentPosterType
 }
+
+export interface TrendingUserType {
+  userID: number,
+  name: string,
+  trendPoints: number,
+  position: number,
+  difference: number,
+  company: string,
+  profileImageUrl: string
+}
+export interface TrendingUserProps {
+  user: TrendingUserType
+}

@@ -39,9 +39,11 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
     <div className='post'>
       <div id='header' className='header'>
         <img src={'http://localhost:9000' + poster.profileImageUrl} alt='profile' className='postProfileImage'/>
-        <div style={{flexDirection: 'column', display: 'flex', alignItems: 'start'}}>
+        <div style={{flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1}}>
           <span className='headerTextName'>{poster.name}</span>
-          <span className='headerTextCompany'>{poster.company}</span>
+          <div className='headerTextCompany' style={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'row', width: '100%' }}>
+            <span className='headerTextCompany'>{poster.company}</span> <span>#tag</span>
+          </div>
           
         </div>
       </div>
