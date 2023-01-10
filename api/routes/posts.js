@@ -86,6 +86,34 @@ app.get('/comments/get/:postID', (req, res) => {
   })
 })
 
+app.delete('/comments/delete/:commentID', (req, res) => {
+  const commentID = req.params.commentID
+  db.query(`delete from postcomments where commentID = ?`, [commentID],
+    (err, result, fields) => {
+    if (err) {
+      console.log('error occurred: ' + err)
+      return err.code
+    } else {
+      res.send(result)
+    }
+  })
+})
+
+app.post('/comments/post/', (req, res) => {
+  const postID = req.body.postID
+  const userID = req.body.userID
+  const body = req.body.body
+  db.query(`insert into postcomments (postID, userID, body) values (?, ?, ?)`, [postID, userID, body],
+    (err, result, fields) => {
+    if (err) {
+      console.log('error occurred: ' + err)
+      return err.code
+    } else {
+      res.send(result)
+    }
+  })
+})
+
 app.post('/upvote/:postID/', (req, res) => {
   const postID = req.params.postID;
   const posterID = req.body.posterID;

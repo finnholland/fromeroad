@@ -269,7 +269,7 @@ function App() {
         
       </header>
       <div style={{ flex: 1, display: 'flex', padding: 40, paddingTop: 20, flexDirection: 'column'}}>
-        <div id='body' style={{ flexDirection: 'row', display: 'flex', flex: 6}}>
+        <div id='body' style={{ flexDirection: 'row', display: 'flex', flex: 6, paddingBottom: 100}}>
           
           <div id='recentPosters' style={{ flex: 1 }}>
             <div className='titleDiv'>
