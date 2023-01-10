@@ -55,12 +55,27 @@ app.post('/create', upload.single('file'), (req, res) => {
 
 app.get('/get', (req, res) => {
   const userID = req.query.userID
-  db.query(`SELECT posts.*, name, company, profileImageUrl, IFNULL(vote, 0) as vote FROM posts
+  db.query(`SELECT posts.*, UNIX_TIMESTAMP(createdAt) AS createdAtUnix, name, company, profileImageUrl, IFNULL(vote, 0) as vote FROM posts
             inner join users on posts.userID = users.userID
             LEFT JOIN postvotes ON postvotes.postID = posts.postID AND postvotes.userID = ?
             where TIMESTAMPDIFF(day, createdAt, NOW()) < 7
             GROUP BY postID
             order by createdAt desc;`, userID,
+    (err, result, fields) => {
+    if (err) {
+      console.log('error occurred: ' + err)
+      return err.code
+    } else {
+      res.send(result)
+    }
+  })
+})
+
+app.get('/comments/get/:postID', (req, res) => {
+  const postID = req.params.postID
+  db.query(`select pc.*, name, company, profileImageUrl, UNIX_TIMESTAMP(pc.createdAt) AS createdAt from postcomments as pc 
+            left join users as u on u.userID = pc.userID where postID = ?
+            order by pc.createdAt asc`, [postID],
     (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)

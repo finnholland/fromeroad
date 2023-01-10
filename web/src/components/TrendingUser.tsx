@@ -1,8 +1,12 @@
 import React from 'react'
-import { TrendingUserProps } from '../../types'
+import { TrendingUserType } from '../../types'
 import './TrendingUser.css'
 
-export const TrendingUser: React.FC<TrendingUserProps> = ({user}) => {
+interface Props {
+  user: TrendingUserType
+}
+
+export const TrendingUser: React.FC<Props> = ({user}) => {
   return (
     <div className='main'>
       <img src={'http://localhost:9000' + user.profileImageUrl} alt='profile' className='rpProfileImage' />

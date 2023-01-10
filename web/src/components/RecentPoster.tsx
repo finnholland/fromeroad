@@ -1,11 +1,14 @@
 import React from 'react'
-import { RecentPosterProps } from '../../types'
+import { RecentPosterType } from '../../types'
 import './RecentPoster.css'
 
+export interface Props {
+  user: RecentPosterType
+}
 
-export const RecentPoster: React.FC<RecentPosterProps> = ({user}) => {
+export const RecentPoster: React.FC<Props> = ({user}) => {
   return (
-    <div className='main'>
+    <div className='rpMain'>
       <img src={'http://localhost:9000' + user.profileImageUrl} alt='profile' className='rpProfileImage' />
       <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
         <span className='text'>{user.name}</span>
