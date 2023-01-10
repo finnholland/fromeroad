@@ -12,6 +12,7 @@ var userRouter = require('./routes/user');
 var testAPIRouter = require("./routes/test");
 var imageRouter = require("./routes/image");
 var postRouter = require("./routes/posts");
+var trendRouter = require("./routes/trends");
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use('/user', userRouter);
 app.use("/test", testAPIRouter);
 app.use("/image", imageRouter);
 app.use("/post", postRouter);
+app.use("/trends", trendRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

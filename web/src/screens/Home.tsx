@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { User, Interest, PostItem, Poster, RecentPosterType } from '../../types';
+import { User, Interest, PostItem, Poster, RecentPosterType, TrendingUserType } from '../../types';
 import '../App.css';
 import './Home.css'
 import SvgChamonix from '../assets/svg/chamonix';
@@ -14,6 +14,7 @@ import { Post } from '../components/Post';
 
 import { getUser } from '../userData';
 import { RecentPoster } from '../components/RecentPoster';
+import { TrendingUser } from '../components/TrendingUser';
 
 const api = 'http://localhost:9000'
 
@@ -29,6 +30,7 @@ function App() {
   const [interestSearch, setInterestSearch] = useState<Interest[]>([]);
   const [posts, setPosts] = useState<PostItem[]>([]);
   const [recentPosters, setRecentPosters] = useState<RecentPosterType[]>([]);
+  const [trendingUsers, setTrendingUsers] = useState<TrendingUserType[]>([]);
 
 
   const selector = useAppSelector(state => state)
@@ -73,6 +75,12 @@ function App() {
     )
   });
 
+  const trendingUserItem = trendingUsers.map((i) => {
+    return (
+      <TrendingUser user={i} />
+    )
+  });
+
   const addInterestHelper = (interest: Interest) => {
     if (interest.interestID) {
       let removalArray: Interest[] = interestSearch
@@ -82,11 +90,11 @@ function App() {
     addInterest(interest.name)
   }
 
-
   useEffect(() => {
     getUserFromToken();
     getPosts();
     getRecentPosters();
+    getTrendingUsers();
   }, [])
 
   const removeInterest = (interestID: number) => {
@@ -239,6 +247,16 @@ function App() {
     })
   }
 
+  const getTrendingUsers = () => {
+    Axios.get(`${api}/trends/`, {
+      headers:
+        { authorisation: `Bearer ${localStorage.getItem('token')}` }
+    }).then((res) => {
+      setTrendingUsers(res.data)
+      console.log(res.data)
+    })
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -327,6 +345,9 @@ function App() {
             <hr className='line'/>
 
           </div>
+          <div style={{flexDirection: 'row', display: 'flex', justifyContent: 'space-between'}}>
+            {trendingUserItem}
+          </div>         
         </footer>
 
       </div>
