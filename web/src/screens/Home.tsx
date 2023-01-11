@@ -9,6 +9,7 @@ import SvgAddButton from '../assets/svg/SvgAddButton';
 import Axios from 'axios';
 import { useAppSelector, useAppDispatch } from '../redux/Actions';
 import { setUser } from '../redux/slices/userSlice';
+import moment from 'moment';
 
 import { Post } from '../components/Post';
 
@@ -97,7 +98,7 @@ function App() {
     getRecentPosters();
     getTrendingUsers();
     const trendInterval = setInterval(() => {
-      console.log('Logs every minute');
+      
       getTrendingUsers();
     }, HOUR);
 
@@ -245,6 +246,7 @@ function App() {
   }
 
   const getTrendingUsers = () => {
+    console.log('Logs every hour ' + moment().format('HH:mm:ss'));
     Axios.get(`${api}/trends/`, {
       headers:
         { authorisation: `Bearer ${localStorage.getItem('token')}` }

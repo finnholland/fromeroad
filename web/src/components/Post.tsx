@@ -17,7 +17,8 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
   const [comments, setComments] = useState<CommentType[]>([])
   const [comment, setComment] = useState('')
   const [editingComment, setEditingComment] = useState(-1)
-
+  const [editing, setEditing] = useState(-1)
+  const [showAll, setShowAll] = useState(false)
   
   useEffect(() => {
     getComments();
@@ -45,6 +46,10 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
   }
 
   const postComment = () => {
+    if (editingComment !== -1) {
+      updateComment();
+      return;
+    }
     Axios.post(`${api}/post/comments/post`, {
       postID: post.postID,
       userID: selector.user.userID,
@@ -52,6 +57,19 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
     }).then(res => {
       setComment('')
       getComments()
+    })
+  }
+
+  const updateComment = () => {
+    Axios.post(`${api}/post/comments/update`, {
+      postID: post.postID,
+      commentID: editingComment,
+      userID: selector.user.userID,
+      body: comment
+    }).then(res => {
+      setComment('')
+      getComments()
+      setEditing(-1);
     })
   }
   
@@ -65,16 +83,20 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
   }
 
   const editComment = (id: number) => {
+    if (id === -1) {
+      setComment('')
+    }
     setEditingComment(id)
     const commentToEdit = comments.filter(c => c.commentID === id)[0]
-    alert('comment is: ' + commentToEdit.body)
     setComment(commentToEdit.body)
   }
 
   const commentItems = comments.map((i) => {
-    return (
-      <Comment comment={i} lastCommentID={comments[comments.length - 1].commentID} getComments={getComments} editComment={editComment} />
-    )
+    if (comments.findIndex(c => c.commentID === i.commentID) <= 1 || showAll) {
+      return (
+        <Comment comment={i} lastCommentID={comments[comments.length - 1].commentID} getComments={getComments} editComment={editComment} setEditing={setEditing} editing={editing} />
+      )
+    } else return (null)
   });
 
   if (post.imageUrl && post.imageUrl !== '') {
@@ -104,6 +126,13 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
         </div>
         <div style={{paddingTop: '1rem', paddingBottom: '1rem'}}>
           {commentItems}
+          {comments.length > 2 ? (
+            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+              <span style={{fontSize: 12}}>{showAll ? '' : `${comments.length - 2} comment${comments.length - 2 === 1 ? '' : 's'} hidden`}</span>
+              <span style={{ fontSize: 12, cursor: 'pointer', userSelect: 'none' }} onClick={() => setShowAll(!showAll)}>{showAll ? 'hide' : 'show'}</span>
+            </div>
+          ) : (null)}
+          
         </div>
         
         <div id='footer' className='footer'>
@@ -113,8 +142,8 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
               <SvgAddButton height={30} fontVariant={post.voted ? 'hidden' : 'visible'} stroke={'#00FFA3'}/>
             </div>
           </div>
-          <input color='#00FFA3' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />
-          <button onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
+          <input type={'text'} color='#00FFA3' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />
+          <button className='submitButton' hidden={comment === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
         </div>
       </div>
     )
