@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { User, Interest, PostItem, Poster, RecentPosterType, TrendingUserType } from '../../types';
+import { Interest, PostItem, Poster, RecentPosterType, TrendingUserType } from '../../types';
 import '../App.css';
 import './Home.css'
 import SvgChamonix from '../assets/svg/chamonix';
@@ -19,13 +19,20 @@ import { TrendingUser } from '../components/TrendingUser';
 
 const api = 'http://localhost:9000'
 const HOUR = 60000 * 60
+interface PostConent {
+  body: string,
+  userID: number,
+  formData: FormData
+}
 
 function App() {
-  const [user, setUserState] = useState<User>(getUser);
   const [profileImageUrl, setProfileImageUrl] = useState(getUser().profileImageUrl);
+  const selector = useAppSelector(state => state)
+  const dispatch = useAppDispatch()
 
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
   const [addSvgHover, setAddSvgHover] = useState(-2);
+  const [creatingPost, setCreatingPost] = useState(false);
 
   const [interest, setInterest] = useState('');
   const [interestList, setInterestList] = useState<Interest[]>([]);
@@ -33,15 +40,18 @@ function App() {
   const [posts, setPosts] = useState<PostItem[]>([]);
   const [recentPosters, setRecentPosters] = useState<RecentPosterType[]>([]);
   const [trendingUsers, setTrendingUsers] = useState<TrendingUserType[]>([]);
+  const [postContent, setPostContent] = useState<PostConent>({body: '', formData: new FormData(), userID: selector.user.userID});
 
 
-  const selector = useAppSelector(state => state)
-  const dispatch = useAppDispatch()
 
   const ref = useRef<HTMLInputElement>(null);
+  const postRef = useRef<HTMLInputElement>(null);
   const handleClick = (e: any) => {
-    if (ref.current) {
+    console.log(e.target.id)
+    if (ref.current && e.target.id === 'profileImage') {
       ref.current.click();
+    } else if (postRef.current && e.target.id === 'postImage') {
+      postRef.current.click()
     }
   }
 
@@ -106,11 +116,11 @@ function App() {
   }, [])
 
   const removeInterest = (interestID: number) => {
-    Axios.delete(`${api}/user/interests/removeInterests/${user.userID}/${interestID}`, {
+    Axios.delete(`${api}/user/interests/removeInterests/${selector.user.userID}/${interestID}`, {
       headers:
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then(() => {
-      getInterests(user.userID)
+      getInterests(selector.user.userID)
     })
   }
 
@@ -120,7 +130,6 @@ function App() {
         authorisation: `Bearer ${localStorage.getItem('token')}`
       }
     }).then(res => {
-      setUserState(res.data[0] as User);
       dispatch(setUser(res.data[0]));
       setProfileImageUrl(res.data[0].profileImageUrl);
       getInterests(res.data[0].userID);
@@ -140,13 +149,13 @@ function App() {
   const uploadImage = (e: any) => {
     const fd = new FormData();
     fd.append('file', e.target.files[0])
-    fd.append('userID', user.userID.toString())
-    Axios.post(`${api}/image/profileImage/${user.userID}`, fd, {
+    fd.append('userID', selector.user.userID.toString())
+    Axios.post(`${api}/image/profileImage/${selector.user.userID}`, fd, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     }).then(() => {
-      Axios.get(`http://localhost:9000/image/profileImage/${user.userID}`).then(res => {
+      Axios.get(`http://localhost:9000/image/profileImage/${selector.user.userID}`).then(res => {
         setProfileImageUrl(res.data[0].profileImageUrl)
       })
       
@@ -155,7 +164,7 @@ function App() {
 
   const addInterest = (interest: string) => {
     const params = {
-      userID: user.userID,
+      userID: selector.user.userID,
       name: interest,
     }
     Axios.post(`${api}/user/interests/addInterests`, params, {
@@ -163,7 +172,7 @@ function App() {
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
       if (res.status !== 409) {
-        getInterests(user.userID)
+        getInterests(selector.user.userID)
         setRemoveSvgHover(-1)
       } else {
         alert('interest already exists')
@@ -206,13 +215,19 @@ function App() {
   }
 
   const createPost = () => {
-    const post = {
-      body:'this is my 2nd post',
-      userID: user.userID
-    }
-    Axios.post(`${api}/post/create`, post, {
+    postContent.formData.append('userID', selector.user.userID.toString())
+    postContent.formData.append('body', postContent.body)
+    console.log(postContent.formData)
+    setCreatingPost(false);
+    Axios.post(`${api}/post/create`, postContent.formData, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
     })
+  }
+
+  const uploadPostImage = (e: any) => {
+    const fd = new FormData();
+    fd.append('file', e.target.files[0])
+    setPostContent(prevState => ({...prevState, formData: fd}))
   }
 
   const getPosts = () => {
@@ -233,7 +248,7 @@ function App() {
             postID: p.postID,
             body: p.body,
             trendPoints: p.trendPoints,
-            imageUrl: p.imageUrl || undefined,
+            postImageUrl: p.postImageUrl || undefined,
             createdAt: p.createdAtUnix,
             voted: !!p.vote
           },
@@ -285,7 +300,17 @@ function App() {
               <p className='sectionTitle'>feed</p>
               <hr className='line'/>
             </div>
-            <button onClick={() => createPost()}>create post</button>
+            <button onClick={() => setCreatingPost(true)}>create post</button>
+            {creatingPost ? (
+              <div>
+                <button id='postImage' onClick={(e) => handleClick(e)}>image</button>
+                <input value={postContent.body} onChange={(e) => setPostContent(prevState => ({...prevState, body: e.target.value}))} />
+                <button onClick={() => createPost()}>post</button>
+                <button onClick={() => setCreatingPost(false)}>cancel</button>
+              </div>
+            ) : (
+              null
+            )}
             {postItem}
           </div>
 
@@ -296,16 +321,15 @@ function App() {
             </div>
             <div style={{ flexDirection: 'row', display: 'flex'}}>
               <div>
-                <input ref={ref} type={'file'} name="file" onChange={uploadImage} hidden/>
-                <div className='profileImage' onClick={handleClick} style={{ backgroundImage: `url(http://localhost:9000${profileImageUrl})`, backgroundSize: 'cover' }}>
+                <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(http://localhost:9000${profileImageUrl})`, backgroundSize: 'cover' }}>
                   <div className='profileImageOverlay'>
                     <span style={{alignItems: 'center', display:'flex', marginBottom: 5}}>change</span>
                   </div>
                 </div>
               </div>
               <div className='detailsDiv'>
-                <p className='name'>{user.name}</p>
-                <p className='company'>{user.company}</p>
+                <p className='name'>{selector.user.name}</p>
+                <p className='company'>{selector.user.company}</p>
               </div>
 
             </div>
@@ -347,6 +371,8 @@ function App() {
         </footer>
 
       </div>
+      <input ref={ref} type={'file'} name="file" onChange={uploadImage} hidden/>
+      <input ref={postRef} type={'file'} name="file" onChange={uploadPostImage} hidden/>
     </div>
   );
 }

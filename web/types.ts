@@ -16,7 +16,7 @@ export interface Interest {
 export interface Post {
   postID: number,
   body: string,
-  imageUrl: string | undefined,
+  postImageUrl: string | undefined,
   trendPoints: number,
   createdAt: number,
   voted: boolean,

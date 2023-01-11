@@ -99,9 +99,10 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
     } else return (null)
   });
 
-  if (post.imageUrl && post.imageUrl !== '') {
+  if (post.postImageUrl && post.postImageUrl !== '') {
     return (
       <div>
+        <img src={'http://localhost:9000' + post.postImageUrl} alt='profile' className='postProfileImage'/>
         has image
       </div>
     )
