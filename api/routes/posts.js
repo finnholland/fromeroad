@@ -114,6 +114,22 @@ app.post('/comments/post/', (req, res) => {
   })
 })
 
+app.post('/comments/update/', (req, res) => {
+  const postID = req.body.postID
+  const userID = req.body.userID
+  const commentID = req.body.commentID
+  const body = req.body.body
+  db.query(`update postcomments set body = ? where commentID = ? and postID = ? and userID = ?`, [body, commentID, postID, userID],
+    (err, result, fields) => {
+    if (err) {
+      console.log('error occurred: ' + err)
+      return err.code
+    } else {
+      res.send(result)
+    }
+  })
+})
+
 app.post('/upvote/:postID/', (req, res) => {
   const postID = req.params.postID;
   const posterID = req.body.posterID;

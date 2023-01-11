@@ -10,13 +10,14 @@ interface Props {
   lastCommentID: number,
   getComments: any
   editComment: any
+  setEditing: any
+  editing: any
 }
 const api = 'http://localhost:9000'
 
 export const Comment: React.FC<Props> = (props: Props) => {
 
   const selector = useAppSelector(state => state)
-  const [editing, setEditing] = useState(false)
 
   const deleteComment = () => {
     Axios.delete(`${api}/post/comments/delete/${props.comment.commentID}`, {
@@ -28,10 +29,15 @@ export const Comment: React.FC<Props> = (props: Props) => {
   }
 
   const editHandler = () => {
-    const edit = !editing
-    props.editComment(edit ? props.comment.commentID : -1)
-    setEditing(edit)
+    let edit = 0
+    if (props.editing !== -1 && props.editing !== props.comment.commentID) {
+      edit = (props.comment.commentID);
+    } else {
+      edit = (props.editing === -1 ? props.comment.commentID : -1);
+    }
     
+    props.setEditing(edit);
+    props.editComment(edit);
   }
 
   if (selector.user.userID === props.comment.userID) {
@@ -43,8 +49,8 @@ export const Comment: React.FC<Props> = (props: Props) => {
             <div style={{flexDirection: 'row', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
               <span className='text' style={{ color: '#B27D00' }}>{props.comment.name}</span>
               <div style={{justifyContent: 'end', display: 'flex', fontSize: 11}}>
-                <span style={{ marginRight: 15, cursor: 'pointer' }} onClick={() => editHandler()}>{editing ? 'cancel' : 'edit'}</span>
-                <span style={{cursor: 'pointer'}} onClick={() => deleteComment()}>delete</span>
+                <span style={{ marginRight: 15, cursor: 'pointer', userSelect: 'none' }} onClick={() => editHandler()}>{props.editing === props.comment.commentID ? 'cancel' : 'edit'}</span>
+                <span style={{cursor: 'pointer', userSelect: 'none'}} onClick={() => deleteComment()}>delete</span>
               </div>
             </div>
             <div className='subHeader subtext'>
@@ -52,7 +58,7 @@ export const Comment: React.FC<Props> = (props: Props) => {
             </div>
           </div> 
         </div>
-        <span contentEditable={editing} style={{fontSize: 14, color: '#B27D00', marginTop: 10 }}>{props.comment.body}</span>
+        <span style={{fontSize: 14, color: '#B27D00', marginTop: 10 }}>{props.comment.body}</span>
       </div>
     )
   } else {
