@@ -15,6 +15,7 @@ import { Post } from '../components/Post';
 import { getUser } from '../userData';
 import { RecentPoster } from '../components/RecentPoster';
 import { TrendingUser } from '../components/TrendingUser';
+import SvgPlus from '../assets/svg/SvgPlus';
 
 const api = 'http://localhost:9000'
 const HOUR = 60000 * 60
@@ -31,6 +32,7 @@ function App() {
 
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
   const [addSvgHover, setAddSvgHover] = useState(-2);
+  const [plusHover, setPlusHover] = useState(true);
   const [creatingPost, setCreatingPost] = useState(false);
 
   const [interest, setInterest] = useState('');
@@ -300,9 +302,10 @@ function App() {
           <div id='feed' className='feed'>
             <div className='titleDiv'>
               <p className='sectionTitle'>feed</p>
-              <hr className='line'/>
+              <hr className='line' />
+              <SvgPlus onMouseEnter={() => setPlusHover(true)} onMouseLeave={() => setPlusHover(false)} onClick={() => setCreatingPost(!creatingPost)}
+                height={30} stroke={plusHover ? '#B27D00' : '#5900B2'} style={{ marginLeft: 15 }} />
             </div>
-            <button onClick={() => setCreatingPost(true)}>create post</button>
             {creatingPost ? (
               <div>
                 <button id='postImage' onClick={(e) => handleClick(e)}>image</button>
