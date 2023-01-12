@@ -87,6 +87,7 @@
   width: 30%;
   align-items: center;
 }
+
 .title {
   margin: 0;
   padding: 0;
@@ -109,8 +110,7 @@
 
 .line {
   color: #5900B2;
-  background-color: #5900B2; 
-  height: 1; 
+  background-color: #5900B2;
   flex: 1; 
   margin: 0
 }
@@ -130,7 +130,12 @@
   margin-bottom: 1.25rem;
 }
 
-
+.sectionTitle {
+  font-size: 20px; 
+  color: #5900B2;
+  margin: 0;
+  margin-right: 0.8rem;
+}
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: white;
