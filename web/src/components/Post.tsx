@@ -6,9 +6,7 @@ import { useAppSelector } from '../redux/Actions';
 import SvgAddButton from '../assets/svg/SvgAddButton';
 import { Comment } from './Comment';
 import { getMessageAge } from '../redux/helpers';
-
-
-const api = 'http://localhost:9000'
+import { API, DEFAULT_PROFILE_IMAGE } from '../constants';
 
 export const Post: React.FC<PostItem> = ({ post, poster }) => {
 
@@ -19,7 +17,8 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
   const [editingComment, setEditingComment] = useState(-1)
   const [editing, setEditing] = useState(-1)
   const [showAll, setShowAll] = useState(false)
-  
+  const [imageUrl, setImageUrl] = useState(poster.profileImageUrl)
+  const [errored, setErrored] = useState(false)
   useEffect(() => {
     getComments();
   }, [])
@@ -29,7 +28,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
       userID: selector.user.userID,
       posterID: poster.userID
     }
-    Axios.post(`${api}/post/upvote/${post.postID}`, params, {
+    Axios.post(`${API}/post/upvote/${post.postID}`, params, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => {
       setTrendPoints(post.voted ? trendPoints - 1 : trendPoints + 1)
@@ -50,7 +49,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
       updateComment();
       return;
     }
-    Axios.post(`${api}/post/comments/post`, {
+    Axios.post(`${API}/post/comments/post`, {
       postID: post.postID,
       userID: selector.user.userID,
       body: comment
@@ -61,7 +60,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
   }
 
   const updateComment = () => {
-    Axios.post(`${api}/post/comments/update`, {
+    Axios.post(`${API}/post/comments/update`, {
       postID: post.postID,
       commentID: editingComment,
       userID: selector.user.userID,
@@ -74,7 +73,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
   }
   
   const getComments = () => {
-    Axios.get(`${api}/post/comments/get/${post.postID}`, {
+    Axios.get(`${API}/post/comments/get/${post.postID}`, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
       console.log(res.data)
@@ -99,19 +98,40 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
     } else return (null)
   });
 
+
+
+  const onError = () => {
+    if (!errored) {
+      setErrored(true)
+      setImageUrl(DEFAULT_PROFILE_IMAGE)
+    }
+  }
+
   if (post.postImageUrl && post.postImageUrl !== '') {
     return (
-      <div>
-        <img src={'http://localhost:9000' + post.postImageUrl} alt='profile' className='postProfileImage'/>
-        has image
+      <div className='post'>
+        <div id='header' className='postHeader'>
+          <img src={API + imageUrl} onError={onError} alt='profile' className='postProfileImage'/>
+          <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+              <span className='headerTextName'>{poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(post.createdAt * 1000))}</span>
+            </div>
+            <div className='headerTextCompany' style={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'row', width: '100%' }}>
+              <span className='headerTextCompany'>{poster.company}</span> <span>#tag</span>
+            </div>
+            
+          </div>
+        </div>
+        <img src={API + post.postImageUrl} alt='postImage' className='postImage'/>
+        {post.body}
       </div>
     )
   }
   else {
     return (
       <div className='post'>
-        <div id='header' className='header'>
-          <img src={'http://localhost:9000' + poster.profileImageUrl} alt='profile' className='postProfileImage'/>
+        <div id='header' className='postHeader'>
+          <img src={API + imageUrl} onError={onError} alt='profile' className='postProfileImage'/>
           <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
               <span className='headerTextName'>{poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(post.createdAt * 1000))}</span>
@@ -144,7 +164,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
             </div>
           </div>
           <input type={'text'} color='#00FFA3' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />
-          <button className='submitButton' hidden={comment === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
+          <button className='submitButton' style={{backgroundColor: (comment === '' ? '#CCFFED' : '#00FFA3')}} disabled={comment === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
         </div>
       </div>
     )
