@@ -30,17 +30,25 @@ app.post('/create', upload.single('file'), (req, res) => {
   if (!req.file) {
     db.query('insert into posts (body, createdAt, userID) values (?, now(), ?)', [body, userID], (err, result, fields) => {
       if (err) {
-        console.log('error occurred: '+ err)
+        console.log('error occurred: ' + err)
+      } else {
+        db.query('insert into postvotes (postID, userID, vote) values (?, ?, ?)', [result.insertId, userID, initialUpvoteValue], (err, result, fields) => {
+          if (err) return err.code
+          res.send(result)
+        })
       }
-      res.send(result)
     })
   } else {
     const imgsrc = `/images/posts/${req.body.userID}/${req.file.filename.replace(' ', '_')}`
     db.query('insert into posts (body, postImageUrl, createdAt, userID) values (?, ?, now(), ?)', [body, imgsrc, userID], (err, result, fields) => {
       if (err) {
         console.log('error occurred: '+ err)
-      } 
-      res.send(result)
+      } else {
+        db.query('insert into postvotes (postID, userID, vote) values (?, ?, ?)', [result.insertId, userID, initialUpvoteValue], (err, result, fields) => {
+          if (err) return err.code
+          res.send(result)
+        })
+      }
     })
   }
 });
