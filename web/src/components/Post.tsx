@@ -73,6 +73,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
   }
   
   const getComments = () => {
+    console.log('comments called')
     Axios.get(`${API}/post/comments/get/${post.postID}`, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
@@ -119,11 +120,34 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
             <div className='headerTextCompany' style={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'row', width: '100%' }}>
               <span className='headerTextCompany'>{poster.company}</span> <span>#tag</span>
             </div>
-            
           </div>
         </div>
-        <img src={API + post.postImageUrl} alt='postImage' className='postImage'/>
-        {post.body}
+        <div id='body' className='body'>
+          <span className='bodyText'>{post.body}</span>
+          <img src={API + post.postImageUrl} alt='postImage' className='postImage'/>
+        </div>
+        <hr hidden={comments.length <= 0} className='commentLine' />
+        <div hidden={comments.length <= 0} style={{paddingTop: '1rem'}}>
+          {commentItems}
+          {comments.length > 2 ? (
+            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+              <span style={{fontSize: 12}}>{showAll ? '' : `${comments.length - 2} comment${comments.length - 2 === 1 ? '' : 's'} hidden`}</span>
+              <span style={{ fontSize: 12, cursor: 'pointer', userSelect: 'none' }} onClick={() => setShowAll(!showAll)}>{showAll ? 'hide' : 'show'}</span>
+            </div>
+          ) : (null)}
+        </div>
+        <hr hidden={comments.length <= 0} className='commentLine' />
+        <div id='footer' className='footer'>
+          <div className='upvoteButtonPill' onClick={() => upvotePost()}>
+            <span style={{flex: 1, paddingLeft: 20}}>{convertTrendPoints(trendPoints)}</span>
+            <div className='upvoteButton'>
+              <SvgAddButton height={30} fontVariant={post.voted ? 'hidden' : 'visible'} stroke={'#00FFA3'}/>
+            </div>
+          </div>
+          <input type={'text'} color='#00FFA3' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />
+          <button className='submitButton' style={{backgroundColor: (comment === '' ? '#CCFFED' : '#00FFA3')}} disabled={comment === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
+        </div>
+        
       </div>
     )
   }
@@ -145,7 +169,9 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
         <div id='body' className='body'>
           <span className='bodyText'>{post.body}</span>
         </div>
-        <div style={{paddingTop: '1rem', paddingBottom: '1rem'}}>
+        <hr hidden={comments.length <= 0} className='commentLine' />
+        <div hidden={comments.length <= 0} style={{ paddingTop: '1rem' }}>
+          
           {commentItems}
           {comments.length > 2 ? (
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -153,9 +179,8 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
               <span style={{ fontSize: 12, cursor: 'pointer', userSelect: 'none' }} onClick={() => setShowAll(!showAll)}>{showAll ? 'hide' : 'show'}</span>
             </div>
           ) : (null)}
-          
         </div>
-        
+        <hr hidden={comments.length <= 0} className='commentLine' />
         <div id='footer' className='footer'>
           <div className='upvoteButtonPill' onClick={() => upvotePost()}>
             <span style={{flex: 1, paddingLeft: 20}}>{convertTrendPoints(trendPoints)}</span>

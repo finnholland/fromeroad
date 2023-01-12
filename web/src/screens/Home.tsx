@@ -16,14 +16,10 @@ import { getUser } from '../userData';
 import { RecentPoster } from '../components/RecentPoster';
 import { TrendingUser } from '../components/TrendingUser';
 import SvgPlus from '../assets/svg/SvgPlus';
+import { PostEditor } from '../components/PostEditor';
 
 const api = 'http://localhost:9000'
 const HOUR = 60000 * 60
-interface PostConent {
-  body: string,
-  userID: number,
-  formData: FormData
-}
 
 function App() {
   const [profileImageUrl, setProfileImageUrl] = useState(getUser().profileImageUrl);
@@ -32,7 +28,7 @@ function App() {
 
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
   const [addSvgHover, setAddSvgHover] = useState(-2);
-  const [plusHover, setPlusHover] = useState(true);
+  const [plusHover, setPlusHover] = useState(false);
   const [creatingPost, setCreatingPost] = useState(false);
 
   const [interest, setInterest] = useState('');
@@ -41,7 +37,6 @@ function App() {
   const [posts, setPosts] = useState<PostItem[]>([]);
   const [recentPosters, setRecentPosters] = useState<RecentPosterType[]>([]);
   const [trendingUsers, setTrendingUsers] = useState<TrendingUserType[]>([]);
-  const [postContent, setPostContent] = useState<PostConent>({body: '', formData: new FormData(), userID: selector.user.userID});
 
 
 
@@ -215,25 +210,8 @@ function App() {
 
   }
 
-  const createPost = () => {
-    postContent.formData.append('userID', selector.user.userID.toString())
-    postContent.formData.append('body', postContent.body)
-    console.log(postContent.formData)
-    setCreatingPost(false);
-    Axios.post(`${api}/post/create`, postContent.formData, {
-      headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
-    }).then(res => {
-      getPosts()
-    })
-  }
-
-  const uploadPostImage = (e: any) => {
-    const fd = new FormData();
-    fd.append('file', e.target.files[0])
-    setPostContent(prevState => ({...prevState, formData: fd}))
-  }
-
   const getPosts = () => {
+    console.log('called')
     Axios.get(`${api}/post/get`, {
       params: { userID: selector.user.userID },
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
@@ -241,6 +219,7 @@ function App() {
       console.log(res.data)
       const tempPosts: PostItem[] = []
       res.data.forEach((p: any) => {
+        console.log(p.postID, posts.findIndex(f => f.post.postID === p.postID))
         const poster: Poster = {
           userID: p.userID,
           name: p.name,
@@ -307,12 +286,8 @@ function App() {
                 height={30} stroke={plusHover ? '#B27D00' : '#5900B2'} style={{ marginLeft: 15 }} />
             </div>
             {creatingPost ? (
-              <div>
-                <button id='postImage' onClick={(e) => handleClick(e)}>image</button>
-                <input value={postContent.body} onChange={(e) => setPostContent(prevState => ({...prevState, body: e.target.value}))} />
-                <button onClick={() => createPost()}>post</button>
-                <button onClick={() => setCreatingPost(false)}>cancel</button>
-              </div>
+              <PostEditor setCreatingPost={setCreatingPost} getPosts={getPosts}/>
+
             ) : (
               null
             )}
@@ -377,7 +352,6 @@ function App() {
 
       </div>
       <input ref={ref} type={'file'} name="file" onChange={uploadImage} hidden/>
-      <input ref={postRef} type={'file'} name="file" onChange={uploadPostImage} hidden/>
     </div>
   );
 }

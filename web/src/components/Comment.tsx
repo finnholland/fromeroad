@@ -1,6 +1,7 @@
 import Axios from 'axios'
 import React, { useState } from 'react'
 import { CommentType } from '../../types'
+import { API } from '../constants'
 import { useAppSelector } from '../redux/Actions'
 import { getMessageAge } from '../redux/helpers'
 import './Comment.css'
@@ -13,14 +14,13 @@ interface Props {
   setEditing: any
   editing: any
 }
-const api = 'http://localhost:9000'
 
 export const Comment: React.FC<Props> = (props: Props) => {
 
   const selector = useAppSelector(state => state)
 
   const deleteComment = () => {
-    Axios.delete(`${api}/post/comments/delete/${props.comment.commentID}`, {
+    Axios.delete(`${API}/post/comments/delete/${props.comment.commentID}`, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => {
       console.log(res)
