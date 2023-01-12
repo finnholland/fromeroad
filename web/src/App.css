@@ -1,4 +1,4 @@
-.App {
+.app {
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -10,7 +10,7 @@
   pointer-events: none;
 }
 
-.App-header {
+.app .header {
   background-color: #5900B2;
   flex-direction: row;
   display: flex;

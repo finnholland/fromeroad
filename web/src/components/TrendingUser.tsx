@@ -1,15 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { TrendingUserType } from '../../types'
+import { DEFAULT_PROFILE_IMAGE, API } from '../constants'
 import './TrendingUser.css'
 
 interface Props {
   user: TrendingUserType
 }
 
-export const TrendingUser: React.FC<Props> = ({user}) => {
+export const TrendingUser: React.FC<Props> = ({ user }) => {
+  
+  const [imageUrl, setImageUrl] = useState(user.profileImageUrl)
+  const [errored, setErrored] = useState(false)
+
+  const onError = () => {
+    if (!errored) {
+      setErrored(true)
+      setImageUrl(DEFAULT_PROFILE_IMAGE)
+    }
+  }
+  
   return (
-    <div className='main'>
-      <img src={'http://localhost:9000' + user.profileImageUrl} alt='profile' className='rpProfileImage' />
+    <div className='trendingUser'>
+      <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage' />
       <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
         <span className='text' style={{color: (user.difference > 0 ? '#00B224' : user.difference < 0 ? '#B22234' : '#5900B2')}}>{user.name}</span>
         <div className='subHeader subtext'>

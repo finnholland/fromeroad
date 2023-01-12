@@ -61,8 +61,8 @@ const Login = () => {
   }
 
   return (
-    <div className="App">
-      <header className="App-header">
+    <div className="app">
+      <header className="header">
         <a href='http://www.lotfourteen.com.au' className='lotfourteen'>
           <SvgLotfourteen height={25} />
         </a>

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Interest, PostItem, Poster, RecentPosterType, TrendingUserType } from '../../types';
-import '../App.css';
 import './Home.css'
 import SvgChamonix from '../assets/svg/chamonix';
 import SvgLotfourteen from '../assets/svg/lotfourteen';
@@ -221,6 +220,8 @@ function App() {
     setCreatingPost(false);
     Axios.post(`${api}/post/create`, postContent.formData, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
+    }).then(res => {
+      getPosts()
     })
   }
 
@@ -235,6 +236,7 @@ function App() {
       params: { userID: selector.user.userID },
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => {
+      console.log(res.data)
       const tempPosts: PostItem[] = []
       res.data.forEach((p: any) => {
         const poster: Poster = {
@@ -248,7 +250,7 @@ function App() {
             postID: p.postID,
             body: p.body,
             trendPoints: p.trendPoints,
-            postImageUrl: p.postImageUrl || undefined,
+            postImageUrl: p.postImageUrl,
             createdAt: p.createdAtUnix,
             voted: !!p.vote
           },
@@ -271,8 +273,8 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <header className="App-header">
+    <div className="app">
+      <header className="header">
           <a target="_blank" rel="noreferrer" href='http://www.lotfourteen.com.au' className='lotfourteen'>
             <SvgLotfourteen height={25} />
           </a>

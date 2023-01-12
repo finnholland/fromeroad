@@ -1,15 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { RecentPosterType } from '../../types'
+import { API, DEFAULT_PROFILE_IMAGE } from '../constants'
 import './RecentPoster.css'
 
 export interface Props {
   user: RecentPosterType
 }
 
-export const RecentPoster: React.FC<Props> = ({user}) => {
+export const RecentPoster: React.FC<Props> = ({ user }) => {
+  
+  const [imageUrl, setImageUrl] = useState(user.profileImageUrl)
+  const [errored, setErrored] = useState(false)
+
+  const onError = () => {
+    if (!errored) {
+      setErrored(true)
+      setImageUrl(DEFAULT_PROFILE_IMAGE)
+    }
+  }
+
   return (
-    <div className='rpMain'>
-      <img src={'http://localhost:9000' + user.profileImageUrl} alt='profile' className='rpProfileImage' />
+    <div className='recentPoster'>
+      <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage' />
       <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
         <span className='text'>{user.name}</span>
         <div className='subHeader subtext'>
