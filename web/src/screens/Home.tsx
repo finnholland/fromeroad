@@ -17,6 +17,7 @@ import { RecentPoster } from '../components/RecentPoster';
 import { TrendingUser } from '../components/TrendingUser';
 import SvgPlus from '../assets/svg/SvgPlus';
 import { PostEditor } from '../components/PostEditor';
+import SvgRefresh from '../assets/svg/refreshIcon';
 
 const api = 'http://localhost:9000'
 const HOUR = 60000 * 60
@@ -29,6 +30,7 @@ function App() {
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
   const [addSvgHover, setAddSvgHover] = useState(-2);
   const [plusHover, setPlusHover] = useState(false);
+  const [refreshHover, setRefreshHover] = useState(false);
   const [creatingPost, setCreatingPost] = useState(false);
 
   const [interest, setInterest] = useState('');
@@ -307,6 +309,8 @@ function App() {
               <hr className='line' />
               <SvgPlus onMouseEnter={() => setPlusHover(true)} onMouseLeave={() => setPlusHover(false)} onClick={() => setCreatingPost(!creatingPost)}
                 height={30} stroke={plusHover ? '#B27D00' : '#5900B2'} style={{ marginLeft: 15 }} />
+              <SvgRefresh onMouseEnter={() => setRefreshHover(true)} onMouseLeave={() => setRefreshHover(false)} onClick={() => refreshPosts('>')}
+                height={30} fill={refreshHover ? '#B27D00' : '#5900B2'} style={{ marginLeft: 15 }} />
             </div>
             {creatingPost ? (
               <PostEditor setCreatingPost={setCreatingPost} refreshPosts={refreshPosts}/>
@@ -314,9 +318,8 @@ function App() {
             ) : (
               null
             )}
-            <button onClick={() => refreshPosts('<')}>scroll down</button>
-            <button onClick={() => refreshPosts('>')}>refresh</button>
             {postItem}
+            <span onClick={() => refreshPosts('<')}>load more</span>
           </div>
 
           <div id='profile' style={{ flex: 1 }}>
