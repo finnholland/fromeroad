@@ -33,10 +33,8 @@ const Login = () => {
         email: email,
         company: company,
         password: password
-      }).catch(function (error) {
-        console.log(error)
-      }).then((res) => {
-        console.log(res)
+      }).catch(err => {
+        alert(err)
       })
     }
   }

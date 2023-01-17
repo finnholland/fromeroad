@@ -94,7 +94,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
   const commentItems = comments.map((i) => {
     if (comments.findIndex(c => c.commentID === i.commentID) <= 1 || showAll) {
       return (
-        <Comment comment={i} lastCommentID={comments[comments.length - 1].commentID} getComments={getComments} editComment={editComment} setEditing={setEditing} editing={editing} />
+        <Comment key={i.commentID} comment={i} lastCommentID={comments[comments.length - 1].commentID} getComments={getComments} editComment={editComment} setEditing={setEditing} editing={editing} />
       )
     } else return (null)
   });
@@ -112,7 +112,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
     return (
       <div className='post'>
         <div id='header' className='postHeader'>
-          <img src={API + imageUrl} onError={onError} alt='profile' className='postProfileImage'/>
+          <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage'/>
           <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
               <span className='headerTextName'>{poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(post.createdAt * 1000))}</span>
@@ -127,7 +127,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
           <img src={API + post.postImageUrl} alt='postImage' className='postImage'/>
         </div>
         <hr hidden={comments.length <= 0} className='commentLine' />
-        <div hidden={comments.length <= 0} style={{paddingTop: '1rem'}}>
+        <div hidden={comments.length <= 0} style={{padding: '2rem'}}>
           {commentItems}
           {comments.length > 2 ? (
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -155,7 +155,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
     return (
       <div className='post'>
         <div id='header' className='postHeader'>
-          <img src={API + imageUrl} onError={onError} alt='profile' className='postProfileImage'/>
+          <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage'/>
           <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
               <span className='headerTextName'>{poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(post.createdAt * 1000))}</span>
@@ -169,8 +169,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
         <div id='body' className='body'>
           <span className='bodyText'>{post.body}</span>
         </div>
-        <hr hidden={comments.length <= 0} className='commentLine' />
-        <div hidden={comments.length <= 0} style={{ paddingTop: '1rem' }}>
+        <div hidden={comments.length <= 0} className='commentSection'>
           
           {commentItems}
           {comments.length > 2 ? (
@@ -180,8 +179,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
             </div>
           ) : (null)}
         </div>
-        <hr hidden={comments.length <= 0} className='commentLine' />
-        <div id='footer' className='footer'>
+        <div id='footer' className='footer' style={{ marginTop: (comments.length <= 0 ? '1rem' : 0) }}>
           <div className='upvoteButtonPill' onClick={() => upvotePost()}>
             <span style={{flex: 1, paddingLeft: 20}}>{convertTrendPoints(trendPoints)}</span>
             <div className='upvoteButton'>

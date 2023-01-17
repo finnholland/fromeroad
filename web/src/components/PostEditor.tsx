@@ -21,7 +21,6 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
   
   const ref = useRef<HTMLInputElement>(null);
   const handleClick = (e: any) => {
-    console.log(e.target.id)
     if (ref.current) {
       ref.current.click();
     }
@@ -36,7 +35,6 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
   const createPost = () => {
     postContent.formData.append('userID', selector.user.userID.toString())
     postContent.formData.append('body', postContent.body)
-    console.log(postContent.formData)
     props.setCreatingPost(false);
     Axios.post(`${API}/post/create`, postContent.formData, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
