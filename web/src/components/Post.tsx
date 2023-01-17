@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { CommentType, PostItem } from '../../types'
+import { CommentType, Poster, PostItem, PostType } from '../../types'
 import './Post.css'
 import Axios from 'axios';
 import { useAppSelector } from '../redux/Actions';
@@ -8,16 +8,22 @@ import { Comment } from './Comment';
 import { getMessageAge } from '../redux/helpers';
 import { API, DEFAULT_PROFILE_IMAGE } from '../constants';
 
-export const Post: React.FC<PostItem> = ({ post, poster }) => {
+interface Props {
+  post: PostType,
+  poster: Poster
+  last: boolean
+}
+
+export const Post: React.FC<Props> = (props: Props) => {
 
   const selector = useAppSelector(state => state)
-  const [trendPoints, setTrendPoints] = useState(post.trendPoints)
+  const [trendPoints, setTrendPoints] = useState(props.post.trendPoints)
   const [comments, setComments] = useState<CommentType[]>([])
   const [comment, setComment] = useState('')
   const [editingComment, setEditingComment] = useState(-1)
   const [editing, setEditing] = useState(-1)
   const [showAll, setShowAll] = useState(false)
-  const [imageUrl, setImageUrl] = useState(poster.profileImageUrl)
+  const [imageUrl, setImageUrl] = useState(props.poster.profileImageUrl)
   const [errored, setErrored] = useState(false)
   useEffect(() => {
     getComments();
@@ -26,13 +32,13 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
   const upvotePost = () => {
     const params = {
       userID: selector.user.userID,
-      posterID: poster.userID
+      posterID: props.poster.userID
     }
-    Axios.post(`${API}/post/upvote/${post.postID}`, params, {
+    Axios.post(`${API}/post/upvote/${props.post.postID}`, params, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => {
-      setTrendPoints(post.voted ? trendPoints - 1 : trendPoints + 1)
-      post.voted = !post.voted
+      setTrendPoints(props.post.voted ? trendPoints - 1 : trendPoints + 1)
+      props.post.voted = !props.post.voted
     })
   }
 
@@ -50,7 +56,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
       return;
     }
     Axios.post(`${API}/post/comments/post`, {
-      postID: post.postID,
+      postID: props.post.postID,
       userID: selector.user.userID,
       body: comment
     }).then(res => {
@@ -61,7 +67,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
 
   const updateComment = () => {
     Axios.post(`${API}/post/comments/update`, {
-      postID: post.postID,
+      postID: props.post.postID,
       commentID: editingComment,
       userID: selector.user.userID,
       body: comment
@@ -74,7 +80,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
   
   const getComments = () => {
     console.log('comments called')
-    Axios.get(`${API}/post/comments/get/${post.postID}`, {
+    Axios.get(`${API}/post/comments/get/${props.post.postID}`, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
       console.log(res.data)
@@ -108,23 +114,23 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
     }
   }
 
-  if (post.postImageUrl && post.postImageUrl !== '') {
+  if (props.post.postImageUrl && props.post.postImageUrl !== '') {
     return (
-      <div className='post'>
+      <div className='post' style={{margin: (props.last ? 0 : '3rem')}}>
         <div id='header' className='postHeader'>
           <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage'/>
           <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-              <span className='headerTextName'>{poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(post.createdAt * 1000))}</span>
+              <span className='headerTextName'>{props.poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
             </div>
             <div className='headerTextCompany' style={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'row', width: '100%' }}>
-              <span className='headerTextCompany'>{poster.company}</span> <span>#tag</span>
+              <span className='headerTextCompany'>{props.poster.company}</span> <span>#tag</span>
             </div>
           </div>
         </div>
         <div id='body' className='body'>
-          <span className='bodyText'>{post.body}</span>
-          <img src={API + post.postImageUrl} alt='postImage' className='postImage'/>
+          <span className='bodyText'>{props.post.body}</span>
+          <img src={API + props.post.postImageUrl} alt='postImage' className='postImage'/>
         </div>
         <hr hidden={comments.length <= 0} className='commentLine' />
         <div hidden={comments.length <= 0} style={{padding: '2rem'}}>
@@ -141,7 +147,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
           <div className='upvoteButtonPill' onClick={() => upvotePost()}>
             <span style={{flex: 1, paddingLeft: 20}}>{convertTrendPoints(trendPoints)}</span>
             <div className='upvoteButton'>
-              <SvgAddButton height={30} fontVariant={post.voted ? 'hidden' : 'visible'} stroke={'#00FFA3'}/>
+              <SvgAddButton height={30} fontVariant={props.post.voted ? 'hidden' : 'visible'} stroke={'#00FFA3'}/>
             </div>
           </div>
           <input type={'text'} color='#00FFA3' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />
@@ -153,21 +159,21 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
   }
   else {
     return (
-      <div className='post'>
+      <div className='post' style={{margin: (props.last ? 0 : '3rem')}}>
         <div id='header' className='postHeader'>
           <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage'/>
           <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-              <span className='headerTextName'>{poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(post.createdAt * 1000))}</span>
+              <span className='headerTextName'>{props.poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
             </div>
             <div className='headerTextCompany' style={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'row', width: '100%' }}>
-              <span className='headerTextCompany'>{poster.company}</span> <span>#tag</span>
+              <span className='headerTextCompany'>{props.poster.company}</span> <span>#tag</span>
             </div>
             
           </div>
         </div>
         <div id='body' className='body'>
-          <span className='bodyText'>{post.body}</span>
+          <span className='bodyText'>{props.post.body}</span>
         </div>
         <div hidden={comments.length <= 0} className='commentSection'>
           
@@ -183,7 +189,7 @@ export const Post: React.FC<PostItem> = ({ post, poster }) => {
           <div className='upvoteButtonPill' onClick={() => upvotePost()}>
             <span style={{flex: 1, paddingLeft: 20}}>{convertTrendPoints(trendPoints)}</span>
             <div className='upvoteButton'>
-              <SvgAddButton height={30} fontVariant={post.voted ? 'hidden' : 'visible'} stroke={'#00FFA3'}/>
+              <SvgAddButton height={30} fontVariant={props.post.voted ? 'hidden' : 'visible'} stroke={'#00FFA3'}/>
             </div>
           </div>
           <input type={'text'} color='#00FFA3' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />

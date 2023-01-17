@@ -80,7 +80,7 @@ function App() {
 
   const postItem = posts.map((i) => {
     return (
-      <Post key={i.post.postID} post={i.post} poster={i.poster} />
+      <Post key={i.post.postID} post={i.post} poster={i.poster} last={i.post.postID === posts[posts.length-1].post.postID} />
     )
   });
 
