@@ -13,7 +13,7 @@ export interface Interest {
   userID: number
 }
 
-export interface Post {
+export interface PostType {
   postID: number,
   body: string,
   postImageUrl: string | undefined,
@@ -30,7 +30,7 @@ export interface Poster {
 }
 
 export interface PostItem {
-  post: Post,
+  post: PostType,
   poster: Poster
 }
 
