@@ -55,12 +55,15 @@ app.post('/create', upload.single('file'), (req, res) => {
 
 app.get('/get', (req, res) => {
   const userID = req.query.userID
+  const sign = req.query.sign
+  const condition = req.query.condition
   db.query(`SELECT posts.*, UNIX_TIMESTAMP(createdAt) AS createdAtUnix, name, company, profileImageUrl, IFNULL(vote, 0) as vote FROM posts
             inner join users on posts.userID = users.userID
             LEFT JOIN postvotes ON postvotes.postID = posts.postID AND postvotes.userID = ?
-            where TIMESTAMPDIFF(day, createdAt, NOW()) < 7
+            where TIMESTAMPDIFF(day, createdAt, NOW()) < 7 and posts.postID ${sign} ?
             GROUP BY postID
-            order by createdAt desc;`, userID,
+            order by createdAt desc
+            limit 10;`, [userID, condition],
     (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)
