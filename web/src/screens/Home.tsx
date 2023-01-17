@@ -18,6 +18,7 @@ import { TrendingUser } from '../components/TrendingUser';
 import SvgPlus from '../assets/svg/SvgPlus';
 import { PostEditor } from '../components/PostEditor';
 import SvgRefresh from '../assets/svg/refreshIcon';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const api = 'http://localhost:9000'
 const HOUR = 60000 * 60
@@ -37,10 +38,14 @@ function App() {
   const [interestList, setInterestList] = useState<Interest[]>([]);
   const [interestSearch, setInterestSearch] = useState<Interest[]>([]);
   const [posts, setPosts] = useState<PostItem[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+
   const [recentPosters, setRecentPosters] = useState<RecentPosterType[]>([]);
   const [trendingUsers, setTrendingUsers] = useState<TrendingUserType[]>([]);
 
-
+  const [loading, setLoading] = useState(true);
+  const [activityLoading, setActivityLoading] = useState(true);
+  const [trendingLoading, setTrendingLoading] = useState(true);
 
   const ref = useRef<HTMLInputElement>(null);
   const postRef = useRef<HTMLInputElement>(null);
@@ -80,7 +85,7 @@ function App() {
 
   const postItem = posts.map((i) => {
     return (
-      <Post key={i.post.postID} post={i.post} poster={i.poster} last={i.post.postID === posts[posts.length-1].post.postID} />
+      <Post key={i.post.postID} post={i.post} poster={i.poster}/>
     )
   });
 
@@ -105,7 +110,7 @@ function App() {
     getRecentPosters();
     getTrendingUsers();
     const trendInterval = setInterval(() => {
-      
+      getRecentPosters();
       getTrendingUsers();
     }, HOUR);
 
@@ -134,12 +139,15 @@ function App() {
   }
 
   const getRecentPosters = () => {
-        Axios.get(`${api}/recentPosters`, {
+    setActivityLoading(true)
+    setRecentPosters([])
+    Axios.get(`${api}/recentPosters`, {
       headers: {
         authorisation: `Bearer ${localStorage.getItem('token')}`
       }
-        }).then(res => {
+    }).then(res => {
       setRecentPosters(res.data)
+      setActivityLoading(false)
     })
   }
 
@@ -209,6 +217,7 @@ function App() {
   }
 
   const getPosts = () => {
+    setLoading(true);
     Axios.get(`${api}/post/get`, {
       params: {
         userID: selector.user.userID,
@@ -218,10 +227,12 @@ function App() {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => {
       updatePosts(res.data, 'top')
+      setLoading(false)
     })
   }
 
   const refreshPosts = (sign: string) => {
+    setLoading(true)
     const direction = sign === '>' ? 'top' : 'bottom'
     Axios.get(`${api}/post/get`, {
       params: {
@@ -232,6 +243,10 @@ function App() {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
       updatePosts(res.data, direction)
+      setLoading(false)
+      if (res.data.length <= 0) {
+        setHasMore(false)
+      }
     })
   }
 
@@ -269,12 +284,15 @@ function App() {
   }
 
   const getTrendingUsers = () => {
+    setTrendingUsers([])
+    setTrendingLoading(true)
     console.log('Logs every hour ' + moment().format('HH:mm:ss'));
     Axios.get(`${api}/trends/`, {
       headers:
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
       setTrendingUsers(res.data)
+      setTrendingLoading(false)
     })
   }
 
@@ -293,7 +311,7 @@ function App() {
         </a>
         
       </header>
-      <div style={{ flex: 1, display: 'flex', padding: 40, paddingTop: 20, flexDirection: 'column'}}>
+      <div className='home'>
         <div id='body' style={{ flexDirection: 'row', display: 'flex', flex: 6, paddingBottom: 100}}>
           
           <div id='recentPosters' style={{ flex: 1 }}>
@@ -301,6 +319,7 @@ function App() {
               <p className='sectionTitle'>activity</p>
               <hr className='line'/>
             </div>
+            {activityLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
             {recentPostersItems}
           </div>
           <div id='feed' className='feed'>
@@ -318,8 +337,14 @@ function App() {
             ) : (
               null
             )}
-            {postItem}
-            <span onClick={() => refreshPosts('<')}>load more</span>
+            <InfiniteScroll
+              dataLength={posts.length}
+              next={() => refreshPosts('<')}
+              hasMore={hasMore}
+              loader={loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
+              style={{overflow: 'visible'}}>
+              {postItem}
+            </InfiniteScroll>
           </div>
 
           <div id='profile' style={{ flex: 1 }}>
@@ -368,12 +393,13 @@ function App() {
 
         </div>
 
-        <footer style={{justifySelf: 'end', flex: 1, position: 'fixed', bottom: 0, left: 40, right: 40, display: 'flex', backgroundColor: 'white', flexDirection: 'column'}}>
+        <footer className='footer'>
           <div id='trendsTitle' className='titleDiv' style={{marginTop: 0}}>
             <p className='sectionTitle'>trends</p>
             <hr className='line'/>
           </div>
-          <div style={{flexDirection: 'row', display: 'flex', justifyContent: 'space-between'}}>
+          <div className='footerBody'>
+            {trendingLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
             {trendingUserItem}
           </div>         
         </footer>
