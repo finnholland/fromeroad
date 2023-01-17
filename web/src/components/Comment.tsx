@@ -22,10 +22,7 @@ export const Comment: React.FC<Props> = (props: Props) => {
   const deleteComment = () => {
     Axios.delete(`${API}/post/comments/delete/${props.comment.commentID}`, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
-    }).then(res => {
-      console.log(res)
-      props.getComments()
-    })
+    }).then(props.getComments())
   }
 
   const editHandler = () => {

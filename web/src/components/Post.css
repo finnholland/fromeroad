@@ -1,5 +1,5 @@
 .post {
-  border: 3px solid #5900B2;
+  box-shadow: 0px 3px 3px rgb(196, 196, 196);
   border-radius: 20px;
   flex: 1;
   height: fit-content;
@@ -13,11 +13,11 @@
   border-radius: 1rem;
 }
 
-.post .postProfileImage {
-  border: 2px solid #5900B2;
+.post .profileImage {
   border-radius: 50%;
   height: 60px;
   width: 60px;
+  border-width: 2px;
   aspect-ratio: 1/1;
   margin-right: 1rem;
 }
@@ -58,7 +58,6 @@
   display: flex;
   width: 100%;
   justify-content: start;
-  margin-top: 1rem;
   align-items: center;
   height: 3rem;
 }
@@ -113,6 +112,9 @@
   height: 1px;
   background-color: #dac7e9;
   margin: 0;
-  margin-top: 1.5rem;
-  margin-bottom: .75rem;
+  margin: .75rem;
+}
+
+.commentSection {
+  padding: 2rem;
 }

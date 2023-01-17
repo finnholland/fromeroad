@@ -43,7 +43,6 @@ function App() {
   const ref = useRef<HTMLInputElement>(null);
   const postRef = useRef<HTMLInputElement>(null);
   const handleClick = (e: any) => {
-    console.log(e.target.id)
     if (ref.current && e.target.id === 'profileImage') {
       ref.current.click();
     } else if (postRef.current && e.target.id === 'postImage') {
@@ -73,19 +72,19 @@ function App() {
 
   const recentPostersItems = recentPosters.map((i) => {
     return (
-      <RecentPoster user={i} />
+      <RecentPoster key={i.userID} user={i} />
     )
   });
 
   const postItem = posts.map((i) => {
     return (
-      <Post post={i.post} poster={i.poster} />
+      <Post key={i.post.postID} post={i.post} poster={i.poster} />
     )
   });
 
   const trendingUserItem = trendingUsers.map((i) => {
     return (
-      <TrendingUser user={i} />
+      <TrendingUser key={i.userID} user={i} />
     )
   });
 
@@ -175,7 +174,6 @@ function App() {
       }
     }).catch(err => {
       alert('error: ' + err.response.status + ' - interest already added')
-      console.log(err.response.status)
     })
   }
 
@@ -211,15 +209,12 @@ function App() {
   }
 
   const getPosts = () => {
-    console.log('called')
     Axios.get(`${api}/post/get`, {
       params: { userID: selector.user.userID },
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => {
-      console.log(res.data)
       const tempPosts: PostItem[] = []
       res.data.forEach((p: any) => {
-        console.log(p.postID, posts.findIndex(f => f.post.postID === p.postID))
         const poster: Poster = {
           userID: p.userID,
           name: p.name,

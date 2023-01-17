@@ -34,7 +34,7 @@ app.post('/create', upload.single('file'), (req, res) => {
       } else {
         db.query('insert into postvotes (postID, userID, vote) values (?, ?, ?)', [result.insertId, userID, initialUpvoteValue], (err, result, fields) => {
           if (err) return err.code
-          res.send(result)
+          res.sendStatus(201)
         })
       }
     })
@@ -46,7 +46,7 @@ app.post('/create', upload.single('file'), (req, res) => {
       } else {
         db.query('insert into postvotes (postID, userID, vote) values (?, ?, ?)', [result.insertId, userID, initialUpvoteValue], (err, result, fields) => {
           if (err) return err.code
-          res.send(result)
+          res.sendStatus(201)
         })
       }
     })
