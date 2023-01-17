@@ -11,7 +11,6 @@ import { API, DEFAULT_PROFILE_IMAGE } from '../constants';
 interface Props {
   post: PostType,
   poster: Poster
-  last: boolean
 }
 
 export const Post: React.FC<Props> = (props: Props) => {
@@ -116,7 +115,7 @@ export const Post: React.FC<Props> = (props: Props) => {
 
   if (props.post.postImageUrl && props.post.postImageUrl !== '') {
     return (
-      <div className='post' style={{margin: (props.last ? 0 : '3rem')}}>
+      <div className='post'>
         <div id='header' className='postHeader'>
           <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage'/>
           <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
@@ -143,7 +142,7 @@ export const Post: React.FC<Props> = (props: Props) => {
           ) : (null)}
         </div>
         <hr hidden={comments.length <= 0} className='commentLine' />
-        <div id='footer' className='footer'>
+        <div id='footer' className='postFooter'>
           <div className='upvoteButtonPill' onClick={() => upvotePost()}>
             <span style={{flex: 1, paddingLeft: 20}}>{convertTrendPoints(trendPoints)}</span>
             <div className='upvoteButton'>
@@ -159,7 +158,7 @@ export const Post: React.FC<Props> = (props: Props) => {
   }
   else {
     return (
-      <div className='post' style={{margin: (props.last ? 0 : '3rem')}}>
+      <div className='post'>
         <div id='header' className='postHeader'>
           <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage'/>
           <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
@@ -185,7 +184,7 @@ export const Post: React.FC<Props> = (props: Props) => {
             </div>
           ) : (null)}
         </div>
-        <div id='footer' className='footer' style={{ marginTop: (comments.length <= 0 ? '1rem' : 0) }}>
+        <div id='footer' className='postFooter' style={{ marginTop: (comments.length <= 0 ? '1rem' : 0) }}>
           <div className='upvoteButtonPill' onClick={() => upvotePost()}>
             <span style={{flex: 1, paddingLeft: 20}}>{convertTrendPoints(trendPoints)}</span>
             <div className='upvoteButton'>
