@@ -5,7 +5,7 @@ import { useAppSelector } from '../redux/Actions';
 
 interface Props {
   setCreatingPost: any,
-  getPosts: any
+  refreshPosts: any
 }
 
 interface PostContent {
@@ -38,7 +38,7 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
     props.setCreatingPost(false);
     Axios.post(`${API}/post/create`, postContent.formData, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
-    }).then(props.getPosts())
+    }).then(props.refreshPosts('>'))
   }
 
   return (

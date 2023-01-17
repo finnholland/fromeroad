@@ -204,17 +204,39 @@ function App() {
         setInterestSearch(tempArr)
       })
     }
-    
-
   }
 
   const getPosts = () => {
     Axios.get(`${api}/post/get`, {
-      params: { userID: selector.user.userID },
+      params: {
+        userID: selector.user.userID,
+        sign: '>',
+        condition: 0
+      },
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => {
-      const tempPosts: PostItem[] = []
-      res.data.forEach((p: any) => {
+      updatePosts(res.data, 'top')
+    })
+  }
+
+  const refreshPosts = (sign: string) => {
+    const direction = sign === '>' ? 'top' : 'bottom'
+    Axios.get(`${api}/post/get`, {
+      params: {
+        userID: selector.user.userID,
+        sign: sign,
+        condition: sign === '>' ? posts[0].post.postID : posts[posts.length - 1].post.postID
+      },
+      headers: { authorisation: `Bearer ${localStorage.getItem('token')}` }
+    }).then(res => {
+      updatePosts(res.data, direction)
+    })
+  }
+
+  const updatePosts = (data: any, direction: string) => {
+    const tempPosts: PostItem[] = []
+    data.forEach((p: any) => {
+      if (posts.findIndex(fp => fp.post.postID === p.postID) === -1) {
         const poster: Poster = {
           userID: p.userID,
           name: p.name,
@@ -233,9 +255,15 @@ function App() {
           poster: poster
         }
         tempPosts.push(post);
-      });
-      setPosts(tempPosts)
-    })
+      }
+    });
+    if (direction === 'top') {
+      setPosts([...tempPosts, ...posts])
+    }
+    else {
+      setPosts([...posts, ...tempPosts])
+    }
+    
   }
 
   const getTrendingUsers = () => {
@@ -281,11 +309,13 @@ function App() {
                 height={30} stroke={plusHover ? '#B27D00' : '#5900B2'} style={{ marginLeft: 15 }} />
             </div>
             {creatingPost ? (
-              <PostEditor setCreatingPost={setCreatingPost} getPosts={getPosts}/>
+              <PostEditor setCreatingPost={setCreatingPost} refreshPosts={refreshPosts}/>
 
             ) : (
               null
             )}
+            <button onClick={() => refreshPosts('<')}>scroll down</button>
+            <button onClick={() => refreshPosts('>')}>refresh</button>
             {postItem}
           </div>
 
