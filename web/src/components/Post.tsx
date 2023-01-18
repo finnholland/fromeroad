@@ -24,6 +24,8 @@ export const Post: React.FC<Props> = (props: Props) => {
   const [showAll, setShowAll] = useState(false)
   const [imageUrl, setImageUrl] = useState(props.poster.profileImageUrl)
   const [errored, setErrored] = useState(false)
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     getComments();
   }, [])
@@ -61,6 +63,7 @@ export const Post: React.FC<Props> = (props: Props) => {
     }).then(res => {
       setComment('')
       getComments()
+      setShowAll(true)
     })
   }
 
@@ -78,12 +81,13 @@ export const Post: React.FC<Props> = (props: Props) => {
   }
   
   const getComments = () => {
-    console.log('comments called')
+    setLoading(true)
     Axios.get(`${API}/post/comments/get/${props.post.postID}`, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
       console.log(res.data)
       setComments(res.data)
+      setLoading(false)
     })
   }
 
@@ -132,14 +136,16 @@ export const Post: React.FC<Props> = (props: Props) => {
           <img src={API + props.post.postImageUrl} alt='postImage' className='postImage'/>
         </div>
         <hr hidden={comments.length <= 0} className='commentLine' />
-        <div hidden={comments.length <= 0} style={{padding: '2rem'}}>
-          {commentItems}
+        <div hidden={comments.length <= 0} style={{ padding: '2rem' }}>
+          {loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
           {comments.length > 2 ? (
             <div style={{display: 'flex', justifyContent: 'space-between'}}>
               <span style={{fontSize: 12}}>{showAll ? '' : `${comments.length - 2} comment${comments.length - 2 === 1 ? '' : 's'} hidden`}</span>
               <span style={{ fontSize: 12, cursor: 'pointer', userSelect: 'none' }} onClick={() => setShowAll(!showAll)}>{showAll ? 'hide' : 'show'}</span>
             </div>
           ) : (null)}
+          {commentItems}
+          
         </div>
         <hr hidden={comments.length <= 0} className='commentLine' />
         <div id='footer' className='postFooter'>
@@ -175,12 +181,12 @@ export const Post: React.FC<Props> = (props: Props) => {
           <span className='bodyText'>{props.post.body}</span>
         </div>
         <div hidden={comments.length <= 0} className='commentSection'>
-          
+          {loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
           {commentItems}
           {comments.length > 2 ? (
-            <div style={{display: 'flex', justifyContent: 'space-between'}}>
-              <span style={{fontSize: 12}}>{showAll ? '' : `${comments.length - 2} comment${comments.length - 2 === 1 ? '' : 's'} hidden`}</span>
-              <span style={{ fontSize: 12, cursor: 'pointer', userSelect: 'none' }} onClick={() => setShowAll(!showAll)}>{showAll ? 'hide' : 'show'}</span>
+            <div style={{display: 'flex', justifyContent: 'center', marginTop: 15}}>
+              <span style={{fontSize: 12}}>{showAll ? 'Showing all comments' : `${comments.length - 2} comment${comments.length - 2 === 1 ? '' : 's'} hidden`}</span>
+              <span style={{ fontSize: 13, cursor: 'pointer', userSelect: 'none', marginLeft: 20, color: '#5900B2' }} onClick={() => setShowAll(!showAll)}>{showAll ? 'hide' : 'show'}</span>
             </div>
           ) : (null)}
         </div>
