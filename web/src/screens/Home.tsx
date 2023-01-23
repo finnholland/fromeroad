@@ -19,8 +19,8 @@ import SvgPlus from '../assets/svg/SvgPlus';
 import { PostEditor } from '../components/PostEditor';
 import SvgRefresh from '../assets/svg/refreshIcon';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { API } from '../constants';
 
-const api = 'http://localhost:9000'
 const HOUR = 60000 * 60
 
 function App() {
@@ -46,6 +46,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [activityLoading, setActivityLoading] = useState(true);
   const [trendingLoading, setTrendingLoading] = useState(true);
+  const [userLoading, setUserLoading] = useState(true);
 
   const ref = useRef<HTMLInputElement>(null);
   const postRef = useRef<HTMLInputElement>(null);
@@ -118,7 +119,7 @@ function App() {
   }, [])
 
   const removeInterest = (interestID: number) => {
-    Axios.delete(`${api}/user/interests/removeInterests/${selector.user.userID}/${interestID}`, {
+    Axios.delete(`${API}/user/interests/removeInterests/${selector.user.userID}/${interestID}`, {
       headers:
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then(() => {
@@ -127,6 +128,7 @@ function App() {
   }
 
   const getUserFromToken = () => {
+    setUserLoading(true)
     Axios.get('http://localhost:9000/user/autoLogin', {
       headers: {
         authorisation: `Bearer ${localStorage.getItem('token')}`
@@ -141,7 +143,7 @@ function App() {
   const getRecentPosters = () => {
     setActivityLoading(true)
     setRecentPosters([])
-    Axios.get(`${api}/recentPosters`, {
+    Axios.get(`${API}/recentPosters`, {
       headers: {
         authorisation: `Bearer ${localStorage.getItem('token')}`
       }
@@ -155,7 +157,7 @@ function App() {
     const fd = new FormData();
     fd.append('file', e.target.files[0])
     fd.append('userID', selector.user.userID.toString())
-    Axios.post(`${api}/image/profileImage/${selector.user.userID}`, fd, {
+    Axios.post(`${API}/image/profileImage/${selector.user.userID}`, fd, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -172,7 +174,7 @@ function App() {
       userID: selector.user.userID,
       name: interest,
     }
-    Axios.post(`${api}/user/interests/addInterests`, params, {
+    Axios.post(`${API}/user/interests/addInterests`, params, {
       headers:
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
@@ -188,7 +190,7 @@ function App() {
   }
 
   const getInterests = (userID: number) => {
-    Axios.get(`${api}/user/interests/getInterests/${userID}`, {
+    Axios.get(`${API}/user/interests/getInterests/${userID}`, {
       headers:
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
@@ -201,7 +203,7 @@ function App() {
     if (!search || search === '') {
       setInterestSearch([])
     } else {
-      Axios.get(`${api}/user/interests/searchInterests/${search}`, {
+      Axios.get(`${API}/user/interests/searchInterests/${search}`, {
         headers:
           { authorisation: `Bearer ${localStorage.getItem('token')}` }
       }).then((res) => {
@@ -218,7 +220,7 @@ function App() {
 
   const getPosts = () => {
     setLoading(true);
-    Axios.get(`${api}/post/get`, {
+    Axios.get(`${API}/post/get`, {
       params: {
         userID: selector.user.userID,
         sign: '>',
@@ -234,7 +236,7 @@ function App() {
   const refreshPosts = (sign: string) => {
     setLoading(true)
     const direction = sign === '>' ? 'top' : 'bottom'
-    Axios.get(`${api}/post/get`, {
+    Axios.get(`${API}/post/get`, {
       params: {
         userID: selector.user.userID,
         sign: sign,
@@ -287,7 +289,7 @@ function App() {
     setTrendingUsers([])
     setTrendingLoading(true)
     console.log('Logs every hour ' + moment().format('HH:mm:ss'));
-    Axios.get(`${api}/trends/`, {
+    Axios.get(`${API}/trends/`, {
       headers:
         { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
@@ -352,43 +354,48 @@ function App() {
               <p className='sectionTitle'>me</p>
               <hr className='line' />
             </div>
-            <div style={{ flexDirection: 'row', display: 'flex'}}>
+            
+              {activityLoading ? (<div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>) : (
               <div>
-                <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(http://localhost:9000${profileImageUrl})`, backgroundSize: 'cover' }}>
-                  <div className='profileImageOverlay'>
-                    <span style={{alignItems: 'center', display:'flex', marginBottom: 5}}>change</span>
+                <div style={{ flexDirection: 'row', display: 'flex' }}>
+                  <div>
+                    <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(http://localhost:9000${profileImageUrl})`, backgroundSize: 'cover' }}>
+                      <div className='profileImageOverlay'>
+                        <span style={{alignItems: 'center', display:'flex', marginBottom: 5}}>change</span>
+                      </div>
+                    </div>
                   </div>
+                  <div className='detailsDiv'>
+                    <p className='name'>{selector.user.name}</p>
+                    <p className='company'>{selector.user.company}</p>
+                  </div>
+
                 </div>
-              </div>
-              <div className='detailsDiv'>
-                <p className='name'>{selector.user.name}</p>
-                <p className='company'>{selector.user.company}</p>
-              </div>
+                <hr className='subline' />
+                <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column' }}>
+                  {interestItems}
+                </div>
+                <div className='addInterestDiv'>
+                  <input type={'text'} placeholder='add interests' className='interestInput' value={interest} onChange={(e) => changeInterestSearch(e.target.value)}/>
+                  <SvgAddButton fill={addSvgHover === -1 ? '#B27D00' : '#DECCF0'} stroke={addSvgHover === -1 ? '#B27D00' : '#AC80D9'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
+                    onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
 
-            </div>
-            <hr className='subline' />
-            <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column' }}>
-              {interestItems}
-            </div>
-            <div className='addInterestDiv'>
-              <input type={'text'} placeholder='add interests' className='interestInput' value={interest} onChange={(e) => changeInterestSearch(e.target.value)}/>
-              <SvgAddButton fill={addSvgHover === -1 ? '#B27D00' : '#DECCF0'} stroke={addSvgHover === -1 ? '#B27D00' : '#AC80D9'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
-                onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
-
-            </div>
-            <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column', textAlign: 'left' }}>
-              {
-                interestSearchResults.length !== 0 ?
-                  <div style={{justifyContent: 'space-between', display: 'flex'}}>
-                    <span style={{ fontSize: 12 }}>suggestions:</span>
-                    <span style={{ fontSize: 12, color: 'red', cursor: 'pointer' }} onClick={() => changeInterestSearch('')}>clear</span>
-                  </div>
-                
-                : null
-              }
-              {interestSearchResults}
-            </div>
-            <hr className='subline'/>
+                </div>
+                <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column', textAlign: 'left' }}>
+                  {
+                    interestSearchResults.length !== 0 ?
+                      <div style={{justifyContent: 'space-between', display: 'flex'}}>
+                        <span style={{ fontSize: 12 }}>suggestions:</span>
+                        <span style={{ fontSize: 12, color: 'red', cursor: 'pointer' }} onClick={() => changeInterestSearch('')}>clear</span>
+                      </div>
+                    
+                    : null
+                  }
+                  {interestSearchResults}
+                </div>
+                <hr className='subline'/>
+              </div>
+              )}
           </div>
 
         </div>
