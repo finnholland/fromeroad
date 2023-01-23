@@ -137,6 +137,7 @@ function App() {
       dispatch(setUser(res.data[0]));
       setProfileImageUrl(res.data[0].profileImageUrl);
       getInterests(res.data[0].userID);
+      setUserLoading(false)
     })
   }
 
@@ -234,17 +235,25 @@ function App() {
   }
 
   const refreshPosts = (sign: string) => {
-    setLoading(true)
-    const direction = sign === '>' ? 'top' : 'bottom'
+    setLoading(true);
+    const direction = sign === '>' ? 'top' : 'bottom';
+    let postID = 0
+    if (sign === '>' && posts.length > 0) {
+      postID = posts[0].post.postID
+    } else if (sign === '<' && posts.length > 0) {
+      postID = posts[posts.length - 1].post.postID
+    }
+
     Axios.get(`${API}/post/get`, {
       params: {
         userID: selector.user.userID,
         sign: sign,
-        condition: sign === '>' ? posts[0].post.postID : posts[posts.length - 1].post.postID
+        condition: postID
       },
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
       updatePosts(res.data, direction)
+      getRecentPosters()
       setLoading(false)
       if (res.data.length <= 0) {
         setHasMore(false)
@@ -355,7 +364,7 @@ function App() {
               <hr className='line' />
             </div>
             
-              {activityLoading ? (<div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>) : (
+              {userLoading ? (<div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>) : (
               <div>
                 <div style={{ flexDirection: 'row', display: 'flex' }}>
                   <div>
