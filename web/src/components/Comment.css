@@ -22,12 +22,12 @@
 
 .comment .subtext {
   font-size: 14px;
-  color: #B27D00;
+  color: #ffb405;
   flex: 1
 }
 
 .comment .text {
   font-size: 16px;
-  color: #B27D00;
+  color: #ffb405;
   font-weight: 600;
 }

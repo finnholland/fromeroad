@@ -23,13 +23,13 @@ export const TrendingUser: React.FC<Props> = ({ user }) => {
     <div className='trendingUser'>
       <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage' />
       <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
-        <span className='text' style={{color: (user.difference > 0 ? '#00B224' : user.difference < 0 ? '#B22234' : '#5900B2')}}>{user.name}</span>
+        <span className='text' style={{color: (user.difference > 0 ? '#05ff37' : user.difference < 0 ? '#ff1f3a' : '#8205ff')}}>{user.name}</span>
         <div className='subHeader subtext'>
           <span>trend points: {user.trendPoints}</span> 
         </div>
         
       </div> 
-      <span style={{fontSize: 20, marginLeft: '1.5rem', color: (user.difference > 0 ? '#00B224' : user.difference < 0 ? '#B22234' : '#5900B2') }}>{user.difference > 0 ? '+' : user.difference < 0 ? '-' : ''}{Math.abs(user.difference)}</span> 
+      <span style={{fontSize: 20, marginLeft: '1.5rem', color: (user.difference > 0 ? '#05ff37' : user.difference < 0 ? '#ff1f3a' : '#8205ff') }}>{user.difference > 0 ? '+' : user.difference < 0 ? '-' : ''}{Math.abs(user.difference)}</span> 
 
     </div>
   )
