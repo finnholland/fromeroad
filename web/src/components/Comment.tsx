@@ -44,7 +44,7 @@ export const Comment: React.FC<Props> = (props: Props) => {
           <img src={'http://localhost:9000' + props.comment.profileImageUrl} alt='profile' className='profileImage' />
           <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
             <div style={{flexDirection: 'row', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              <span className='text' style={{ color: '#B27D00' }}>{props.comment.name}</span>
+              <span className='text' style={{ color: '#ffb405' }}>{props.comment.name}</span>
               <div style={{justifyContent: 'end', display: 'flex', fontSize: 11}}>
                 <span style={{ marginRight: 15, cursor: 'pointer', userSelect: 'none' }} onClick={() => editHandler()}>{props.editing === props.comment.commentID ? 'cancel' : 'edit'}</span>
                 <span style={{cursor: 'pointer', userSelect: 'none'}} onClick={() => deleteComment()}>delete</span>
@@ -55,7 +55,7 @@ export const Comment: React.FC<Props> = (props: Props) => {
             </div>
           </div> 
         </div>
-        <span style={{fontSize: 14, color: '#B27D00', marginTop: 10, textAlign: 'start' }}>{props.comment.body}</span>
+        <span style={{fontSize: 14, color: '#ffb405', marginTop: 10, textAlign: 'start' }}>{props.comment.body}</span>
       </div>
     )
   } else {
@@ -64,13 +64,13 @@ export const Comment: React.FC<Props> = (props: Props) => {
         <div style={{display: 'flex', width: '100%'}}>
           <img src={'http://localhost:9000' + props.comment.profileImageUrl} alt='profile' className='profileImage' />
           <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
-            <span className='text' style={{ color: '#B27D00' }}>{props.comment.name}</span>
+            <span className='text' style={{ color: '#ffb405' }}>{props.comment.name}</span>
             <div className='subHeader subtext'>
               <span>{props.comment.company}</span> <span>{getMessageAge(new Date(props.comment.createdAt * 1000))}</span>
             </div>
           </div> 
         </div>
-        <span style={{fontSize: 14, color: '#B27D00', marginTop: 10, textAlign: 'start' }}>{props.comment.body}</span> 
+        <span style={{fontSize: 14, color: '#ffb405', marginTop: 10, textAlign: 'start' }}>{props.comment.body}</span> 
       </div>
     )
   }

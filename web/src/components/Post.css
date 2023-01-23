@@ -31,13 +31,13 @@
 }
 
 .headerTextName {
-  color: #5900B2;
+  color: #8205ff;
   font-size: 1rem;
   font-weight: 600;
 }
 
 .headerTextCompany {
-  color: #5900B2;
+  color: #8205ff;
   font-size: .9rem;
   font-weight: 100;
 }
@@ -50,7 +50,7 @@
 }
 
 .bodyText {
-  color: #5900B2;
+  color: #8205ff;
   font-size: 1.5rem;
 }
 
@@ -66,7 +66,7 @@
   height: 28px;
   width: 28px; 
   border-radius: 30px; 
-  border: 2px solid #00FFA3;
+  border: 2px solid #3fffb9;
   background-color: white;
   justify-content: center;
   align-items: center;
@@ -75,7 +75,7 @@
 }
 
 .upvoteButtonPill {
-  background-color: #00FFA3;
+  background-color: #3fffb9;
   justify-content: center;
   width: 100px;
   display: flex;
@@ -85,7 +85,7 @@
 }
 
 .commentInput {
-  background-color: #CCFFED; 
+  background-color: #d9fff1; 
   border: 0; 
   height: 30px;
   flex: 1;
@@ -99,20 +99,12 @@
 .submitButton {
   height: 32px;
   border-radius: 15px;
-  background-color: #00FFA3;
+  background-color: #3fffb9;
   border: 0;
   padding-left: 15px;
   padding-right: 15px;
   font-weight: 600;
   color: white;
-}
-
-.commentLine {
-  border: 0;
-  height: 1px;
-  background-color: #dac7e9;
-  margin: 0;
-  margin: .75rem;
 }
 
 .commentSection {

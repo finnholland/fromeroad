@@ -63,7 +63,7 @@ function App() {
       <div className='interestDiv' onMouseEnter={() => setRemoveSvgHover(i.interestID)}
           onMouseLeave={() => setRemoveSvgHover(-1)} onClick={() => removeInterest(i.interestID)}>
         <span className='interestTitle'>{i.name}</span>
-        <SvgRemoveButton height={20} stroke={removeSvgHover === i.interestID ? '#B27D00' : '#AC80D9'} />
+        <SvgRemoveButton height={20} stroke={removeSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
       </div>
     )
   });
@@ -73,7 +73,7 @@ function App() {
       <div className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestID)}
           onMouseLeave={() => setAddSvgHover(-2)} onClick={() => addInterestHelper(i)}>
         <span className='interestTitle'>{i.name}</span>
-          <SvgAddButton height={20} stroke={addSvgHover === i.interestID ? '#B27D00' : '#AC80D9'} />
+          <SvgAddButton height={20} stroke={addSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
       </div>
     )
   });
@@ -329,9 +329,9 @@ function App() {
               <p className='sectionTitle'>feed</p>
               <hr className='line' />
               <SvgPlus onMouseEnter={() => setPlusHover(true)} onMouseLeave={() => setPlusHover(false)} onClick={() => setCreatingPost(!creatingPost)}
-                height={30} stroke={plusHover ? '#B27D00' : '#5900B2'} style={{ marginLeft: 15 }} />
+                height={30} stroke={plusHover ? '#ffb405' : '#8205ff'} style={{ marginLeft: 15 }} />
               <SvgRefresh onMouseEnter={() => setRefreshHover(true)} onMouseLeave={() => setRefreshHover(false)} onClick={() => refreshPosts('>')}
-                height={30} fill={refreshHover ? '#B27D00' : '#5900B2'} style={{ marginLeft: 15 }} />
+                height={30} fill={refreshHover ? '#ffb405' : '#8205ff'} style={{ marginLeft: 15 }} />
             </div>
             {creatingPost ? (
               <PostEditor setCreatingPost={setCreatingPost} refreshPosts={refreshPosts}/>
@@ -377,7 +377,7 @@ function App() {
                 </div>
                 <div className='addInterestDiv'>
                   <input type={'text'} placeholder='add interests' className='interestInput' value={interest} onChange={(e) => changeInterestSearch(e.target.value)}/>
-                  <SvgAddButton fill={addSvgHover === -1 ? '#B27D00' : '#DECCF0'} stroke={addSvgHover === -1 ? '#B27D00' : '#AC80D9'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
+                  <SvgAddButton fill={addSvgHover === -1 ? '#ffb405' : '#DECCF0'} stroke={addSvgHover === -1 ? '#ffb405' : '#c182ff'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
                     onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
 
                 </div>

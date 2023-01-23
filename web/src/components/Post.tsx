@@ -135,28 +135,25 @@ export const Post: React.FC<Props> = (props: Props) => {
           <span className='bodyText'>{props.post.body}</span>
           <img src={API + props.post.postImageUrl} alt='postImage' className='postImage'/>
         </div>
-        <hr hidden={comments.length <= 0} className='commentLine' />
-        <div hidden={comments.length <= 0} style={{ padding: '2rem' }}>
+        <div hidden={comments.length <= 0} className='commentSection'>
           {loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
+          {commentItems}
           {comments.length > 2 ? (
-            <div style={{display: 'flex', justifyContent: 'space-between'}}>
-              <span style={{fontSize: 12}}>{showAll ? '' : `${comments.length - 2} comment${comments.length - 2 === 1 ? '' : 's'} hidden`}</span>
-              <span style={{ fontSize: 12, cursor: 'pointer', userSelect: 'none' }} onClick={() => setShowAll(!showAll)}>{showAll ? 'hide' : 'show'}</span>
+            <div style={{display: 'flex', justifyContent: 'center', marginTop: 15}}>
+              <span style={{fontSize: 12}}>{showAll ? 'Showing all comments' : `${comments.length - 2} comment${comments.length - 2 === 1 ? '' : 's'} hidden`}</span>
+              <span style={{ fontSize: 13, cursor: 'pointer', userSelect: 'none', marginLeft: 20, color: '#8205ff' }} onClick={() => setShowAll(!showAll)}>{showAll ? 'hide' : 'show'}</span>
             </div>
           ) : (null)}
-          {commentItems}
-          
         </div>
-        <hr hidden={comments.length <= 0} className='commentLine' />
-        <div id='footer' className='postFooter'>
+        <div id='footer' className='postFooter' style={{ marginTop: (comments.length <= 0 ? '1rem' : 0) }}>
           <div className='upvoteButtonPill' onClick={() => upvotePost()}>
             <span style={{flex: 1, paddingLeft: 20}}>{convertTrendPoints(trendPoints)}</span>
             <div className='upvoteButton'>
-              <SvgAddButton height={30} fontVariant={props.post.voted ? 'hidden' : 'visible'} stroke={'#00FFA3'}/>
+              <SvgAddButton height={30} fontVariant={props.post.voted ? 'hidden' : 'visible'} stroke={'#3fffb9'}/>
             </div>
           </div>
-          <input type={'text'} color='#00FFA3' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />
-          <button className='submitButton' style={{backgroundColor: (comment === '' ? '#CCFFED' : '#00FFA3')}} disabled={comment === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
+          <input type={'text'} color='#3fffb9' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />
+          <button className='submitButton' style={{backgroundColor: (comment === '' ? '#d9fff1' : '#3fffb9')}} disabled={comment === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
         </div>
         
       </div>
@@ -186,7 +183,7 @@ export const Post: React.FC<Props> = (props: Props) => {
           {comments.length > 2 ? (
             <div style={{display: 'flex', justifyContent: 'center', marginTop: 15}}>
               <span style={{fontSize: 12}}>{showAll ? 'Showing all comments' : `${comments.length - 2} comment${comments.length - 2 === 1 ? '' : 's'} hidden`}</span>
-              <span style={{ fontSize: 13, cursor: 'pointer', userSelect: 'none', marginLeft: 20, color: '#5900B2' }} onClick={() => setShowAll(!showAll)}>{showAll ? 'hide' : 'show'}</span>
+              <span style={{ fontSize: 13, cursor: 'pointer', userSelect: 'none', marginLeft: 20, color: '#8205ff' }} onClick={() => setShowAll(!showAll)}>{showAll ? 'hide' : 'show'}</span>
             </div>
           ) : (null)}
         </div>
@@ -194,11 +191,11 @@ export const Post: React.FC<Props> = (props: Props) => {
           <div className='upvoteButtonPill' onClick={() => upvotePost()}>
             <span style={{flex: 1, paddingLeft: 20}}>{convertTrendPoints(trendPoints)}</span>
             <div className='upvoteButton'>
-              <SvgAddButton height={30} fontVariant={props.post.voted ? 'hidden' : 'visible'} stroke={'#00FFA3'}/>
+              <SvgAddButton height={30} fontVariant={props.post.voted ? 'hidden' : 'visible'} stroke={'#3fffb9'}/>
             </div>
           </div>
-          <input type={'text'} color='#00FFA3' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />
-          <button className='submitButton' style={{backgroundColor: (comment === '' ? '#CCFFED' : '#00FFA3')}} disabled={comment === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
+          <input type={'text'} color='#3fffb9' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />
+          <button className='submitButton' style={{backgroundColor: (comment === '' ? '#d9fff1' : '#3fffb9')}} disabled={comment === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
         </div>
       </div>
     )

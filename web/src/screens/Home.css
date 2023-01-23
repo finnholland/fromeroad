@@ -29,14 +29,14 @@
 .name {
   font-size: 1rem;
   font-weight:600;
-  color: #5900B2;
+  color: #8205ff;
   margin: 0;
   margin-bottom: 5px;
 }
 
 .company {
   font-size: 1rem;
-  color: #AC80D9;
+  color: #c182ff;
   margin: 0;
   margin-top: 5px;
 }
@@ -54,14 +54,14 @@
   align-items: center;
   display: flex;
   flex: 1;
-  color: #AC80D9;
+  color: #c182ff;
   cursor: pointer;
   margin-top: 5px;
   margin-bottom: 5px;
 }
 
 .interestDiv:hover {
-  color: #B27D00;
+  color: #ffb405;
 }
 
 .addInterestDiv {
@@ -80,7 +80,7 @@
   margin-right: 10px; 
   background-color:#DECCF0; 
   border: none; 
-  border-bottom: 2px solid #AC80D9;
+  border-bottom: 2px solid #c182ff;
   color: white;
 }
 
@@ -137,15 +137,15 @@
 }
 
 .line {
-  color: #5900B2;
-  background-color: #5900B2;
+  color: #8205ff;
+  border: #8205ff solid 1px;
   flex: 1; 
   margin: 0
 }
 
 .subline {
-  color: #AC80D9;
-  background-color: #AC80D9;
+  color: #c182ff;
+  border: #c182ff solid 1px;
   margin: 0;
   margin-top: 2rem;
 }
@@ -160,7 +160,7 @@
 
 .sectionTitle {
   font-size: 20px; 
-  color: #5900B2;
+  color: #8205ff;
   margin: 0;
   margin-right: 0.8rem;
 }

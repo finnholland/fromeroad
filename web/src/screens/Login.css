@@ -1,7 +1,7 @@
 .input {
   border-radius: .5rem;
-  background-color: #F6F1FB;
-  border: 2px solid #5900B2;
+  background-color: #f8f1ff;
+  border: 2px solid #8205ff;
   margin-bottom: 15px;
   height: 2.5rem;
   padding-left: 1rem;
@@ -35,12 +35,12 @@
 }
 
 .button {
-  border: 2px solid #5900B2;
+  border: 2px solid #8205ff;
   width: 40%;
   height: 2.5rem;
   border-radius: .5rem;
-  background-color: #F6F1FB;
+  background-color: #f8f1ff;
   font-size: 1rem;
-  color: #5900B2;
+  color: #8205ff;
   cursor: pointer;
 }
