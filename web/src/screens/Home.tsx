@@ -218,6 +218,10 @@ function App() {
   }
 
   const getPosts = () => {
+    setRefreshing(true)
+    setTimeout(() => {
+      setRefreshing(false)
+    }, 500);
     setLoading(true);
     Axios.get(`${API}/post/get`, {
       params: {

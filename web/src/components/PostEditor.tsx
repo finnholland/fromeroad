@@ -52,7 +52,7 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
     postContent.formData.append('userID', selector.user.userID.toString())
     postContent.formData.append('body', postContent.body)
     props.setCreatingPost(false);
-    Axios.post(`${API}/post/create`, postContent.formData, {
+    Axios.post(`${API}/post/create/${selector.user.userID}`, postContent.formData, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => props.refreshPosts('>'))
   }
