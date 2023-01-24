@@ -18,7 +18,7 @@ export const SvgRefresh: React.FC<React.SVGProps<SVGSVGElement>> = (props: any) 
     18.2999 16.1673 18.6616C16.3597 18.9947 16.0651 19.1783 15.8331 19.3268C12.5789 21.4035 9.2357 21.5266 5.90567 19.6181C2.47339 17.6513
     0.584648 13.7914 1.11675 9.7731C1.70052 5.36897 4.64138 2.13678 8.69261 1.23968C12.823 0.324992 17.0831 2.43251 19.0499 6.36611C19.1587
     6.58269 19.2621 6.80366 19.4369 7.16756Z"
-    style={{ fill: props.fill, stroke: props.fill, strokeWidth: props.strokeWidth }} stroke-miterlimit="10" />
+    style={{ fill: props.fill, stroke: props.fill, strokeWidth: props.strokeWidth }} />
     
 </svg>
 );
