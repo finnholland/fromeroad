@@ -239,3 +239,35 @@ textarea:focus, input:focus{
     transform: translate(24px, 0);
   }
 }
+
+
+/* create post button */
+.creatingPost {
+  animation: createPostRotation 0.5s 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes createPostRotation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-45deg); }
+}
+
+.cancelPost {
+  animation: cancelPostRotation 0.5s 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes cancelPostRotation {
+  0% { transform: rotate(-45deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.refresh {
+  animation: cancelPostRotation 0.5s 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes cancelPostRotation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

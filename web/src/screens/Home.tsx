@@ -32,6 +32,7 @@ function App() {
   const [addSvgHover, setAddSvgHover] = useState(-2);
   const [plusHover, setPlusHover] = useState(false);
   const [refreshHover, setRefreshHover] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [creatingPost, setCreatingPost] = useState(false);
 
   const [interest, setInterest] = useState('');
@@ -232,6 +233,10 @@ function App() {
   }
 
   const refreshPosts = (sign: string) => {
+    setRefreshing(true)
+    setTimeout(() => {
+      setRefreshing(false)
+    }, 500);
     setLoading(true);
     const direction = sign === '>' ? 'top' : 'bottom';
     let postID = 0
@@ -335,9 +340,10 @@ function App() {
               <p className='sectionTitle'>feed</p>
               <hr className='line' />
               <SvgPlus onMouseEnter={() => setPlusHover(true)} onMouseLeave={() => setPlusHover(false)} onClick={() => setCreatingPost(!creatingPost)}
-                height={30} stroke={plusHover ? '#ffb405' : '#8205ff'} style={{ marginLeft: 15 }} />
+                height={30} stroke={plusHover ? '#ffb405' : '#8205ff'} style={{ marginLeft: 15 }} className={creatingPost ? 'creatingPost' : 'cancelPost'} />
+              
               <SvgRefresh onMouseEnter={() => setRefreshHover(true)} onMouseLeave={() => setRefreshHover(false)} onClick={() => refreshPosts('>')}
-                height={30} fill={refreshHover ? '#ffb405' : '#8205ff'} style={{ marginLeft: 15 }} />
+                height={30} strokeWidth={0.5} fill={refreshHover ? '#ffb405' : '#8205ff'} style={{ marginLeft: 15 }} className={refreshing ? 'refresh' : ''}/>
             </div>
             {creatingPost ? (
               <PostEditor setCreatingPost={setCreatingPost} refreshPosts={refreshPosts}/>
