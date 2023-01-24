@@ -108,8 +108,6 @@ export const Post: React.FC<Props> = (props: Props) => {
     } else return (null)
   });
 
-
-
   const onError = () => {
     if (!errored) {
       setErrored(true)
