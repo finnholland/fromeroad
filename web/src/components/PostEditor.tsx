@@ -1,7 +1,10 @@
 import Axios from 'axios';
 import React, { useRef, useState } from 'react'
-import { API } from '../constants';
+import SvgUploadImage from '../assets/svg/SvgUploadImage';
+import { API, DEFAULT_PROFILE_IMAGE } from '../constants';
 import { useAppSelector } from '../redux/Actions';
+import { useAutosizeTextArea } from '../redux/helpers';
+import './PostEditor.css'
 
 interface Props {
   setCreatingPost: any,
@@ -18,18 +21,31 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
   
   const selector = useAppSelector(state => state)
   const [postContent, setPostContent] = useState<PostContent>({ body: '', formData: new FormData(), userID: selector.user.userID });
-  
+  const [imageUrl, setImageUrl] = useState(selector.user.profileImageUrl)
+  const [postImage, setPostImage] = useState('')
+  const [errored, setErrored] = useState(false)
+  const [imageHover, setImageHover] = useState(false);
+
   const ref = useRef<HTMLInputElement>(null);
+
   const handleClick = (e: any) => {
     if (ref.current) {
       ref.current.click();
     }
   }
 
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  useAutosizeTextArea(textAreaRef.current, postContent.body);
+  const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = evt.target?.value;
+    setPostContent(prevState => ({ ...prevState, body: val }));
+  };
+
   const uploadPostImage = (e: any) => {
     const fd = new FormData();
     fd.append('file', e.target.files[0])
-    setPostContent(prevState => ({...prevState, formData: fd}))
+    setPostContent(prevState => ({ ...prevState, formData: fd }));
+    setPostImage(URL.createObjectURL(e.target.files[0]))
   }
 
   const createPost = () => {
@@ -38,15 +54,41 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
     props.setCreatingPost(false);
     Axios.post(`${API}/post/create`, postContent.formData, {
       headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
-    }).then(props.refreshPosts('>'))
+    }).then(res => props.refreshPosts('>'))
+  }
+
+  const onError = () => {
+    if (!errored) {
+      setErrored(true)
+      setImageUrl(DEFAULT_PROFILE_IMAGE)
+    }
   }
 
   return (
-    <div>
-      <button id='postImage' onClick={(e) => handleClick(e)}>image</button>
-      <input value={postContent.body} onChange={(e) => setPostContent(prevState => ({...prevState, body: e.target.value}))} />
-      <button onClick={() => createPost()}>post</button>
-      <button onClick={() => props.setCreatingPost(false)}>cancel</button>
+    <div className='post'>
+      <div id='header' className='postHeader'>
+        <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage'/>
+        <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
+          <span className='headerTextName'>{selector.user.name}</span>
+          <span className='headerTextCompany'>{selector.user.company}</span>
+        </div>
+
+      </div>
+      <textarea className='postBodyInput' placeholder='hello moon - 🌏' onChange={handleChange} value={postContent.body} rows={2}
+        ref={textAreaRef} />
+      
+      {postImage !== '' ? (<img src={postImage} alt='post' className='postImage'/>) : null}
+      
+      <div style={{flexDirection: 'row', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1rem'}}>
+        <SvgUploadImage onMouseEnter={() => setImageHover(true)} onMouseLeave={() => setImageHover(false)}
+          style={{ cursor: 'pointer'}} width={30} height={30} onClick={(e) => handleClick(e)} fill={imageHover ? '#3fffb9' : '#CCFFED'} />
+        
+        <button className='postButton' style={{ flex: 1, marginLeft: '1rem', cursor: 'pointer', backgroundColor: (postContent.body === '' ? '#d9fff1' : '#3fffb9') }}
+         onClick={() => createPost()} disabled={postContent.body === ''} >
+          <span>post</span>
+        </button>
+      </div>
+
       <input ref={ref} type={'file'} name="file" onChange={uploadPostImage} hidden/>
     </div>
   )

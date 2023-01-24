@@ -49,18 +49,15 @@ function App() {
   const [userLoading, setUserLoading] = useState(true);
 
   const ref = useRef<HTMLInputElement>(null);
-  const postRef = useRef<HTMLInputElement>(null);
   const handleClick = (e: any) => {
     if (ref.current && e.target.id === 'profileImage') {
       ref.current.click();
-    } else if (postRef.current && e.target.id === 'postImage') {
-      postRef.current.click()
     }
   }
 
   const interestItems = interestList.map((i) => {
     return (
-      <div className='interestDiv' onMouseEnter={() => setRemoveSvgHover(i.interestID)}
+      <div key={i.interestID} className='interestDiv' onMouseEnter={() => setRemoveSvgHover(i.interestID)}
           onMouseLeave={() => setRemoveSvgHover(-1)} onClick={() => removeInterest(i.interestID)}>
         <span className='interestTitle'>{i.name}</span>
         <SvgRemoveButton height={20} stroke={removeSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
