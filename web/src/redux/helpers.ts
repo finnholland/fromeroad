@@ -21,10 +21,7 @@ export const getMessageAge = (createdAt: Date) => {
 }
 
 // Updates the height of a <textarea> when the value changes.
-export const useAutosizeTextArea = (
-  textAreaRef: HTMLTextAreaElement | null,
-  value: string
-) => {
+export const useAutosizeTextArea = (textAreaRef: HTMLTextAreaElement | null,  value: string) => {
   useEffect(() => {
     if (textAreaRef) {
       // We need to reset the height momentarily to get the correct scrollHeight for the textarea
