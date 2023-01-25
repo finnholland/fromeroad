@@ -1,10 +1,12 @@
-var express = require('express');
+require('dotenv').config();
+const { expressjwt: ejwt } = require("express-jwt"); var express = require('express');
+
 app = express()
 var db = require('..');
 const cors = require('cors')
 app.use(cors());
 
-app.get('/', (req, res) => {
+app.get('/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
   db.query(`select users.userID, name, company, profileImageUrl, postCount, lastPost from users
             left join (select userID, COUNT(posts.userID) as postCount, max(createdAt) as lastPost from posts where TIMESTAMPDIFF(day, posts.createdAt, NOW()) < 7  group by userID) recentPosts
             on users.userID = recentPosts.userID
