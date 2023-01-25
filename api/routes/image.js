@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { expressjwt: ejwt } = require("express-jwt");
 
 var express = require('express');
 app = express()
@@ -24,7 +25,7 @@ const upload = multer({
   storage: storage
 })
 
-app.post('/profileImage/:userID', upload.single('file'), (req, res) => {
+app.post('/profileImage/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), upload.single('file'), (req, res) => {
   console.log(req.params.userID)
   if (!req.file) {
     console.log("No file upload");
@@ -41,7 +42,7 @@ app.post('/profileImage/:userID', upload.single('file'), (req, res) => {
   }
 });
 
-app.get('/profileImage/:userID', (req, res) => {
+app.get('/profileImage/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
   console.log(req.body)
   db.query('select profileImageUrl from users where userID = ?', req.params.userID, (err, result, fields) => {
     if (err) {

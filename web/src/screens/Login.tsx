@@ -5,8 +5,10 @@ import './Login.css';
 import SvgChamonix from '../assets/svg/chamonix';
 import SvgLotfourteen from '../assets/svg/lotfourteen';
 import { useNavigate } from 'react-router-dom';
-import { setUser, getUser } from '../userData'
 import { API } from '../constants';
+import Hamster from '../assets/svg/hamster';
+import { useAppDispatch } from '../redux/Actions';
+import { setUser } from '../redux/slices/userSlice';
 
 
 const Login = () => {
@@ -16,7 +18,8 @@ const Login = () => {
   const [company, setCompany] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-
+  
+  const dispatch = useAppDispatch()
   const navigate = useNavigate();
 
   const signUp = async () => {
@@ -34,6 +37,9 @@ const Login = () => {
         email: email,
         company: company,
         password: password
+      }).then(res => {
+        dispatch(setUser(res.data.user));
+        navigate("../", { replace: true });
       }).catch(err => {
         alert(err)
       })
@@ -53,11 +59,20 @@ const Login = () => {
         } else {
           localStorage.setItem('token', res.data.token)
         }
-        setUser(res.data.user)
+        dispatch(setUser(res.data.user));
         navigate("../", { replace: true });
       })
     }
   }
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    if (confirmPassword !== '') {
+      signUp()
+    } else {
+      login()
+    }
+  } 
 
   return (
     <div className="app">
@@ -75,34 +90,37 @@ const Login = () => {
         
       </header>
       <div className='body'>
-        <div className='inputDiv'>
-          <span className='label'>name</span>
-          <input className='input' value={name} onChange={(e) => setName(e.target.value)}/>
-        </div>
-        <div className='inputDiv'>
-          <span className='label'>email</span>
-          <input className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
-        </div>
-        <div className='inputDiv'>
-          <span className='label'>company</span>
-          <input className='input' value={company} onChange={(e) => setCompany(e.target.value)} />
-        </div>
-        <div className='inputDiv'>
-          <span className='label'>password</span>
-          <input className='input' value={password} onChange={(e) => setPassword(e.target.value)} />
-        </div>
-        <div className='inputDiv'>
-          <span className='label'>confirm password</span>
-          <input className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-        </div>
-        <div className='buttonDiv'>
-          <button className='button' onClick={() => signUp()}>
-            sign up
-          </button>
-          <button className='button' onClick={() => login()}>
-            login
-          </button>
-        </div>
+        <Hamster height={150} fill={'#00eded'} />
+        <form style={{width: '30%'}} onSubmit={onSubmit}>
+          <div className='inputDiv'>
+            <span className='label'>name</span>
+            <input className='input' value={name} onChange={(e) => setName(e.target.value)}/>
+          </div>
+          <div className='inputDiv'>
+            <span className='label'>email</span>
+            <input className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
+          </div>
+          <div className='inputDiv'>
+            <span className='label'>company</span>
+            <input className='input' value={company} onChange={(e) => setCompany(e.target.value)} />
+          </div>
+          <div className='inputDiv'>
+            <span className='label'>password</span>
+            <input className='input' value={password} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+          <div className='inputDiv'>
+            <span className='label'>confirm password</span>
+            <input className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+          </div>
+          <div className='buttonDiv'>
+          <button className='button'>
+              sign up
+            </button>
+          <button type='submit' className='button'>
+              login
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 

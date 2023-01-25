@@ -1,3 +1,6 @@
+require('dotenv').config();
+const { expressjwt: ejwt } = require("express-jwt");
+
 var express = require('express');
 app = express()
 var db = require('..');
@@ -22,7 +25,7 @@ const upload = multer({
   storage: storage
 })
 
-app.post('/create/:userID', upload.single('file'), (req, res) => {
+app.post('/create/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), upload.single('file'), (req, res) => {
   const userID = req.body.userID;
   const body = req.body.body;
   const initialUpvoteValue = 0;
@@ -53,7 +56,7 @@ app.post('/create/:userID', upload.single('file'), (req, res) => {
   }
 });
 
-app.get('/get', (req, res) => {
+app.get('/get', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
   const userID = req.query.userID
   const sign = req.query.sign
   const condition = req.query.condition
@@ -74,7 +77,7 @@ app.get('/get', (req, res) => {
   })
 })
 
-app.get('/comments/get/:postID', (req, res) => {
+app.get('/comments/get/:postID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
   const postID = req.params.postID
   db.query(`select pc.*, name, company, profileImageUrl, UNIX_TIMESTAMP(pc.createdAt) AS createdAt from postcomments as pc 
             left join users as u on u.userID = pc.userID where postID = ?
@@ -89,7 +92,7 @@ app.get('/comments/get/:postID', (req, res) => {
   })
 })
 
-app.delete('/comments/delete/:commentID', (req, res) => {
+app.delete('/comments/delete/:commentID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
   const commentID = req.params.commentID
   db.query(`delete from postcomments where commentID = ?`, [commentID],
     (err, result, fields) => {
@@ -102,7 +105,7 @@ app.delete('/comments/delete/:commentID', (req, res) => {
   })
 })
 
-app.post('/comments/post/', (req, res) => {
+app.post('/comments/post/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
   const postID = req.body.postID
   const userID = req.body.userID
   const body = req.body.body
@@ -117,7 +120,7 @@ app.post('/comments/post/', (req, res) => {
   })
 })
 
-app.post('/comments/update/', (req, res) => {
+app.post('/comments/update/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
   const postID = req.body.postID
   const userID = req.body.userID
   const commentID = req.body.commentID
@@ -133,7 +136,7 @@ app.post('/comments/update/', (req, res) => {
   })
 })
 
-app.post('/upvote/:postID/', (req, res) => {
+app.post('/upvote/:postID/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
   const postID = req.params.postID;
   const posterID = req.body.posterID;
   const upvoteValue = 1 

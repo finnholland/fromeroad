@@ -119,7 +119,7 @@ function App() {
   const removeInterest = (interestID: number) => {
     Axios.delete(`${API}/user/interests/removeInterests/${selector.user.userID}/${interestID}`, {
       headers:
-        { authorisation: `Bearer ${localStorage.getItem('token')}` }
+        { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(() => {
       getInterests(selector.user.userID)
     })
@@ -129,7 +129,7 @@ function App() {
     setUserLoading(true)
     Axios.get(`${API}/user/autoLogin`, {
       headers: {
-        authorisation: `Bearer ${localStorage.getItem('token')}`
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     }).then(res => {
       dispatch(setUser(res.data[0]));
@@ -144,7 +144,7 @@ function App() {
     setRecentPosters([])
     Axios.get(`${API}/recentPosters`, {
       headers: {
-        authorisation: `Bearer ${localStorage.getItem('token')}`
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     }).then(res => {
       setRecentPosters(res.data)
@@ -158,10 +158,14 @@ function App() {
     fd.append('userID', selector.user.userID.toString())
     Axios.post(`${API}/image/profileImage/${selector.user.userID}`, fd, {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     }).then(() => {
-      Axios.get(`${API}/image/profileImage/${selector.user.userID}`).then(res => {
+      Axios.get(`${API}/image/profileImage/${selector.user.userID}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    }).then(res => {
         setProfileImageUrl(res.data[0].profileImageUrl)
       })
       
@@ -175,7 +179,7 @@ function App() {
     }
     Axios.post(`${API}/user/interests/addInterests`, params, {
       headers:
-        { authorisation: `Bearer ${localStorage.getItem('token')}` }
+        { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
       if (res.status !== 409) {
         getInterests(selector.user.userID)
@@ -191,7 +195,7 @@ function App() {
   const getInterests = (userID: number) => {
     Axios.get(`${API}/user/interests/getInterests/${userID}`, {
       headers:
-        { authorisation: `Bearer ${localStorage.getItem('token')}` }
+        { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
       setInterestList(res.data)
     })
@@ -204,7 +208,7 @@ function App() {
     } else {
       Axios.get(`${API}/user/interests/searchInterests/${search}`, {
         headers:
-          { authorisation: `Bearer ${localStorage.getItem('token')}` }
+          { Authorization: `Bearer ${localStorage.getItem('token')}` }
       }).then((res) => {
         const tempArr: Interest[] = []
         res.data.forEach((interest: Interest) => {
@@ -229,7 +233,7 @@ function App() {
         sign: '>',
         condition: 0
       },
-      headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => {
       updatePosts(res.data, 'top')
       setLoading(false)
@@ -256,7 +260,7 @@ function App() {
         sign: sign,
         condition: postID
       },
-      headers: { authorisation: `Bearer ${localStorage.getItem('token')}` }
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
       updatePosts(res.data, direction)
       getRecentPosters()
@@ -306,7 +310,7 @@ function App() {
     console.log('Logs every hour ' + moment().format('HH:mm:ss'));
     Axios.get(`${API}/trends/`, {
       headers:
-        { authorisation: `Bearer ${localStorage.getItem('token')}` }
+        { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
       setTrendingUsers(res.data)
       setTrendingLoading(false)
