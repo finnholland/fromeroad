@@ -8,7 +8,7 @@ const fs = require('fs')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const path = `./images/posts/${req.params.userID}/`
+    const path = `./images/user/${req.params.userID}/posts/`
     fs.mkdirSync(path, { recursive: true })
     cb(null, path)
   },
@@ -22,7 +22,7 @@ const upload = multer({
   storage: storage
 })
 
-app.post('/create', upload.single('file'), (req, res) => {
+app.post('/create/:userID', upload.single('file'), (req, res) => {
   const userID = req.body.userID;
   const body = req.body.body;
   const initialUpvoteValue = 0;
@@ -39,7 +39,7 @@ app.post('/create', upload.single('file'), (req, res) => {
       }
     })
   } else {
-    const imgsrc = `/images/posts/${req.body.userID}/${req.file.filename.replace(' ', '_')}`
+    const imgsrc = `/images/user/${req.body.userID}/posts/${req.file.filename.replace(' ', '_')}`
     db.query('insert into posts (body, postImageUrl, createdAt, userID) values (?, ?, now(), ?)', [body, imgsrc, userID], (err, result, fields) => {
       if (err) {
         console.log('error occurred: '+ err)

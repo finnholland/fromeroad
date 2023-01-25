@@ -127,7 +127,7 @@ function App() {
 
   const getUserFromToken = () => {
     setUserLoading(true)
-    Axios.get('http://localhost:9000/user/autoLogin', {
+    Axios.get(`${API}/user/autoLogin`, {
       headers: {
         authorisation: `Bearer ${localStorage.getItem('token')}`
       }
@@ -161,7 +161,7 @@ function App() {
         'Content-Type': 'multipart/form-data'
       }
     }).then(() => {
-      Axios.get(`http://localhost:9000/image/profileImage/${selector.user.userID}`).then(res => {
+      Axios.get(`${API}/image/profileImage/${selector.user.userID}`).then(res => {
         setProfileImageUrl(res.data[0].profileImageUrl)
       })
       
@@ -218,6 +218,10 @@ function App() {
   }
 
   const getPosts = () => {
+    setRefreshing(true)
+    setTimeout(() => {
+      setRefreshing(false)
+    }, 500);
     setLoading(true);
     Axios.get(`${API}/post/get`, {
       params: {
@@ -371,7 +375,7 @@ function App() {
               <div>
                 <div style={{ flexDirection: 'row', display: 'flex' }}>
                   <div>
-                    <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(http://localhost:9000${profileImageUrl})`, backgroundSize: 'cover' }}>
+                    <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(${API}${profileImageUrl})`, backgroundSize: 'cover' }}>
                       <div className='profileImageOverlay'>
                         <span style={{alignItems: 'center', display:'flex', marginBottom: 5}}>change</span>
                       </div>

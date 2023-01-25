@@ -41,7 +41,7 @@ export const Comment: React.FC<Props> = (props: Props) => {
     return (
       <div className='comment' style={{marginBottom: (props.lastCommentID === props.comment.commentID ? 0 : '1.5rem')}}>
         <div style={{display: 'flex', width: '100%'}}>
-          <img src={'http://localhost:9000' + props.comment.profileImageUrl} alt='profile' className='profileImage' />
+          <img src={API + props.comment.profileImageUrl} alt='profile' className='profileImage' />
           <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
             <div style={{flexDirection: 'row', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
               <span className='text' style={{ color: '#ffb405' }}>{props.comment.name}</span>
@@ -62,7 +62,7 @@ export const Comment: React.FC<Props> = (props: Props) => {
     return (
       <div className='comment' style={{marginBottom: (props.lastCommentID === props.comment.commentID ? 0 : '1.5rem')}}>
         <div style={{display: 'flex', width: '100%'}}>
-          <img src={'http://localhost:9000' + props.comment.profileImageUrl} alt='profile' className='profileImage' />
+          <img src={API + props.comment.profileImageUrl} alt='profile' className='profileImage' />
           <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
             <span className='text' style={{ color: '#ffb405' }}>{props.comment.name}</span>
             <div className='subHeader subtext'>
