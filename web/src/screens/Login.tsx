@@ -6,6 +6,7 @@ import SvgChamonix from '../assets/svg/chamonix';
 import SvgLotfourteen from '../assets/svg/lotfourteen';
 import { useNavigate } from 'react-router-dom';
 import { setUser, getUser } from '../userData'
+import { API } from '../constants';
 
 
 const Login = () => {
@@ -28,7 +29,7 @@ const Login = () => {
     else if (name === '' || email === '' || company === '') {
       alert('form must be filled!');
     } else {
-      Axios.post('http://localhost:9000/user/signup', {
+      Axios.post(`${API}/user/signup`, {
         name: name,
         email: email,
         company: company,
@@ -43,7 +44,7 @@ const Login = () => {
     if (!email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
       alert('invalid email format')
     } else {
-      Axios.post('http://localhost:9000/user/login', {
+      Axios.post(`${API}/user/login`, {
         email: email,
         password: password
       }).then(res => {
