@@ -11,6 +11,7 @@ import ErrorPage from './Error';
 import Home from './screens/Home';
 import { Provider } from 'react-redux';
 import store from './redux/store';
+import App from './App';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
@@ -18,13 +19,8 @@ const root = ReactDOM.createRoot(
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home/>,
+    element: <App/>,
     errorElement: <ErrorPage />,
-  },
-  {
-    path: "/login",
-    element: <Login/>,
-    errorElement: <ErrorPage/>,
   },
 ]);
 

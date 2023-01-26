@@ -6,13 +6,11 @@ import SvgLotfourteen from '../assets/svg/lotfourteen';
 import SvgRemoveButton from '../assets/svg/removeButton';
 import SvgAddButton from '../assets/svg/SvgAddButton';
 import Axios from 'axios';
-import { useAppSelector, useAppDispatch } from '../redux/Actions';
-import { setUser } from '../redux/slices/userSlice';
+import { useAppSelector } from '../redux/Actions';
 import moment from 'moment';
 
 import { Post } from '../components/Post';
 
-import { getUser } from '../userData';
 import { RecentPoster } from '../components/RecentPoster';
 import { TrendingUser } from '../components/TrendingUser';
 import SvgPlus from '../assets/svg/SvgPlus';
@@ -22,11 +20,13 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { API } from '../constants';
 
 const HOUR = 60000 * 60
+interface Props {
+  setAuthenticated: any
+}
 
-function App() {
-  const [profileImageUrl, setProfileImageUrl] = useState(getUser().profileImageUrl);
-  const selector = useAppSelector(state => state)
-  const dispatch = useAppDispatch()
+const Home: React.FC<Props> = (props: Props) => {
+  const selector = useAppSelector(state => state);
+  const [profileImageUrl, setProfileImageUrl] = useState(selector.user.profileImageUrl);
 
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
   const [addSvgHover, setAddSvgHover] = useState(-2);
@@ -47,7 +47,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [activityLoading, setActivityLoading] = useState(true);
   const [trendingLoading, setTrendingLoading] = useState(true);
-  const [userLoading, setUserLoading] = useState(true);
 
   const ref = useRef<HTMLInputElement>(null);
   const handleClick = (e: any) => {
@@ -104,10 +103,10 @@ function App() {
   }
 
   useEffect(() => {
-    getUserFromToken();
     getPosts();
     getRecentPosters();
     getTrendingUsers();
+    getInterests(selector.user.userID);
     const trendInterval = setInterval(() => {
       getRecentPosters();
       getTrendingUsers();
@@ -122,20 +121,6 @@ function App() {
         { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(() => {
       getInterests(selector.user.userID)
-    })
-  }
-
-  const getUserFromToken = () => {
-    setUserLoading(true)
-    Axios.get(`${API}/user/autoLogin`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    }).then(res => {
-      dispatch(setUser(res.data[0]));
-      setProfileImageUrl(res.data[0].profileImageUrl);
-      getInterests(res.data[0].userID);
-      setUserLoading(false)
     })
   }
 
@@ -317,6 +302,11 @@ function App() {
     })
   }
 
+  const logout = () => {
+    props.setAuthenticated(false);
+    localStorage.removeItem('token')
+  }
+
   return (
     <div className="app">
       <header className="header">
@@ -373,9 +363,8 @@ function App() {
             <div className='titleDiv'>
               <p className='sectionTitle'>me</p>
               <hr className='line' />
+              <span onClick={() => logout()}>logout</span>
             </div>
-            
-              {userLoading ? (<div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>) : (
               <div>
                 <div style={{ flexDirection: 'row', display: 'flex' }}>
                   <div>
@@ -413,9 +402,8 @@ function App() {
                   }
                   {interestSearchResults}
                 </div>
-                <hr className='subline'/>
-              </div>
-              )}
+              <hr className='subline'/>
+            </div>
           </div>
 
         </div>
@@ -437,4 +425,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;
