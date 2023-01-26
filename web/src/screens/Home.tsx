@@ -18,6 +18,7 @@ import { PostEditor } from '../components/PostEditor';
 import SvgRefresh from '../assets/svg/refreshIcon';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { API } from '../constants';
+import LogoutIcon from '../assets/svg/logoutIcon';
 
 const HOUR = 60000 * 60
 interface Props {
@@ -363,7 +364,7 @@ const Home: React.FC<Props> = (props: Props) => {
             <div className='titleDiv'>
               <p className='sectionTitle'>me</p>
               <hr className='line' />
-              <span onClick={() => logout()}>logout</span>
+              <LogoutIcon onClick={() => logout()} height={25} width={25} style={{ marginLeft: 15 }} fill={'#8205ff'} />
             </div>
               <div>
                 <div style={{ flexDirection: 'row', display: 'flex' }}>
