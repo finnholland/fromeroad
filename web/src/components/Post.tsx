@@ -36,7 +36,7 @@ export const Post: React.FC<Props> = (props: Props) => {
       posterID: props.poster.userID
     }
     Axios.post(`${API}/post/upvote/${props.post.postID}`, params, {
-      headers: { authorisation: `Bearer ${localStorage.getItem('token')}` } 
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => {
       setTrendPoints(props.post.voted ? trendPoints - 1 : trendPoints + 1)
       props.post.voted = !props.post.voted
@@ -60,6 +60,8 @@ export const Post: React.FC<Props> = (props: Props) => {
       postID: props.post.postID,
       userID: selector.user.userID,
       body: comment
+    }, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
       setComment('')
       getComments()
@@ -73,6 +75,8 @@ export const Post: React.FC<Props> = (props: Props) => {
       commentID: editingComment,
       userID: selector.user.userID,
       body: comment
+    }, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
       setComment('')
       getComments()
@@ -83,7 +87,7 @@ export const Post: React.FC<Props> = (props: Props) => {
   const getComments = () => {
     setLoading(true)
     Axios.get(`${API}/post/comments/get/${props.post.postID}`, {
-      headers: { authorisation: `Bearer ${localStorage.getItem('token')}` }
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
       console.log(res.data)
       setComments(res.data)
