@@ -1,19 +1,22 @@
 .input {
   border-radius: .5rem;
-  background-color: #E6FCFC;
-  border: 2px solid #00DFDF;
+  background-color: #f8f1ff;
+  border: 2px solid #8205ff;
   margin-bottom: 15px;
   height: 2.5rem;
   padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .app .body {
   height: 100%;
   width: 100%;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  flex-direction: column;
+  flex-direction: row;
   display: flex;
+  padding-bottom: 2rem;
+  overflow: hidden;
 }
 
 .inputDiv {
@@ -35,12 +38,23 @@
 }
 
 .button {
-  border: 2px solid #00DFDF;
+  border: 2px solid #8205ff;
   width: 40%;
   height: 2.5rem;
   border-radius: .5rem;
-  background-color: #E6FCFC;
+  background-color: #f8f1ff;
   font-size: 1rem;
-  color: #00eded;
+  color: #8205ff;
   cursor: pointer;
+}
+
+.aboutText {
+  text-align: justify !important;
+  margin-top: 1.5rem;
+  align-content: flex-start;
+  display: flex;
+}
+.aboutDiv {
+  margin: 3rem;
+  margin-top: 0
 }
