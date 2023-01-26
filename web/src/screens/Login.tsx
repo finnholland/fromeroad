@@ -113,7 +113,7 @@ const Login: React.FC<Props> = (props: Props) => {
               </div>
               <div className='inputDiv'>
                 <span className='label'>email</span>
-                <input className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
+                <input type={'email'} className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
               </div>
               <div className='inputDiv'>
                 <span className='label'>company</span>
@@ -121,11 +121,11 @@ const Login: React.FC<Props> = (props: Props) => {
               </div>
               <div className='inputDiv'>
                 <span className='label'>password</span>
-                <input className='input' value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input type={'password'} className='input' value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
               <div className='inputDiv'>
                 <span className='label'>confirm password</span>
-                <input className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                <input type={'password'} className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
               </div>
               <div className='buttonDiv'>
               <button className='button'>
