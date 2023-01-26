@@ -89,41 +89,70 @@ const Login = () => {
         </a>
         
       </header>
+          <div style={{justifyContent: 'space-between', flexDirection: 'column', display: 'flex', marginTop: '3rem', marginBottom: '3rem'}}>
+            <Hamster height={100} fill={'#5900B2'} />
+            <span style={{color: '#5900B2', fontSize: 18, marginTop: 15}}>Welcome to frome_road</span>
+          </div>
       <div className='body'>
-        <Hamster height={150} fill={'#00eded'} />
-        <form style={{width: '30%'}} onSubmit={onSubmit}>
-          <div className='inputDiv'>
-            <span className='label'>name</span>
-            <input className='input' value={name} onChange={(e) => setName(e.target.value)}/>
-          </div>
-          <div className='inputDiv'>
-            <span className='label'>email</span>
-            <input className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
-          </div>
-          <div className='inputDiv'>
-            <span className='label'>company</span>
-            <input className='input' value={company} onChange={(e) => setCompany(e.target.value)} />
-          </div>
-          <div className='inputDiv'>
-            <span className='label'>password</span>
-            <input className='input' value={password} onChange={(e) => setPassword(e.target.value)} />
-          </div>
-          <div className='inputDiv'>
-            <span className='label'>confirm password</span>
-            <input className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-          </div>
-          <div className='buttonDiv'>
-          <button className='button'>
-              sign up
-            </button>
-          <button type='submit' className='button'>
-              login
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div style={{flex: 1}}>
 
+        </div>
+        <div style={{flex: 1}}>
+            <form style={{width: '100%'}} onSubmit={onSubmit}>
+              <div className='inputDiv'>
+                <span className='label'>name</span>
+                <input className='input' value={name} onChange={(e) => setName(e.target.value)}/>
+              </div>
+              <div className='inputDiv'>
+                <span className='label'>email</span>
+                <input className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
+              </div>
+              <div className='inputDiv'>
+                <span className='label'>company</span>
+                <input className='input' value={company} onChange={(e) => setCompany(e.target.value)} />
+              </div>
+              <div className='inputDiv'>
+                <span className='label'>password</span>
+                <input className='input' value={password} onChange={(e) => setPassword(e.target.value)} />
+              </div>
+              <div className='inputDiv'>
+                <span className='label'>confirm password</span>
+                <input className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+              </div>
+              <div className='buttonDiv'>
+              <button className='button'>
+                  sign up
+                </button>
+              <button type='submit' className='button'>
+                  login
+                </button>
+              </div>
+            </form>
+        </div>
+        <div style={{ flex: 1 }}>
+          <div className='aboutDiv'>
+            <div className='titleDiv'>
+              <p className='sectionTitle'>about</p>
+              <hr className='line' />
+            </div>
+            <span className='aboutText'>
+              frome_road is a space for all employees of Lot Fourteen to discuss anything from tech to the weather.
+            </span>
+            <span className='aboutText'>
+              Every hour the five users with the most trendpoints will be displayed across the bottom leaderboard, this is reset weekly so make sure to be active!
+            </span>
+            <div className='titleDiv' style={{marginTop: '3rem'}}>
+              <p className='sectionTitle'>creator</p>
+              <hr className='line' />
+            </div>
+              <p className='aboutText' style={{marginTop: 0}}>I originally created this project as a way to get into full-stack devving.</p>
+              <p className='aboutText'>The stack is ReactJS, NodeJS, and MySQL.
+              It is hosted as a web app using AWS Amplify and a NodeJS and MySQL backend on my laptop. (don't tell my ISP)</p>
+              <p className='aboutText'>I honestly have no idea if it'll work or how many bugs there'll be so please don't hesitate to report them.</p>
+          </div>
+        </div>
+      </div>      
+    </div>
   )
 }
 
