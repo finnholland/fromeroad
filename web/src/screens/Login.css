@@ -12,7 +12,7 @@
   height: 100%;
   width: 100%;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: start;
   flex-direction: row;
   display: flex;
   padding-bottom: 2rem;

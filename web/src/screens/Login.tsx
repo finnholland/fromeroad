@@ -1,5 +1,5 @@
 import Axios from 'axios'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import '../App.css';
 import './Login.css';
 import SvgChamonix from '../assets/svg/chamonix';
@@ -10,8 +10,11 @@ import Hamster from '../assets/svg/hamster';
 import { useAppDispatch } from '../redux/Actions';
 import { setUser } from '../redux/slices/userSlice';
 
+interface Props {
+  setAuthenticated: any
+}
 
-const Login = () => {
+const Login: React.FC<Props> = (props: Props) => {
   
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -20,7 +23,6 @@ const Login = () => {
   const [confirmPassword, setConfirmPassword] = useState('')
   
   const dispatch = useAppDispatch()
-  const navigate = useNavigate();
 
   const signUp = async () => {
     if (!email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
@@ -39,7 +41,7 @@ const Login = () => {
         password: password
       }).then(res => {
         dispatch(setUser(res.data.user));
-        navigate("../", { replace: true });
+        props.setAuthenticated(true)
       }).catch(err => {
         alert(err)
       })
@@ -60,7 +62,7 @@ const Login = () => {
           localStorage.setItem('token', res.data.token)
         }
         dispatch(setUser(res.data.user));
-        navigate("../", { replace: true });
+        props.setAuthenticated(true)
       })
     }
   }
@@ -73,6 +75,12 @@ const Login = () => {
       login()
     }
   } 
+
+  useEffect(() => {
+    if (localStorage.getItem('token') && localStorage.getItem('token') !== '') {
+      
+    }
+  }, [])
 
   return (
     <div className="app">
@@ -105,7 +113,7 @@ const Login = () => {
               </div>
               <div className='inputDiv'>
                 <span className='label'>email</span>
-                <input className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
+                <input type={'email'} className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
               </div>
               <div className='inputDiv'>
                 <span className='label'>company</span>
@@ -113,11 +121,11 @@ const Login = () => {
               </div>
               <div className='inputDiv'>
                 <span className='label'>password</span>
-                <input className='input' value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input type={'password'} className='input' value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
               <div className='inputDiv'>
                 <span className='label'>confirm password</span>
-                <input className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                <input type={'password'} className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
               </div>
               <div className='buttonDiv'>
               <button className='button'>
