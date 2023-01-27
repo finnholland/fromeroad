@@ -74,13 +74,7 @@ const Login: React.FC<Props> = (props: Props) => {
     } else {
       login()
     }
-  } 
-
-  useEffect(() => {
-    if (localStorage.getItem('token') && localStorage.getItem('token') !== '') {
-      
-    }
-  }, [])
+  }
 
   return (
     <div className="app">
