@@ -6,7 +6,7 @@ import SvgLotfourteen from '../assets/svg/lotfourteen';
 import SvgRemoveButton from '../assets/svg/removeButton';
 import SvgAddButton from '../assets/svg/SvgAddButton';
 import Axios from 'axios';
-import { useAppSelector } from '../redux/Actions';
+import { useAppDispatch, useAppSelector } from '../redux/Actions';
 import moment from 'moment';
 
 import { Post } from '../components/Post';
@@ -19,6 +19,7 @@ import SvgRefresh from '../assets/svg/refreshIcon';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { API } from '../constants';
 import LogoutIcon from '../assets/svg/logoutIcon';
+import { setInterests } from '../redux/slices/userSlice';
 
 const HOUR = 60000 * 60
 interface Props {
@@ -27,6 +28,7 @@ interface Props {
 
 const Home: React.FC<Props> = (props: Props) => {
   const selector = useAppSelector(state => state);
+  const dispatch = useAppDispatch();
   const [profileImageUrl, setProfileImageUrl] = useState(selector.user.profileImageUrl);
 
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
@@ -84,7 +86,7 @@ const Home: React.FC<Props> = (props: Props) => {
 
   const postItem = posts.map((i) => {
     return (
-      <Post key={i.post.postID} post={i.post} poster={i.poster}/>
+      <Post key={i.post.postID} post={i.post} poster={i.poster} searchWords={selector.user.interests.map(i => i.name+';')} />
     )
   });
 
@@ -183,6 +185,7 @@ const Home: React.FC<Props> = (props: Props) => {
       headers:
         { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
+      dispatch(setInterests(res.data));
       setInterestList(res.data)
     })
   }
