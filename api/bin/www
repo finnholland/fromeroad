@@ -15,12 +15,12 @@ const path = require("path");
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '9000');
+var port = normalizePort(process.env.PORT || '9080');
 app.set('port', port);
 
 // certificates
 var options = {
-  key: fs.readFileSync(path.resolve(__dirname, '../key.pem'), {encoding:'utf8'}),
+  key: fs.readFileSync(path.resolve(__dirname, '../privkey.pem'), {encoding:'utf8'}),
   cert: fs.readFileSync(path.resolve(__dirname, '../cert.pem'), { encoding: 'utf8' }),
   passphrase: 'Willo_w3-Quill-AgEnt'
 };
@@ -41,7 +41,7 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-httpsServer.listen(9090);
+httpsServer.listen(9443);
 httpsServer.on('error', onError);
 httpsServer.on('listening', onListening);
 /**
