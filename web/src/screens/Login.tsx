@@ -84,7 +84,7 @@ const Login: React.FC<Props> = (props: Props) => {
         </a>
 
         <div className='titleContainer'>
-          <p className='title'>fromeroad</p>
+          <p className='title'>frome_road</p>
         </div>
         <a href='http://www.chamonix.com.au' className='chamonix' style={{ justifyContent: 'flex-end' }}>
           <SvgChamonix height={20}/>
