@@ -20,7 +20,7 @@ app.set('port', port);
 
 // certificates
 var options = {
-  key: fs.readFileSync(path.resolve(__dirname, '../key.pem'), {encoding:'utf8'}),
+  key: fs.readFileSync(path.resolve(__dirname, '../privkey.pem'), {encoding:'utf8'}),
   cert: fs.readFileSync(path.resolve(__dirname, '../cert.pem'), { encoding: 'utf8' }),
   passphrase: 'Willo_w3-Quill-AgEnt'
 };
