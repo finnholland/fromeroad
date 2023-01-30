@@ -22,6 +22,7 @@ app.set('port', port);
 var options = {
   key: fs.readFileSync(path.resolve(__dirname, '../privkey.pem'), {encoding:'utf8'}),
   cert: fs.readFileSync(path.resolve(__dirname, '../cert.pem'), { encoding: 'utf8' }),
+  dhparam: fs.readFileSync(path.resolve(__dirname, '../dh-strong.pem'), { encoding: 'utf8' }),
   passphrase: 'Willo_w3-Quill-AgEnt'
 };
 

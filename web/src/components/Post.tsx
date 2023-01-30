@@ -7,10 +7,12 @@ import SvgAddButton from '../assets/svg/SvgAddButton';
 import { Comment } from './Comment';
 import { getMessageAge } from '../redux/helpers';
 import { API, DEFAULT_PROFILE_IMAGE } from '../constants';
+import Highlighter from "react-highlight-words";
 
 interface Props {
   post: PostType,
-  poster: Poster
+  poster: Poster,
+  searchWords: string[]
 }
 
 export const Post: React.FC<Props> = (props: Props) => {
@@ -28,6 +30,7 @@ export const Post: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     getComments();
+    console.log(props.searchWords)
   }, [])
 
   const upvotePost = () => {
@@ -133,8 +136,14 @@ export const Post: React.FC<Props> = (props: Props) => {
             </div>
           </div>
         </div>
-        <div id='body' className='body'>
-          <span className='bodyText'>{props.post.body}</span>
+        <div id='body' className='postBody'>
+          <Highlighter
+            textToHighlight={props.post.body}
+            searchWords={props.searchWords}
+            highlightClassName="highlight"
+            highlightStyle={undefined}
+            className='bodyText'
+          />
           <img src={API + props.post.postImageUrl} alt='postImage' className='postImage'/>
         </div>
         <div hidden={comments.length <= 0} className='commentSection'>
@@ -176,8 +185,14 @@ export const Post: React.FC<Props> = (props: Props) => {
             
           </div>
         </div>
-        <div id='body' className='body'>
-          <span className='bodyText'>{props.post.body}</span>
+        <div id='body' className='postBody'>
+          <Highlighter
+            textToHighlight={props.post.body}
+            searchWords={props.searchWords}
+            highlightClassName="highlight"
+            highlightStyle={undefined}
+            className='bodyText'
+          />
         </div>
         <div hidden={comments.length <= 0} className='commentSection'>
           {loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}

@@ -74,13 +74,7 @@ const Login: React.FC<Props> = (props: Props) => {
     } else {
       login()
     }
-  } 
-
-  useEffect(() => {
-    if (localStorage.getItem('token') && localStorage.getItem('token') !== '') {
-      
-    }
-  }, [])
+  }
 
   return (
     <div className="app">
@@ -147,16 +141,19 @@ const Login: React.FC<Props> = (props: Props) => {
               frome_road is a space for all employees of Lot Fourteen to discuss anything from tech to the weather.
             </span>
             <span className='aboutText'>
-              Every hour the five users with the most trendpoints will be displayed across the bottom leaderboard, this is reset weekly so make sure to be active!
+              The site is currently only available to employees of Chamonix.
             </span>
-            <div className='titleDiv' style={{marginTop: '3rem'}}>
+            <div className='titleDiv' style={{marginTop: '2rem'}}>
               <p className='sectionTitle'>creator</p>
               <hr className='line' />
             </div>
               <p className='aboutText' style={{marginTop: 0}}>I originally created this project as a way to get into full-stack devving.</p>
-              <p className='aboutText'>The stack is ReactJS, NodeJS, and MySQL.
-              It is hosted as a web app using AWS Amplify and a NodeJS and MySQL backend on my laptop. (don't tell my ISP)</p>
+              <p className='aboutText'>The project stack is ReactJS, NodeJS, and MySQL, hosted on AWS Amplify.</p>
               <p className='aboutText'>I honestly have no idea if it'll work or how many bugs there'll be so please don't hesitate to report them.</p>
+              <div style={{flexDirection: 'row', display: 'flex'}}>
+                <span className='aboutText'>The <a href='https://github.com/fhllnd/fromeroad' rel="noreferrer" target={'_blank'}> Repo </a>should anyone care to fix said bugs</span>
+              </div>
+              
           </div>
         </div>
       </div>      
