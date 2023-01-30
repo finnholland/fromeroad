@@ -54,7 +54,13 @@
   align-content: flex-start;
   display: flex;
 }
+
 .aboutDiv {
   margin: 3rem;
   margin-top: 0
 }
+
+a { text-decoration: none; color:#8205ff; }
+a:visited { text-decoration: none; color:#8205ff; }
+a:hover { text-decoration: none; color:#ffb405; }
+a:focus { text-decoration: none; color:#8205ff; }
