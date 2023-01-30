@@ -151,7 +151,7 @@ const Login: React.FC<Props> = (props: Props) => {
               <p className='aboutText'>The project stack is ReactJS, NodeJS, and MySQL, hosted on AWS Amplify.</p>
               <p className='aboutText'>I honestly have no idea if it'll work or how many bugs there'll be so please don't hesitate to report them.</p>
               <div style={{flexDirection: 'row', display: 'flex'}}>
-                <span className='aboutText'>The <a href='https://github.com/fhllnd/fromeroad' rel="noreferrer" target={'_blank'}> Repo </a>should anyone care to fix said bugs</span>
+              <p style={{ display: 'inline-block', marginTop: '1.5rem'}}>The <a href='https://github.com/fhllnd/fromeroad' rel="noreferrer" target={'_blank'}> Repo</a> should anyone care to fix said bugs</p>
               </div>
               
           </div>
