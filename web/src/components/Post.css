@@ -9,10 +9,10 @@
   flex-direction: column;
 }
 
-.post .body {
+.postBody {
   height: 100%;
   width: 100%;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   flex-direction: column;
   display: flex;
@@ -63,6 +63,12 @@
 .bodyText {
   color: #8205ff;
   font-size: 1.5rem;
+}
+
+.highlight {
+  color: #ffb405;
+  font-size: 1.5rem;
+  background-color: #ffffff00;
 }
 
 .postFooter {
