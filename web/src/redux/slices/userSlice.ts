@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { User } from '../../../types';
+import { User, Interest } from '../../../types';
 
 export const initialState: User = {
   userID: 0,
@@ -8,7 +8,8 @@ export const initialState: User = {
   email: '',
   company: '',
   trendPoints: 0,
-  profileImageUrl: ''
+  profileImageUrl: '',
+  interests: []
 };
 
 export const userSlice = createSlice({
@@ -24,10 +25,13 @@ export const userSlice = createSlice({
       state.trendPoints = action.payload.trendPoints
       state.profileImageUrl = action.payload.profileImageUrl
     },
+    setInterests: (state, action: PayloadAction<Interest[]>) => {
+      state.interests = action.payload
+    }
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser, setInterests } = userSlice.actions;
 
 
 export default userSlice.reducer;
