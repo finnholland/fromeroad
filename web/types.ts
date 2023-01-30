@@ -4,7 +4,8 @@ export interface User {
   email: string,
   company: string,
   trendPoints: number,
-  profileImageUrl: string
+  profileImageUrl: string,
+  interests: Interest[]
 }
 
 export interface Interest {
