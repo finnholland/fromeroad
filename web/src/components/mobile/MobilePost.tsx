@@ -136,7 +136,7 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
               <span className='headerTextName'>{props.poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
             </div>
             <div className='headerTextCompany' style={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'row', width: '100%' }}>
-              <span className='headerTextCompany'>{props.poster.company}</span> <span>#tag</span>
+              <span className='headerTextCompany'>{props.poster.company}</span>
             </div>
           </div>
         </div>
@@ -182,7 +182,7 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
               <span className='headerTextName'>{props.poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
             </div>
             <div className='headerTextCompany' style={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'row', width: '100%' }}>
-              <span className='headerTextCompany'>{props.poster.company}</span> <span>#tag</span>
+              <span className='headerTextCompany'>{props.poster.company}</span>
             </div>
           </div>
         </div>
