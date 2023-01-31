@@ -44,13 +44,13 @@
 .headerTextName {
   color: #8205ff;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .headerTextCompany {
   color: #8205ff;
   font-size: .9rem;
-  font-weight: 100;
+  font-weight: 200;
 }
 
 .post .body {
@@ -99,6 +99,7 @@
   border-radius: 30px;
   align-items: center;
   cursor: pointer;
+  text-align: center;
 }
 
 .commentInput {
@@ -120,7 +121,7 @@
   border: 0;
   padding-left: 15px;
   padding-right: 15px;
-  font-weight: 600;
+  font-weight: 500;
   color: white;
 }
 

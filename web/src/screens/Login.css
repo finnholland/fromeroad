@@ -28,6 +28,8 @@
 
 .label {
   margin-bottom: 5px;
+  color: #8205ff;
+  margin-right: 10px;
 }
 
 .buttonDiv {
@@ -53,6 +55,7 @@
   margin-top: 1.5rem;
   align-content: flex-start;
   display: flex;
+  font-size: 0.975rem;
 }
 
 .app .aboutDiv {

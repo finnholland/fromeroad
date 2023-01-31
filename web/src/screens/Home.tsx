@@ -374,7 +374,7 @@ const Home: React.FC<Props> = (props: Props) => {
                   <div>
                     <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(${API}${profileImageUrl})`, backgroundSize: 'cover' }}>
                       <div className='profileImageOverlay'>
-                        <span style={{alignItems: 'center', display:'flex', marginBottom: 5}}>change</span>
+                        <span style={{alignItems: 'center', display:'flex', marginBottom: 5, color: '#fff'}}>change</span>
                       </div>
                     </div>
                   </div>

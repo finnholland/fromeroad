@@ -13,13 +13,14 @@
 }
 
 .trendingUser .subtext {
-  font-size: 14px;
-  color: #c182ff
+  font-size: .9rem;
+  color: #c182ff;
+  font-weight: 200;
 }
 .trendingUser .text {
   font-size: 16px;
   color: #8205ff;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 5px;
 }
 
@@ -28,7 +29,7 @@
   width: 56px;
   border-radius: 60px;
   border: 2px solid #fff;
-  box-shadow: 0px 1px 3px #888;
+  box-shadow: 0px 2px 3px #888;
   overflow: hidden;
   margin-right: 1rem;
 }
