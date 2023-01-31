@@ -11,8 +11,7 @@ import Highlighter from "react-highlight-words";
 
 interface Props {
   post: PostType,
-  poster: Poster,
-  searchWords: string[]
+  poster: Poster
 }
 
 export const MobilePost: React.FC<Props> = (props: Props) => {
@@ -27,11 +26,17 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
   const [imageUrl, setImageUrl] = useState(props.poster.profileImageUrl)
   const [errored, setErrored] = useState(false)
   const [loading, setLoading] = useState(true);
+  const [searchWords, setSearchWords] = useState<string[]>([]);
 
   useEffect(() => {
     getComments();
-    console.log(props.searchWords)
+    getSearchWords();
   }, [])
+
+  const getSearchWords = () => {
+    const words = props.post.body.split(/([^\s]*?;)/g).filter((word) => word.includes(';') && word.length !== 1 )
+    setSearchWords(words)
+  }
 
   const upvotePost = () => {
     const params = {
@@ -92,7 +97,6 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
     Axios.get(`${API}/post/comments/get/${props.post.postID}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
-      console.log(res.data)
       setComments(res.data)
       setLoading(false)
     })
@@ -139,7 +143,7 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
         <div id='body' className='postBody'>
           <Highlighter
             textToHighlight={props.post.body}
-            searchWords={props.searchWords}
+            searchWords={searchWords}
             highlightClassName="highlight"
             highlightStyle={undefined}
             className='bodyText'
@@ -185,7 +189,7 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
         <div id='body' className='postBody'>
           <Highlighter
             textToHighlight={props.post.body}
-            searchWords={props.searchWords}
+            searchWords={searchWords}
             highlightClassName="highlight"
             highlightStyle={undefined}
             className='bodyText'

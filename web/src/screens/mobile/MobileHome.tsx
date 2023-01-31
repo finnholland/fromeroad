@@ -80,7 +80,7 @@ const MobileHome: React.FC<Props> = (props: Props) => {
 
   const postItem = posts.map((i) => {
     return (
-      <MobilePost key={i.post.postID} post={i.post} poster={i.poster} searchWords={selector.user.interests.map(i => i.name+';')} />
+      <MobilePost key={i.post.postID} post={i.post} poster={i.poster} />
     )
   });
 

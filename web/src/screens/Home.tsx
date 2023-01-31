@@ -86,7 +86,7 @@ const Home: React.FC<Props> = (props: Props) => {
 
   const postItem = posts.map((i) => {
     return (
-      <Post key={i.post.postID} post={i.post} poster={i.poster} searchWords={selector.user.interests.map(i => i.name+';')} />
+      <Post key={i.post.postID} post={i.post} poster={i.poster} />
     )
   });
 
