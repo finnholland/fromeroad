@@ -83,35 +83,47 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
       </div>
       <div className='body'>
         <form style={{width: '100%'}} onSubmit={onSubmit}>
-          <div className='inputDiv'>
-            <span className='label'>name</span>
-            <input className='input' value={name} onChange={(e) => setName(e.target.value)}/>
-          </div>
-          <div className='inputDiv'>
-            <span className='label'>email</span>
-            <input type={'email'} className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
-          </div>
-          <div className='inputDiv'>
-            <span className='label'>company</span>
-            <input className='input' value={company} onChange={(e) => setCompany(e.target.value)}/>
-          </div>
-          <div className='inputDiv'>
-            <span className='label'>password</span>
-            <input type={'password'} className='input' value={password} onChange={(e) => setPassword(e.target.value)}/>
-          </div>
-          <div className='inputDiv'>
-            <span className='label'>confirm password</span>
-            <input type={'password'} className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>
-          </div>
-          <div className='buttonDiv'>
-          <button className='button'>
-              sign up
-            </button>
-          <button type='submit' className='button'>
-              login
-            </button>
-          </div>
-        </form>
+            <div className='inputDiv'>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <span className='label'>name</span> <span style={{color: '#8205ff'}}>*</span>
+              </div>
+              <input className='input' value={name} onChange={(e) => setName(e.target.value)}/>
+            </div>
+            <div className='inputDiv'>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <span className='label'>email</span> <span style={{color: '#8205ff'}}>*</span><span style={{color: '#FFB405'}}>*</span>
+              </div>
+              <input type={'email'} className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
+            </div>
+            <div className='inputDiv'>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <span className='label'>company</span> <span style={{color: '#8205ff'}}>*</span> 
+              </div>
+              <input className='input' value={company} onChange={(e) => setCompany(e.target.value)} />
+            </div>
+            <div className='inputDiv'>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <span className='label'>password</span> <span style={{color: '#8205ff'}}>*</span><span style={{color: '#FFB405'}}>*</span>
+              </div>
+                <input type={'password'} className='input' value={password} onChange={(e) => setPassword(e.target.value)} />
+            </div>
+            <div className='inputDiv'>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <span className='label'>confirm password</span> <span style={{color: '#8205ff'}}>*</span>
+              </div>
+              <input type={'password'} className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+            </div>
+            <div className='buttonDiv'>
+              <button className='button'>
+                sign up
+                <span style={{color: '#8205ff', marginLeft: 5}}>*</span><span style={{color: '#FFB405'}}>*</span>
+              </button>
+              <button type='submit' className='button'>
+                login
+                <span style={{color: '#FFB405', marginLeft: 5}}>*</span>
+              </button>
+            </div>
+          </form>
         <div>
           <div className='aboutDiv'>
             <div className='titleDiv'>
