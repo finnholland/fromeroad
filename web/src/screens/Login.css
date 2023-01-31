@@ -55,9 +55,18 @@
   display: flex;
 }
 
-.aboutDiv {
+.app .aboutDiv {
   margin: 3rem;
   margin-top: 0
+}
+
+.welcome {
+  justify-content: space-between; 
+  flex-direction: column; 
+  display: flex; 
+  margin-top: 3rem; 
+  margin-bottom: 3rem; 
+  text-align: center;
 }
 
 a { text-decoration: none; color:#8205ff; }
