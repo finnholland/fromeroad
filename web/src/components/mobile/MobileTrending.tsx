@@ -1,6 +1,41 @@
-import React from 'react'
+import Axios from 'axios';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react'
+import { TrendingUserType } from '../../../types';
+import { HOUR, API } from '../../constants';
+import { TrendingUser } from '../TrendingUser';
 
 export const MobileTrending = () => {
+  const [trendingUsers, setTrendingUsers] = useState<TrendingUserType[]>([]);
+  const [trendingLoading, setTrendingLoading] = useState(true);
+  
+  const trendingUserItem = trendingUsers.map((i) => {
+    return (
+      <TrendingUser key={i.userID} user={i} />
+    )
+  });
+  
+  useEffect(() => {
+    getTrendingUsers();
+    const trendInterval = setInterval(() => {
+      getTrendingUsers();
+    }, HOUR);
+  }, [])
+
+  
+  const getTrendingUsers = () => {
+    setTrendingUsers([])
+    setTrendingLoading(true)
+    console.log('Logs every hour ' + moment().format('HH:mm:ss'));
+    Axios.get(`${API}/trends/`, {
+      headers:
+        { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    }).then((res) => {
+      setTrendingUsers(res.data)
+      setTrendingLoading(false)
+    })
+  }
+
   return (
     <div>MobileTrending</div>
   )

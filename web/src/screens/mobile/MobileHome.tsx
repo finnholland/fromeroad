@@ -29,24 +29,13 @@ const MobileHome: React.FC<Props> = (props: Props) => {
   const dispatch = useAppDispatch();
   const [profileImageUrl, setProfileImageUrl] = useState(selector.user.profileImageUrl);
 
-  const [removeSvgHover, setRemoveSvgHover] = useState(-1);
-  const [addSvgHover, setAddSvgHover] = useState(-2);
-  const [plusHover, setPlusHover] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [creatingPost, setCreatingPost] = useState(false);
 
-  const [interest, setInterest] = useState('');
-  const [interestList, setInterestList] = useState<Interest[]>([]);
-  const [interestSearch, setInterestSearch] = useState<Interest[]>([]);
   const [posts, setPosts] = useState<PostItem[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
-  const [recentPosters, setRecentPosters] = useState<RecentPosterType[]>([]);
-  const [trendingUsers, setTrendingUsers] = useState<TrendingUserType[]>([]);
-
   const [loading, setLoading] = useState(true);
-  const [activityLoading, setActivityLoading] = useState(true);
-  const [trendingLoading, setTrendingLoading] = useState(true);
 
   const ref = useRef<HTMLInputElement>(null);
   const handleClick = (e: any) => {
@@ -55,87 +44,15 @@ const MobileHome: React.FC<Props> = (props: Props) => {
     }
   }
 
-  const interestItems = interestList.map((i) => {
-    return (
-      <div key={i.interestID} className='interestDiv' onMouseEnter={() => setRemoveSvgHover(i.interestID)}
-          onMouseLeave={() => setRemoveSvgHover(-1)} onClick={() => removeInterest(i.interestID)}>
-        <span className='interestTitle'>{i.name}</span>
-        <SvgRemoveButton height={20} stroke={removeSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
-      </div>
-    )
-  });
-
-  const interestSearchResults = interestSearch.map((i) => {
-    return (
-      <div className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestID)}
-          onMouseLeave={() => setAddSvgHover(-2)} onClick={() => addInterestHelper(i)}>
-        <span className='interestTitle'>{i.name}</span>
-          <SvgAddButton height={20} stroke={addSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
-      </div>
-    )
-  });
-
-  const recentPostersItems = recentPosters.map((i) => {
-    return (
-      <RecentPoster key={i.userID} user={i} />
-    )
-  });
-
   const postItem = posts.map((i) => {
     return (
       <MobilePost key={i.post.postID} post={i.post} poster={i.poster} />
     )
   });
 
-  const trendingUserItem = trendingUsers.map((i) => {
-    return (
-      <TrendingUser key={i.userID} user={i} />
-    )
-  });
-
-  const addInterestHelper = (interest: Interest) => {
-    if (interest.interestID) {
-      let removalArray: Interest[] = interestSearch
-      removalArray = removalArray.filter(i => i.interestID !== interest.interestID)
-      setInterestSearch(removalArray)
-    }
-    addInterest(interest.name)
-  }
-
   useEffect(() => {
     getPosts();
-    getRecentPosters();
-    getTrendingUsers();
-    getInterests(selector.user.userID);
-    const trendInterval = setInterval(() => {
-      getRecentPosters();
-      getTrendingUsers();
-    }, HOUR);
-
-  return () => clearInterval(trendInterval);
   }, [])
-
-  const removeInterest = (interestID: number) => {
-    Axios.delete(`${API}/user/interests/removeInterests/${selector.user.userID}/${interestID}`, {
-      headers:
-        { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).then(() => {
-      getInterests(selector.user.userID)
-    })
-  }
-
-  const getRecentPosters = () => {
-    setActivityLoading(true)
-    setRecentPosters([])
-    Axios.get(`${API}/recentPosters`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    }).then(res => {
-      setRecentPosters(res.data)
-      setActivityLoading(false)
-    })
-  }
 
   const uploadImage = (e: any) => {
     const fd = new FormData();
@@ -155,56 +72,6 @@ const MobileHome: React.FC<Props> = (props: Props) => {
       })
       
     })
-  }
-
-  const addInterest = (interest: string) => {
-    const params = {
-      userID: selector.user.userID,
-      name: interest,
-    }
-    Axios.post(`${API}/user/interests/addInterests`, params, {
-      headers:
-        { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).then((res) => {
-      if (res.status !== 409) {
-        getInterests(selector.user.userID)
-        setRemoveSvgHover(-1)
-      } else {
-        alert('interest already exists')
-      }
-    }).catch(err => {
-      alert('error: ' + err.response.status + ' - interest already added')
-    })
-  }
-
-  const getInterests = (userID: number) => {
-    Axios.get(`${API}/user/interests/getInterests/${userID}`, {
-      headers:
-        { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).then((res) => {
-      dispatch(setInterests(res.data));
-      setInterestList(res.data)
-    })
-  }
-
-  const changeInterestSearch = (search: string) => {
-    setInterest(search);
-    if (!search || search === '') {
-      setInterestSearch([])
-    } else {
-      Axios.get(`${API}/user/interests/searchInterests/${search}`, {
-        headers:
-          { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      }).then((res) => {
-        const tempArr: Interest[] = []
-        res.data.forEach((interest: Interest) => {
-          if (interestList.findIndex(i => i.interestID === interest.interestID) === -1) {
-            tempArr.push(interest)
-          }
-        });
-        setInterestSearch(tempArr)
-      })
-    }
   }
 
   const getPosts = () => {
@@ -249,7 +116,6 @@ const MobileHome: React.FC<Props> = (props: Props) => {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
       updatePosts(res.data, direction)
-      getRecentPosters()
       setLoading(false)
       if (res.data.length <= 0) {
         setHasMore(false)
@@ -290,18 +156,6 @@ const MobileHome: React.FC<Props> = (props: Props) => {
     
   }
 
-  const getTrendingUsers = () => {
-    setTrendingUsers([])
-    setTrendingLoading(true)
-    console.log('Logs every hour ' + moment().format('HH:mm:ss'));
-    Axios.get(`${API}/trends/`, {
-      headers:
-        { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).then((res) => {
-      setTrendingUsers(res.data)
-      setTrendingLoading(false)
-    })
-  }
 
   const handleCreatePostClick = () => {
     setCreatingPost(!creatingPost);
