@@ -6,6 +6,7 @@ import SvgAddButton from '../../assets/svg/SvgAddButton';
 import Axios from 'axios';
 import { useAppDispatch, useAppSelector } from '../../redux/Actions';
 import moment from 'moment';
+import { slide as Menu } from 'react-burger-menu'
 
 import { RecentPoster } from '../../components/RecentPoster';
 import { TrendingUser } from '../../components/TrendingUser';
@@ -15,10 +16,11 @@ import { API } from '../../constants';
 import { setInterests } from '../../redux/slices/userSlice';
 import { Header } from '../../components/Header';
 import { MobilePost } from '../../components/mobile/MobilePost';
+import { MenuItems } from '../../components/mobile/MenuItems';
 
 const HOUR = 60000 * 60
 interface Props {
-  setAuthenticated: any
+  logout: any
 }
 
 const MobileHome: React.FC<Props> = (props: Props) => {
@@ -300,21 +302,27 @@ const MobileHome: React.FC<Props> = (props: Props) => {
     })
   }
 
-  const logout = () => {
-    props.setAuthenticated(false);
-    localStorage.removeItem('token')
-  }
-
   const handleCreatePostClick = () => {
     setCreatingPost(!creatingPost);
     window.scrollTo(0, 0);
   }
 
   return (
-    <div className="mobile">
-      <Header type={'mobile'}/>
-      <div className='home'>
-        <div id='body' style={{ flexDirection: 'row', display: 'flex', flex: 1}}>
+    <div className="mobile" id='mobile'>
+      <div style={{position: 'fixed', display: 'flex', width: '100%'}}>
+        <Header type={'mobile'}/>
+      </div>
+      
+      <Menu pageWrapId='home' outerContainerId='mobile'
+        customBurgerIcon={false}
+        isOpen={selector.sidebar.isOpen}
+        width={'75vw'}
+        className='sidebarStyle'
+        overlayClassName='sidebarOverlay'>
+        <MenuItems logout={props.logout} currentRoute={'feed'} />
+      </Menu>
+      <div className='home' id='home' >
+        <div id='body' style={{ flexDirection: 'row', display: 'flex', flex: 1, overflow: (selector.sidebar.isOpen ? 'hidden' : 'scroll') }}>
           <div id='feed' className='feed'>
             <SvgAddButton
               onClick={() => handleCreatePostClick()}

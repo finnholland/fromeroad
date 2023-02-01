@@ -20,10 +20,11 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { API } from '../constants';
 import LogoutIcon from '../assets/svg/logoutIcon';
 import { setInterests } from '../redux/slices/userSlice';
+import { Header } from '../components/Header';
 
 const HOUR = 60000 * 60
 interface Props {
-  setAuthenticated: any
+  logout: any
 }
 
 const Home: React.FC<Props> = (props: Props) => {
@@ -306,26 +307,9 @@ const Home: React.FC<Props> = (props: Props) => {
     })
   }
 
-  const logout = () => {
-    props.setAuthenticated(false);
-    localStorage.removeItem('token')
-  }
-
   return (
     <div className="app">
-      <header className="header">
-          <a target="_blank" rel="noreferrer" href='http://www.lotfourteen.com.au' className='lotfourteen'>
-            <SvgLotfourteen height={25} />
-          </a>
-
-        <div className='titleContainer'>
-          <p className='title'>frome_road</p>
-        </div>
-        <a target="_blank" rel="noreferrer" href='http://www.chamonix.com.au' className='chamonix' style={{ justifyContent: 'flex-end' }}>
-          <SvgChamonix height={20}/>
-        </a>
-        
-      </header>
+      <Header type='desktop'/>
       <div className='home'>
         <div id='body' style={{ flexDirection: 'row', display: 'flex', flex: 6, paddingBottom: 100}}>
           
@@ -367,7 +351,7 @@ const Home: React.FC<Props> = (props: Props) => {
             <div className='titleDiv'>
               <p className='sectionTitle'>me</p>
               <hr className='line' />
-              <LogoutIcon onClick={() => logout()} height={25} width={25} style={{ marginLeft: 15 }} fill={'#8205ff'} />
+              <LogoutIcon onClick={() => props.logout()} height={25} width={25} style={{ marginLeft: 15 }} fill={'#8205ff'} />
             </div>
               <div>
                 <div style={{ flexDirection: 'row', display: 'flex' }}>

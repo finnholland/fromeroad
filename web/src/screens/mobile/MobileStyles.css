@@ -13,6 +13,7 @@
   padding: 20px;
   flex-direction: column;
   background-color: white;
+  padding-top: 70px;
 }
 
 .mobile .header {
@@ -64,4 +65,60 @@
   display: flex;
   flex-direction: column;
   text-align: start;
+}
+
+.sidebarStyle {
+  background-color: white;
+  margin-top: 50px;
+}
+
+.sidebarOverlay {
+  margin-top: 50px;
+}
+
+.activeLine {
+  color: #ffb405;
+  border: #ffb405 solid 1px;
+  flex: 1; 
+  margin: 0
+}
+
+.mobile .activeTitle {
+  font-size: 18px;
+  color: #ffb405;
+  margin: 0;
+  margin-right: 0.8rem;
+}
+
+.mobile .sectionTitle {
+  font-size: 18px;
+  color: #8205ff;
+}
+
+.mobile .menuButton {
+  border: none;
+  background-color: #ffffff00;
+  font-size: 1rem;
+  padding: 10px;
+  margin-top: 2rem;
+}
+
+.mobile .logoutButton {
+  border-bottom: 2px solid #ffb405;
+  color: #ffb405;
+}
+
+.mobile .deleteButton {
+  border-bottom: 2px solid #ff1f3a;
+  color: #ff1f3a;
+}
+
+.menuItems {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.tabs {
+  margin-bottom: 4rem;
 }

@@ -2,7 +2,7 @@ import { useEffect, useState, } from 'react'
 import './App.css';
 import Axios from 'axios';
 import Home from './screens/Home';
-import { setUser } from './redux/slices/userSlice';
+import { initialState, setUser } from './redux/slices/userSlice';
 import { useAppDispatch } from './redux/Actions';
 import { isMobile } from 'react-device-detect';
 import { API } from './constants';
@@ -10,6 +10,7 @@ import Login from './screens/Login';
 import Hamster from './assets/svg/hamster';
 import MobileLogin from './screens/mobile/MobileLogin';
 import MobileHome from './screens/mobile/MobileHome';
+import { setIsOpen } from './redux/slices/sidebarSlice';
 
 
 function App() {
@@ -39,10 +40,17 @@ function App() {
     })
   }
 
+  const logout = () => {
+    setAuthenticated(false);
+    localStorage.removeItem('token');
+    dispatch(setUser(initialState));
+    dispatch(setIsOpen(false));
+  }
+
 
   if (authenticated && checked && !isMobile) {
     return (
-      <Home setAuthenticated={setAuthenticated}></Home>
+      <Home logout={logout}></Home>
     );
   } else if (!authenticated && checked && !isMobile) {
     return (
@@ -50,7 +58,7 @@ function App() {
     );
   } else if (authenticated && checked && isMobile) {
     return (
-      <MobileHome setAuthenticated={setAuthenticated}></MobileHome>
+      <MobileHome logout={logout}></MobileHome>
     );
   } else if (!authenticated && checked && isMobile) {
     return (

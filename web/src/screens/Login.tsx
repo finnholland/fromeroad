@@ -80,10 +80,10 @@ const Login: React.FC<Props> = (props: Props) => {
   return (
     <div className="app">
       <Header type='desktop'/>
-          <div className='welcome'>
-            <Hamster height={100} fill={'#5900B2'} />
-            <span style={{color: '#5900B2', fontSize: 18, marginTop: 15}}>Welcome to frome_road</span>
-          </div>
+      <div className='welcome'>
+        <Hamster height={100} fill={'#5900B2'} />
+        <span style={{color: '#5900B2', fontSize: 18, marginTop: 15}}>Welcome to frome_road</span>
+      </div>
       <div className='body'>
         <div style={{flex: 1}}>
 

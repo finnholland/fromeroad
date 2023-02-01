@@ -53,6 +53,8 @@ input:-webkit-autofill:active{
   align-items: center;
   justify-content: start;
   padding-left: 20px;
+  background-color: #00000000;
+  border: none;
 }
 
 .hamsterPage {
