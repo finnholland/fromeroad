@@ -17,6 +17,7 @@ import { setInterests } from '../../redux/slices/userSlice';
 import { Header } from '../../components/Header';
 import { MobilePost } from '../../components/mobile/MobilePost';
 import { MenuItems } from '../../components/mobile/MenuItems';
+import { setIsOpen } from '../../redux/slices/sidebarSlice';
 
 const HOUR = 60000 * 60
 interface Props {
@@ -307,6 +308,10 @@ const MobileHome: React.FC<Props> = (props: Props) => {
     window.scrollTo(0, 0);
   }
 
+  const toggleSidebar = () => {
+    dispatch(setIsOpen(!selector.sidebar.isOpen))
+  }
+
   return (
     <div className="mobile" id='mobile'>
       <div style={{position: 'fixed', display: 'flex', width: '100%'}}>
@@ -316,13 +321,14 @@ const MobileHome: React.FC<Props> = (props: Props) => {
       <Menu pageWrapId='home' outerContainerId='mobile'
         customBurgerIcon={false}
         isOpen={selector.sidebar.isOpen}
+        onClose={toggleSidebar}
         width={'75vw'}
         className='sidebarStyle'
         overlayClassName='sidebarOverlay'>
         <MenuItems logout={props.logout} currentRoute={'feed'} />
       </Menu>
       <div className='home' id='home' >
-        <div id='body' style={{ flexDirection: 'row', display: 'flex', flex: 1, overflow: (selector.sidebar.isOpen ? 'hidden' : 'scroll') }}>
+        <div id='body' style={{ flexDirection: 'row', display: 'flex', flex: 1 }}>
           <div id='feed' className='feed'>
             <SvgAddButton
               onClick={() => handleCreatePostClick()}

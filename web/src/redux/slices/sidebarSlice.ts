@@ -15,7 +15,14 @@ export const sidebarSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     setIsOpen: (state, action: PayloadAction<boolean>) => {
-      state.isOpen = action.payload
+      state.isOpen = action.payload;
+      if (action.payload) {
+        if (typeof window != 'undefined' && window.document) {
+          document.body.style.overflow = 'hidden';
+        }
+      } else {
+        document.body.style.overflow = 'unset';
+      }
     },
   },
 });
