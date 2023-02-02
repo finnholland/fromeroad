@@ -146,7 +146,7 @@ const Login: React.FC<Props> = (props: Props) => {
               <hr className='line' />
             </div>
               <p className='aboutText' style={{marginTop: 0}}>I originally created this project as a way to get into full-stack devving.</p>
-              <p className='aboutText'>The project stack is ReactJS, NodeJS, and MySQL, hosted on AWS Amplify, EC2, and Route 53.</p>
+              <p className='aboutText'>The project stack is ReactJS, NodeJS, and MySQL, hosted on AWS Amplify with a dedicated server.</p>
               <p className='aboutText'>I honestly have no idea if it'll work or how many bugs there'll be so please don't hesitate to report them.</p>
               <div style={{flexDirection: 'row', display: 'flex'}}>
                 <p style={{ display: 'inline-block', marginTop: '1.5rem'}}>The <a href='https://github.com/fhllnd/fromeroad' rel="noreferrer" target={'_blank'}> Repo</a> should anyone care to fix said bugs</p>
