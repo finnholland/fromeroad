@@ -5,10 +5,10 @@ import { HOUR, API } from '../../constants';
 import { RecentPoster } from '../RecentPoster';
 
 export const MobileActivity = () => {
-  const [recentPosters, setRecentPosters] = useState<RecentPosterType[]>([]);
+  const [activity, setActivity] = useState<RecentPosterType[]>([]);
   const [activityLoading, setActivityLoading] = useState(true);
   
-  const recentPostersItems = recentPosters.map((i) => {
+  const activityItems = activity.map((i) => {
     return (
       <RecentPoster key={i.userID} user={i} />
     )
@@ -19,22 +19,26 @@ export const MobileActivity = () => {
     const trendInterval = setInterval(() => {
       getActivity();
     }, HOUR);
+    
+    return () => clearInterval(trendInterval);
   }, [])
 
   const getActivity = () => {
     setActivityLoading(true)
-    setRecentPosters([])
+    setActivity([])
     Axios.get(`${API}/recentPosters`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     }).then(res => {
-      setRecentPosters(res.data)
+      setActivity(res.data)
       setActivityLoading(false)
     })
   }
 
   return (
-    <div>MobileActivity</div>
+    <div className='subPageContainer'>
+      {activityLoading ? <div className="lds-ellipsis loadingCentered"><div></div><div></div><div></div><div></div></div> : activityItems}
+    </div>
   )
 }

@@ -20,6 +20,8 @@ export const MobileTrending = () => {
     const trendInterval = setInterval(() => {
       getTrendingUsers();
     }, HOUR);
+
+    return () => clearInterval(trendInterval);
   }, [])
 
   
@@ -37,6 +39,8 @@ export const MobileTrending = () => {
   }
 
   return (
-    <div>MobileTrending</div>
+    <div className='subPageContainer'>
+      {trendingLoading ? <div className="lds-ellipsis loadingCentered"><div></div><div></div><div></div><div></div></div> : trendingUserItem}
+    </div>
   )
 }

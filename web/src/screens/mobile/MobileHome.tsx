@@ -1,25 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Interest, PostItem, Poster, RecentPosterType, TrendingUserType } from '../../../types';
+import { PostItem, Poster } from '../../../types';
 import './MobileStyles.css'
-import SvgRemoveButton from '../../assets/svg/removeButton';
 import SvgAddButton from '../../assets/svg/SvgAddButton';
 import Axios from 'axios';
 import { useAppDispatch, useAppSelector } from '../../redux/Actions';
-import moment from 'moment';
 import { slide as Menu } from 'react-burger-menu'
 
-import { RecentPoster } from '../../components/RecentPoster';
-import { TrendingUser } from '../../components/TrendingUser';
 import { PostEditor } from '../../components/PostEditor';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { API } from '../../constants';
-import { setInterests } from '../../redux/slices/userSlice';
 import { Header } from '../../components/Header';
 import { MobilePost } from '../../components/mobile/MobilePost';
 import { MenuItems } from '../../components/mobile/MenuItems';
 import { setIsOpen } from '../../redux/slices/sidebarSlice';
-
-const HOUR = 60000 * 60
+import { MobileActivity } from '../../components/mobile/MobileActivity';
+import { MobileInterests } from '../../components/mobile/MobileInterests';
+import { MobileTrending } from '../../components/mobile/MobileTrending';
 interface Props {
   logout: any
 }
@@ -27,22 +23,14 @@ interface Props {
 const MobileHome: React.FC<Props> = (props: Props) => {
   const selector = useAppSelector(state => state);
   const dispatch = useAppDispatch();
-  const [profileImageUrl, setProfileImageUrl] = useState(selector.user.profileImageUrl);
 
   const [refreshing, setRefreshing] = useState(false);
   const [creatingPost, setCreatingPost] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [posts, setPosts] = useState<PostItem[]>([]);
   const [hasMore, setHasMore] = useState(true);
-
-  const [loading, setLoading] = useState(true);
-
-  const ref = useRef<HTMLInputElement>(null);
-  const handleClick = (e: any) => {
-    if (ref.current && e.target.id === 'profileImage') {
-      ref.current.click();
-    }
-  }
+  const [currentRoute, setCurrentRoute] = useState('feed');
 
   const postItem = posts.map((i) => {
     return (
@@ -53,26 +41,6 @@ const MobileHome: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     getPosts();
   }, [])
-
-  const uploadImage = (e: any) => {
-    const fd = new FormData();
-    fd.append('file', e.target.files[0])
-    fd.append('userID', selector.user.userID.toString())
-    Axios.post(`${API}/image/profileImage/${selector.user.userID}`, fd, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    }).then(() => {
-      Axios.get(`${API}/image/profileImage/${selector.user.userID}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    }).then(res => {
-        setProfileImageUrl(res.data[0].profileImageUrl)
-      })
-      
-    })
-  }
 
   const getPosts = () => {
     setRefreshing(true)
@@ -179,34 +147,44 @@ const MobileHome: React.FC<Props> = (props: Props) => {
         width={'75vw'}
         className='sidebarStyle'
         overlayClassName='sidebarOverlay'>
-        <MenuItems logout={props.logout} currentRoute={'feed'} />
+        <MenuItems logout={props.logout} currentRoute={currentRoute} setCurrentRoute={setCurrentRoute} />
       </Menu>
       <div className='home' id='home' >
         <div id='body' style={{ flexDirection: 'row', display: 'flex', flex: 1 }}>
-          <div id='feed' className='feed'>
-            <SvgAddButton
-              onClick={() => handleCreatePostClick()}
-              height={50} stroke={creatingPost ? '#ffb405' : '#8205ff'}
-              style={{ marginLeft: 15, position: 'fixed', right: 40, bottom: 40 }}
-              className={creatingPost ? 'creatingPost' : 'cancelPost'} />
+          {
+            currentRoute === 'feed' ? (
+              <div id='feed' className='feed'>
+                <SvgAddButton
+                  onClick={() => handleCreatePostClick()}
+                  height={50} stroke={creatingPost ? '#ffb405' : '#8205ff'}
+                  style={{ marginLeft: 15, position: 'fixed', right: 40, bottom: 40 }}
+                  className={creatingPost ? 'creatingPost' : 'cancelPost'} />
 
-            {creatingPost ? (
-              <PostEditor setCreatingPost={setCreatingPost} refreshPosts={refreshPosts}/>
+                {creatingPost ? (
+                  <PostEditor setCreatingPost={setCreatingPost} refreshPosts={refreshPosts}/>
+                ) : (
+                  null
+                )}
+                <InfiniteScroll
+                  dataLength={posts.length}
+                  next={() => refreshPosts('<')}
+                  hasMore={hasMore}
+                  loader={loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
+                  style={{overflow: 'visible'}}>
+                  {postItem}
+                </InfiniteScroll>
+              </div>
+            ) : currentRoute === 'activity' ? (
+              <MobileActivity/>
+            ) : currentRoute === 'interests' ? (
+              <MobileInterests/>
             ) : (
-              null
-            )}
-            <InfiniteScroll
-              dataLength={posts.length}
-              next={() => refreshPosts('<')}
-              hasMore={hasMore}
-              loader={loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
-              style={{overflow: 'visible'}}>
-              {postItem}
-            </InfiniteScroll>
-          </div>
+              <MobileTrending/>
+            )
+          }
+  
         </div>
       </div>
-      <input ref={ref} type={'file'} name="file" onChange={uploadImage} hidden/>
     </div>
   );
 }
