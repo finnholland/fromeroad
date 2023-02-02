@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { PostItem, Poster } from '../../../types';
 import './MobileStyles.css'
 import SvgAddButton from '../../assets/svg/SvgAddButton';
@@ -24,7 +24,6 @@ const MobileHome: React.FC<Props> = (props: Props) => {
   const selector = useAppSelector(state => state);
   const dispatch = useAppDispatch();
 
-  const [refreshing, setRefreshing] = useState(false);
   const [creatingPost, setCreatingPost] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -43,10 +42,6 @@ const MobileHome: React.FC<Props> = (props: Props) => {
   }, [])
 
   const getPosts = () => {
-    setRefreshing(true)
-    setTimeout(() => {
-      setRefreshing(false)
-    }, 500);
     setLoading(true);
     Axios.get(`${API}/post/get`, {
       params: {
@@ -62,10 +57,6 @@ const MobileHome: React.FC<Props> = (props: Props) => {
   }
 
   const refreshPosts = (sign: string) => {
-    setRefreshing(true)
-    setTimeout(() => {
-      setRefreshing(false)
-    }, 500);
     setLoading(true);
     const direction = sign === '>' ? 'top' : 'bottom';
     let postID = 0

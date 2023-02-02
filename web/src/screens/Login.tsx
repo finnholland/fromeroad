@@ -1,10 +1,7 @@
 import Axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import '../App.css';
 import './Login.css';
-import SvgChamonix from '../assets/svg/chamonix';
-import SvgLotfourteen from '../assets/svg/lotfourteen';
-import { useNavigate } from 'react-router-dom';
 import { API } from '../constants';
 import Hamster from '../assets/svg/hamster';
 import { useAppDispatch } from '../redux/Actions';

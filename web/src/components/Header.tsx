@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import SvgChamonix from '../assets/svg/chamonix';
 import Hamburger from '../assets/svg/hamburger';
 import SvgLotfourteen from '../assets/svg/lotfourteen';

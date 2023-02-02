@@ -43,7 +43,7 @@
 .mobile .body {
   height: 100%;
   align-items: flex-start;
-  justify-content: start;
+  justify-content: flex-start;
   flex-direction: column;
   display: flex;
   padding: 2rem;
@@ -144,4 +144,14 @@
 
 .loadingCentered {
   align-self: center;
+}
+
+.mobile .commentInputDiv {
+  background-color: #d9fff1; 
+  border: 0; 
+  height: 30px;
+  flex: 1;
+  margin-left: 15px;
+  margin-right: 15px;
+  border-radius: 15px;
 }

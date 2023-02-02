@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Interest, PostItem, Poster, RecentPosterType, TrendingUserType } from '../../types';
 import './Home.css'
-import SvgChamonix from '../assets/svg/chamonix';
-import SvgLotfourteen from '../assets/svg/lotfourteen';
 import SvgRemoveButton from '../assets/svg/removeButton';
 import SvgAddButton from '../assets/svg/SvgAddButton';
 import Axios from 'axios';
@@ -116,7 +114,7 @@ const Home: React.FC<Props> = (props: Props) => {
       getTrendingUsers();
     }, HOUR);
 
-  return () => clearInterval(trendInterval);
+    return () => clearInterval(trendInterval);
   }, [])
 
   const removeInterest = (interestID: number) => {

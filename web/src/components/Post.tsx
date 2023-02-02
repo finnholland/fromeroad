@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { CommentType, Poster, PostItem, PostType } from '../../types'
+import { CommentType, Poster, PostType } from '../../types'
 import './Post.css'
 import Axios from 'axios';
 import { useAppSelector } from '../redux/Actions';

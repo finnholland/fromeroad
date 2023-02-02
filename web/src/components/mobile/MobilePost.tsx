@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { CommentType, Poster, PostType } from '../../../types'
 import '../Post.css'
+import '../../screens/mobile/MobileStyles.css'
 import Axios from 'axios';
 import { useAppSelector } from '../../redux/Actions';
 import SvgAddButton from '../../assets/svg/SvgAddButton';
@@ -169,6 +170,9 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
           </div>
           <input type={'text'} color='#3fffb9' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />
         </div>
+        <button className='postButton' style={{ flex: 1, marginTop: '1rem', cursor: 'pointer', backgroundColor: '#3fffb9', display: (comment === '' ? 'none' : 'inherit'), width: '100%', justifyContent: 'center' }} onClick={() => postComment()} >
+          <span>post</span>
+        </button>
       </div>
     )
   }
@@ -214,6 +218,9 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
           </div>
           <input type={'text'} color='#3fffb9' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />
         </div>
+        <button className='postButton' style={{ flex: 1, marginTop: '1rem', cursor: 'pointer', backgroundColor: '#3fffb9', display: (comment === '' ? 'none' : 'inherit'), width: '100%', justifyContent: 'center' }} onClick={() => postComment()} >
+          <span>post</span>
+        </button>
       </div>
     )
   }
