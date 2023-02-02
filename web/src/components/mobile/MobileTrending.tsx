@@ -22,6 +22,7 @@ export const MobileTrending = () => {
     }, HOUR);
 
     return () => clearInterval(trendInterval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   

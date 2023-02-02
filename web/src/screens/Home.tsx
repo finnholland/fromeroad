@@ -115,6 +115,7 @@ const Home: React.FC<Props> = (props: Props) => {
     }, HOUR);
 
     return () => clearInterval(trendInterval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const removeInterest = (interestID: number) => {

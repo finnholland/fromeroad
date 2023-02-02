@@ -32,6 +32,7 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     getComments();
     getSearchWords();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getSearchWords = () => {

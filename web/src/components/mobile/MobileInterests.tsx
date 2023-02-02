@@ -43,6 +43,7 @@ export const MobileInterests = () => {
 
   useEffect(() => {
     getInterests(selector.user.userID);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const addInterest = (interest: string) => {

@@ -21,6 +21,7 @@ export const MobileActivity = () => {
     }, HOUR);
     
     return () => clearInterval(trendInterval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getActivity = () => {

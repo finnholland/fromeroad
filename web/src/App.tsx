@@ -23,6 +23,7 @@ function App() {
       setAuthenticated(true)
     }
     getUserFromToken()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getUserFromToken = () => {
