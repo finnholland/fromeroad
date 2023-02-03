@@ -40,7 +40,7 @@ export const MenuItems: React.FC<Props> = (props: Props) => {
           <hr className={props.currentRoute === 'activity' ? 'activeLine' : 'line'} />
         </div>
         <div className='titleDiv' style={{marginBottom: '3rem'}} onClick={() => changeRoute('interests')}>
-          <p className={props.currentRoute === 'interests' ? 'activeTitle' : 'sectionTitle'}>interests</p>
+          <p className={props.currentRoute === 'interests' ? 'activeTitle' : 'sectionTitle'}>profile</p>
           <hr className={props.currentRoute === 'interests' ? 'activeLine' : 'line'}/>
         </div>
         <div className='titleDiv' style={{marginBottom: '3rem'}} onClick={() => changeRoute('trends')}>
