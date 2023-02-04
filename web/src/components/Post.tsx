@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { CommentType, Poster, PostItem, PostType } from '../../types'
+import { CommentType, Poster, PostType } from '../../types'
 import './Post.css'
 import Axios from 'axios';
-import { useAppSelector } from '../redux/Actions';
+import { useAppSelector } from '../hooks/Actions';
 import SvgAddButton from '../assets/svg/SvgAddButton';
 import { Comment } from './Comment';
-import { getMessageAge } from '../redux/helpers';
+import { getMessageAge } from '../hooks/helpers';
 import { API, DEFAULT_PROFILE_IMAGE } from '../constants';
 import Highlighter from "react-highlight-words";
 
 interface Props {
   post: PostType,
-  poster: Poster,
-  searchWords: string[]
+  poster: Poster
 }
 
 export const Post: React.FC<Props> = (props: Props) => {
@@ -27,11 +26,18 @@ export const Post: React.FC<Props> = (props: Props) => {
   const [imageUrl, setImageUrl] = useState(props.poster.profileImageUrl)
   const [errored, setErrored] = useState(false)
   const [loading, setLoading] = useState(true);
+  const [searchWords, setSearchWords] = useState<string[]>([]);
 
   useEffect(() => {
     getComments();
-    console.log(props.searchWords)
+    getSearchWords();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const getSearchWords = () => {
+    const words = props.post.body.split(/([^\s]*?;)/g).filter((word) => word.includes(';') && word.length !== 1 )
+    setSearchWords(words)
+  }
 
   const upvotePost = () => {
     const params = {
@@ -92,7 +98,6 @@ export const Post: React.FC<Props> = (props: Props) => {
     Axios.get(`${API}/post/comments/get/${props.post.postID}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
-      console.log(res.data)
       setComments(res.data)
       setLoading(false)
     })
@@ -132,14 +137,14 @@ export const Post: React.FC<Props> = (props: Props) => {
               <span className='headerTextName'>{props.poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
             </div>
             <div className='headerTextCompany' style={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'row', width: '100%' }}>
-              <span className='headerTextCompany'>{props.poster.company}</span> <span>#tag</span>
+              <span className='headerTextCompany'>{props.poster.company}</span>
             </div>
           </div>
         </div>
         <div id='body' className='postBody'>
           <Highlighter
             textToHighlight={props.post.body}
-            searchWords={props.searchWords}
+            searchWords={searchWords}
             highlightClassName="highlight"
             highlightStyle={undefined}
             className='bodyText'
@@ -157,16 +162,18 @@ export const Post: React.FC<Props> = (props: Props) => {
           ) : (null)}
         </div>
         <div id='footer' className='postFooter' style={{ marginTop: (comments.length <= 0 ? '1rem' : 0) }}>
+          {selector.user.userID === props.poster.userID ? (null) : (
           <div className='upvoteButtonPill' onClick={() => upvotePost()}>
             <span style={{flex: 1, paddingLeft: 20}}>{convertTrendPoints(trendPoints)}</span>
             <div className='upvoteButton'>
               <SvgAddButton height={30} fontVariant={props.post.voted ? 'hidden' : 'visible'} stroke={'#3fffb9'}/>
             </div>
           </div>
-          <input type={'text'} color='#3fffb9' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />
+          )}
+          <input type={'text'} color='#3fffb9' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something'
+           style={{marginLeft: (selector.user.userID === props.poster.userID ? 0 : '15px')}}/>
           <button className='submitButton' style={{backgroundColor: (comment === '' ? '#d9fff1' : '#3fffb9')}} disabled={comment === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
         </div>
-        
       </div>
     )
   }
@@ -180,7 +187,7 @@ export const Post: React.FC<Props> = (props: Props) => {
               <span className='headerTextName'>{props.poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
             </div>
             <div className='headerTextCompany' style={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'row', width: '100%' }}>
-              <span className='headerTextCompany'>{props.poster.company}</span> <span>#tag</span>
+              <span className='headerTextCompany'>{props.poster.company}</span>
             </div>
             
           </div>
@@ -188,7 +195,7 @@ export const Post: React.FC<Props> = (props: Props) => {
         <div id='body' className='postBody'>
           <Highlighter
             textToHighlight={props.post.body}
-            searchWords={props.searchWords}
+            searchWords={searchWords}
             highlightClassName="highlight"
             highlightStyle={undefined}
             className='bodyText'
@@ -205,13 +212,16 @@ export const Post: React.FC<Props> = (props: Props) => {
           ) : (null)}
         </div>
         <div id='footer' className='postFooter' style={{ marginTop: (comments.length <= 0 ? '1rem' : 0) }}>
+          {selector.user.userID === props.poster.userID ? (null) : (
           <div className='upvoteButtonPill' onClick={() => upvotePost()}>
             <span style={{flex: 1, paddingLeft: 20}}>{convertTrendPoints(trendPoints)}</span>
             <div className='upvoteButton'>
               <SvgAddButton height={30} fontVariant={props.post.voted ? 'hidden' : 'visible'} stroke={'#3fffb9'}/>
             </div>
           </div>
-          <input type={'text'} color='#3fffb9' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something' />
+          )}
+          <input type={'text'} color='#3fffb9' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something'
+           style={{marginLeft: (selector.user.userID === props.poster.userID ? 0 : '15px')}}/>
           <button className='submitButton' style={{backgroundColor: (comment === '' ? '#d9fff1' : '#3fffb9')}} disabled={comment === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
         </div>
       </div>

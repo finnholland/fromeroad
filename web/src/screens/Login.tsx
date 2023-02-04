@@ -1,14 +1,12 @@
 import Axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import '../App.css';
 import './Login.css';
-import SvgChamonix from '../assets/svg/chamonix';
-import SvgLotfourteen from '../assets/svg/lotfourteen';
-import { useNavigate } from 'react-router-dom';
 import { API } from '../constants';
-import Hamster from '../assets/svg/hamster';
-import { useAppDispatch } from '../redux/Actions';
-import { setUser } from '../redux/slices/userSlice';
+import Teddy from '../assets/svg/teddy';
+import { useAppDispatch } from '../hooks/Actions';
+import { setUser } from '../hooks/slices/userSlice';
+import { Header } from '../components/Header';
 
 interface Props {
   setAuthenticated: any
@@ -78,58 +76,58 @@ const Login: React.FC<Props> = (props: Props) => {
 
   return (
     <div className="app">
-      <header className="header">
-        <a href='http://www.lotfourteen.com.au' className='lotfourteen'>
-          <SvgLotfourteen height={25} />
-        </a>
-
-        <div className='titleContainer'>
-          <p className='title'>frome_road</p>
-        </div>
-        <a href='http://www.chamonix.com.au' className='chamonix' style={{ justifyContent: 'flex-end' }}>
-          <SvgChamonix height={20}/>
-        </a>
-        
-      </header>
-          <div style={{justifyContent: 'space-between', flexDirection: 'column', display: 'flex', marginTop: '3rem', marginBottom: '3rem'}}>
-            <Hamster height={100} fill={'#5900B2'} />
-            <span style={{color: '#5900B2', fontSize: 18, marginTop: 15}}>Welcome to frome_road</span>
-          </div>
+      <Header type='desktop'/>
+      <div className='welcome'>
+        <Teddy height={100} fill={'#5900B2'} />
+        <span style={{color: '#5900B2', fontSize: 18, marginTop: 15}}>Welcome to frome_road</span>
+      </div>
       <div className='body'>
         <div style={{flex: 1}}>
 
         </div>
         <div style={{flex: 1}}>
-            <form style={{width: '100%'}} onSubmit={onSubmit}>
-              <div className='inputDiv'>
-                <span className='label'>name</span>
-                <input className='input' value={name} onChange={(e) => setName(e.target.value)}/>
+          <form style={{width: '100%'}} onSubmit={onSubmit}>
+            <div className='inputDiv'>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <span className='label'>name</span> <span style={{color: '#8205ff'}}>*</span>
               </div>
-              <div className='inputDiv'>
-                <span className='label'>email</span>
-                <input type={'email'} className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
+              <input className='input' value={name} onChange={(e) => setName(e.target.value)}/>
+            </div>
+            <div className='inputDiv'>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <span className='label'>email</span> <span style={{color: '#8205ff'}}>*</span><span style={{color: '#FFB405'}}>*</span>
               </div>
-              <div className='inputDiv'>
-                <span className='label'>company</span>
-                <input className='input' value={company} onChange={(e) => setCompany(e.target.value)} />
+              <input type={'email'} className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
+            </div>
+            <div className='inputDiv'>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <span className='label'>company</span> <span style={{color: '#8205ff'}}>*</span> 
               </div>
-              <div className='inputDiv'>
-                <span className='label'>password</span>
+              <input className='input' value={company} onChange={(e) => setCompany(e.target.value)} />
+            </div>
+            <div className='inputDiv'>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <span className='label'>password</span> <span style={{color: '#8205ff'}}>*</span><span style={{color: '#FFB405'}}>*</span>
+              </div>
                 <input type={'password'} className='input' value={password} onChange={(e) => setPassword(e.target.value)} />
+            </div>
+            <div className='inputDiv'>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <span className='label'>confirm password</span> <span style={{color: '#8205ff'}}>*</span>
               </div>
-              <div className='inputDiv'>
-                <span className='label'>confirm password</span>
-                <input type={'password'} className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-              </div>
-              <div className='buttonDiv'>
+              <input type={'password'} className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+            </div>
+            <div className='buttonDiv'>
               <button className='button'>
-                  sign up
-                </button>
+                sign up
+                <span style={{color: '#8205ff', marginLeft: 5}}>*</span><span style={{color: '#FFB405'}}>*</span>
+              </button>
               <button type='submit' className='button'>
-                  login
-                </button>
-              </div>
-            </form>
+                login
+                <span style={{color: '#FFB405', marginLeft: 5}}>*</span>
+              </button>
+            </div>
+          </form>
         </div>
         <div style={{ flex: 1 }}>
           <div className='aboutDiv'>
@@ -148,10 +146,10 @@ const Login: React.FC<Props> = (props: Props) => {
               <hr className='line' />
             </div>
               <p className='aboutText' style={{marginTop: 0}}>I originally created this project as a way to get into full-stack devving.</p>
-              <p className='aboutText'>The project stack is ReactJS, NodeJS, and MySQL, hosted on AWS Amplify.</p>
+              <p className='aboutText'>The project stack is ReactJS, NodeJS, and MySQL, hosted on AWS Amplify with a dedicated server.</p>
               <p className='aboutText'>I honestly have no idea if it'll work or how many bugs there'll be so please don't hesitate to report them.</p>
               <div style={{flexDirection: 'row', display: 'flex'}}>
-              <p style={{ display: 'inline-block', marginTop: '1.5rem'}}>The <a href='https://github.com/fhllnd/fromeroad' rel="noreferrer" target={'_blank'}> Repo</a> should anyone care to fix said bugs</p>
+                <p style={{ display: 'inline-block', marginTop: '1.5rem'}}>The <a href='https://github.com/fhllnd/fromeroad' rel="noreferrer" target={'_blank'}> Repo</a> should anyone care to fix said bugs</p>
               </div>
               
           </div>
