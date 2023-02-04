@@ -3,10 +3,10 @@ import { CommentType, Poster, PostType } from '../../../types'
 import '../Post.css'
 import '../../screens/mobile/MobileStyles.css'
 import Axios from 'axios';
-import { useAppSelector } from '../../redux/Actions';
+import { useAppSelector } from '../../hooks/Actions';
 import SvgAddButton from '../../assets/svg/SvgAddButton';
 import { MobileComment } from './MobileComment';
-import { getMessageAge } from '../../redux/helpers';
+import { getMessageAge } from '../../hooks/helpers';
 import { API, DEFAULT_PROFILE_IMAGE } from '../../constants';
 import Highlighter from "react-highlight-words";
 

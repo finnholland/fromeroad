@@ -2,8 +2,8 @@ import Axios from 'axios';
 import React, { useRef, useState } from 'react'
 import SvgUploadImage from '../assets/svg/SvgUploadImage';
 import { API, DEFAULT_PROFILE_IMAGE } from '../constants';
-import { useAppSelector } from '../redux/Actions';
-import { useAutosizeTextArea } from '../redux/helpers';
+import { useAppSelector } from '../hooks/Actions';
+import { useAutosizeTextArea } from '../hooks/helpers';
 import './PostEditor.css'
 
 interface Props {

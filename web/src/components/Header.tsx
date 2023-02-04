@@ -2,9 +2,9 @@ import React from 'react';
 import SvgChamonix from '../assets/svg/chamonix';
 import Hamburger from '../assets/svg/hamburger';
 import SvgLotfourteen from '../assets/svg/lotfourteen';
-import { useAppDispatch, useAppSelector } from '../redux/Actions';
+import { useAppDispatch, useAppSelector } from '../hooks/Actions';
 import '../App.css'
-import { setIsOpen } from '../redux/slices/sidebarSlice';
+import { setIsOpen } from '../hooks/slices/sidebarSlice';
 interface Props {
   type: string
 }

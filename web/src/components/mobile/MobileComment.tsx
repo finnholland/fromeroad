@@ -2,8 +2,8 @@ import Axios from 'axios'
 import React from 'react'
 import { CommentType } from '../../../types'
 import { API } from '../../constants'
-import { useAppSelector } from '../../redux/Actions'
-import { getMessageAge } from '../../redux/helpers'
+import { useAppSelector } from '../../hooks/Actions'
+import { getMessageAge } from '../../hooks/helpers'
 import '../Comment.css'
 
 interface Props {

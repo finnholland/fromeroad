@@ -4,8 +4,8 @@ import '../../App.css';
 import './MobileStyles.css';
 import { API } from '../../constants';
 import Teddy from '../../assets/svg/teddy';
-import { useAppDispatch } from '../../redux/Actions';
-import { setUser } from '../../redux/slices/userSlice';
+import { useAppDispatch } from '../../hooks/Actions';
+import { setUser } from '../../hooks/slices/userSlice';
 import { Header } from '../../components/Header';
 
 interface Props {

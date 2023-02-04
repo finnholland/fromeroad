@@ -1,8 +1,8 @@
 import React from 'react'
 import SvgChamonix from '../../assets/svg/chamonix'
 import SvgLotfourteen from '../../assets/svg/lotfourteen'
-import { useAppSelector, useAppDispatch } from '../../redux/Actions'
-import { setIsOpen } from '../../redux/slices/sidebarSlice'
+import { useAppSelector, useAppDispatch } from '../../hooks/Actions'
+import { setIsOpen } from '../../hooks/slices/sidebarSlice'
 
 interface Props {
   logout: any,

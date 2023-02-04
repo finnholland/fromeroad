@@ -2,15 +2,15 @@ import { useEffect, useState, } from 'react'
 import './App.css';
 import Axios from 'axios';
 import Home from './screens/Home';
-import { initialState, setUser } from './redux/slices/userSlice';
-import { useAppDispatch } from './redux/Actions';
+import { initialState, setUser } from './hooks/slices/userSlice';
+import { useAppDispatch } from './hooks/Actions';
 import { isMobile } from 'react-device-detect';
 import { API } from './constants';
 import Login from './screens/Login';
 import Teddy from './assets/svg/teddy';
 import MobileLogin from './screens/mobile/MobileLogin';
 import MobileHome from './screens/mobile/MobileHome';
-import { setIsOpen } from './redux/slices/sidebarSlice';
+import { setIsOpen } from './hooks/slices/sidebarSlice';
 
 
 function App() {

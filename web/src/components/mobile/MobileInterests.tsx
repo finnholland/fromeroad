@@ -4,8 +4,8 @@ import { Interest } from '../../../types';
 import SvgRemoveButton from '../../assets/svg/removeButton';
 import SvgAddButton from '../../assets/svg/SvgAddButton';
 import { API, EIGHT_MEGABYTES } from '../../constants';
-import { useAppSelector, useAppDispatch } from '../../redux/Actions';
-import { setInterests } from '../../redux/slices/userSlice';
+import { useAppSelector, useAppDispatch } from '../../hooks/Actions';
+import { setInterests } from '../../hooks/slices/userSlice';
 
 export const MobileInterests = () => {
   const selector = useAppSelector(state => state);

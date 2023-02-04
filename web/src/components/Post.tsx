@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { CommentType, Poster, PostType } from '../../types'
 import './Post.css'
 import Axios from 'axios';
-import { useAppSelector } from '../redux/Actions';
+import { useAppSelector } from '../hooks/Actions';
 import SvgAddButton from '../assets/svg/SvgAddButton';
 import { Comment } from './Comment';
-import { getMessageAge } from '../redux/helpers';
+import { getMessageAge } from '../hooks/helpers';
 import { API, DEFAULT_PROFILE_IMAGE } from '../constants';
 import Highlighter from "react-highlight-words";
 

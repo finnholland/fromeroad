@@ -4,7 +4,7 @@ import './Home.css'
 import SvgRemoveButton from '../assets/svg/removeButton';
 import SvgAddButton from '../assets/svg/SvgAddButton';
 import Axios from 'axios';
-import { useAppDispatch, useAppSelector } from '../redux/Actions';
+import { useAppDispatch, useAppSelector } from '../hooks/Actions';
 import moment from 'moment';
 
 import { Post } from '../components/Post';
@@ -17,7 +17,7 @@ import SvgRefresh from '../assets/svg/refreshIcon';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { API, EIGHT_MEGABYTES } from '../constants';
 import LogoutIcon from '../assets/svg/logoutIcon';
-import { setInterests } from '../redux/slices/userSlice';
+import { setInterests } from '../hooks/slices/userSlice';
 import { Header } from '../components/Header';
 
 const HOUR = 60000 * 60

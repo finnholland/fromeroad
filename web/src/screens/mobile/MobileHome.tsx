@@ -3,7 +3,7 @@ import { PostItem, Poster } from '../../../types';
 import './MobileStyles.css'
 import SvgAddButton from '../../assets/svg/SvgAddButton';
 import Axios from 'axios';
-import { useAppDispatch, useAppSelector } from '../../redux/Actions';
+import { useAppDispatch, useAppSelector } from '../../hooks/Actions';
 import { slide as Menu } from 'react-burger-menu'
 
 import { PostEditor } from '../../components/PostEditor';
@@ -12,7 +12,7 @@ import { API } from '../../constants';
 import { Header } from '../../components/Header';
 import { MobilePost } from '../../components/mobile/MobilePost';
 import { MenuItems } from '../../components/mobile/MenuItems';
-import { setIsOpen } from '../../redux/slices/sidebarSlice';
+import { setIsOpen } from '../../hooks/slices/sidebarSlice';
 import { MobileActivity } from '../../components/mobile/MobileActivity';
 import { MobileInterests } from '../../components/mobile/MobileInterests';
 import { MobileTrending } from '../../components/mobile/MobileTrending';
