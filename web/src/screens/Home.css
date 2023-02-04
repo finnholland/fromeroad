@@ -1,4 +1,4 @@
-.home {
+.app .home {
   flex: 1; 
   display: flex; 
   padding: 40px; 
@@ -92,22 +92,23 @@
   box-shadow: 0px 2px 3px #888;
   justify-content: center;
   align-items: flex-end;
+  object-fit: cover;
   display: flex;
   overflow: hidden;
   cursor: pointer;
 }
 
 .profileImageOverlay {
-  background-color: white;
+  background-color: #ffffffaa;
   width: 100%; 
   height: 35%;
-  opacity: .7;
   font-size: 14px;
   display: flex;
   justify-content: center;
+  pointer-events: none;
 }
 
-.titleContainer {
+.app .titleContainer {
   margin: 0;
   padding: 0;
   flex-direction: row;
@@ -120,7 +121,7 @@
   margin: 0;
   padding: 0;
   flex: 1;
-  font-weight: 500;  font-size: 24px;
+  font-size: 24px;
 }
 
 .subtitle {
@@ -130,7 +131,7 @@
   font-size: 1.5rem;
 }
 
-.feed {
+.app .feed {
   flex: 3;
   margin-left: 100px;
   margin-right: 100px;

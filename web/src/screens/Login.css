@@ -12,7 +12,7 @@
   height: 100%;
   width: 100%;
   align-items: flex-start;
-  justify-content: start;
+  justify-content: flex-start;
   flex-direction: row;
   display: flex;
   padding-bottom: 2rem;
@@ -28,6 +28,8 @@
 
 .label {
   margin-bottom: 5px;
+  color: #8205ff;
+  margin-right: 5px;
 }
 
 .buttonDiv {
@@ -53,11 +55,21 @@
   margin-top: 1.5rem;
   align-content: flex-start;
   display: flex;
+  font-size: 0.975rem;
 }
 
-.aboutDiv {
+.app .aboutDiv {
   margin: 3rem;
   margin-top: 0
+}
+
+.welcome {
+  justify-content: space-between; 
+  flex-direction: column; 
+  display: flex; 
+  margin-top: 3rem; 
+  margin-bottom: 3rem; 
+  text-align: center;
 }
 
 a { text-decoration: none; color:#8205ff; }

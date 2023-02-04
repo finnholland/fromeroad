@@ -1,12 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { Interest, PostItem, Poster, RecentPosterType, TrendingUserType } from '../../types';
 import './Home.css'
-import SvgChamonix from '../assets/svg/chamonix';
-import SvgLotfourteen from '../assets/svg/lotfourteen';
 import SvgRemoveButton from '../assets/svg/removeButton';
 import SvgAddButton from '../assets/svg/SvgAddButton';
 import Axios from 'axios';
-import { useAppDispatch, useAppSelector } from '../redux/Actions';
+import { useAppDispatch, useAppSelector } from '../hooks/Actions';
 import moment from 'moment';
 
 import { Post } from '../components/Post';
@@ -17,13 +15,14 @@ import SvgPlus from '../assets/svg/SvgPlus';
 import { PostEditor } from '../components/PostEditor';
 import SvgRefresh from '../assets/svg/refreshIcon';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { API } from '../constants';
+import { API, EIGHT_MEGABYTES } from '../constants';
 import LogoutIcon from '../assets/svg/logoutIcon';
-import { setInterests } from '../redux/slices/userSlice';
+import { setInterests } from '../hooks/slices/userSlice';
+import { Header } from '../components/Header';
 
 const HOUR = 60000 * 60
 interface Props {
-  setAuthenticated: any
+  logout: any
 }
 
 const Home: React.FC<Props> = (props: Props) => {
@@ -86,7 +85,7 @@ const Home: React.FC<Props> = (props: Props) => {
 
   const postItem = posts.map((i) => {
     return (
-      <Post key={i.post.postID} post={i.post} poster={i.poster} searchWords={selector.user.interests.map(i => i.name+';')} />
+      <Post key={i.post.postID} post={i.post} poster={i.poster} />
     )
   });
 
@@ -115,7 +114,8 @@ const Home: React.FC<Props> = (props: Props) => {
       getTrendingUsers();
     }, HOUR);
 
-  return () => clearInterval(trendInterval);
+    return () => clearInterval(trendInterval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const removeInterest = (interestID: number) => {
@@ -140,24 +140,31 @@ const Home: React.FC<Props> = (props: Props) => {
     })
   }
 
-  const uploadImage = (e: any) => {
-    const fd = new FormData();
-    fd.append('file', e.target.files[0])
-    fd.append('userID', selector.user.userID.toString())
-    Axios.post(`${API}/image/profileImage/${selector.user.userID}`, fd, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+  const uploadImage = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      if (e.target.files[0].size >= EIGHT_MEGABYTES) {
+        alert('too large! 8mb or less plz')
+        return;
+      } else {
+        const fd = new FormData();
+        fd.append('file', e.target.files[0])
+        fd.append('userID', selector.user.userID.toString())
+        Axios.post(`${API}/image/profileImage/${selector.user.userID}`, fd, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }).then(() => {
+          Axios.get(`${API}/image/profileImage/${selector.user.userID}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }).then(res => {
+            setProfileImageUrl(res.data[0].profileImageUrl)
+          })
+          
+        })
       }
-    }).then(() => {
-      Axios.get(`${API}/image/profileImage/${selector.user.userID}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    }).then(res => {
-        setProfileImageUrl(res.data[0].profileImageUrl)
-      })
-      
-    })
+    }
   }
 
   const addInterest = (interest: string) => {
@@ -306,26 +313,9 @@ const Home: React.FC<Props> = (props: Props) => {
     })
   }
 
-  const logout = () => {
-    props.setAuthenticated(false);
-    localStorage.removeItem('token')
-  }
-
   return (
     <div className="app">
-      <header className="header">
-          <a target="_blank" rel="noreferrer" href='http://www.lotfourteen.com.au' className='lotfourteen'>
-            <SvgLotfourteen height={25} />
-          </a>
-
-        <div className='titleContainer'>
-          <p className='title'>frome_road</p>
-        </div>
-        <a target="_blank" rel="noreferrer" href='http://www.chamonix.com.au' className='chamonix' style={{ justifyContent: 'flex-end' }}>
-          <SvgChamonix height={20}/>
-        </a>
-        
-      </header>
+      <Header type='desktop'/>
       <div className='home'>
         <div id='body' style={{ flexDirection: 'row', display: 'flex', flex: 6, paddingBottom: 100}}>
           
@@ -367,14 +357,14 @@ const Home: React.FC<Props> = (props: Props) => {
             <div className='titleDiv'>
               <p className='sectionTitle'>me</p>
               <hr className='line' />
-              <LogoutIcon onClick={() => logout()} height={25} width={25} style={{ marginLeft: 15 }} fill={'#8205ff'} />
+              <LogoutIcon onClick={() => props.logout()} height={25} width={25} style={{ marginLeft: 15 }} fill={'#8205ff'} />
             </div>
               <div>
                 <div style={{ flexDirection: 'row', display: 'flex' }}>
                   <div>
-                    <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(${API}${profileImageUrl})`, backgroundSize: 'cover' }}>
+                    <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(${API}${profileImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
                       <div className='profileImageOverlay'>
-                        <span style={{alignItems: 'center', display:'flex', marginBottom: 5}}>change</span>
+                        <span style={{alignItems: 'center', display:'flex', marginBottom: 5, color: '#fff'}}>change</span>
                       </div>
                     </div>
                   </div>
@@ -424,7 +414,7 @@ const Home: React.FC<Props> = (props: Props) => {
         </footer>
 
       </div>
-      <input ref={ref} type={'file'} name="file" onChange={uploadImage} hidden/>
+      <input ref={ref} type={'file'} accept="image/png, image/jpeg" name="file" onChange={uploadImage} hidden/>
     </div>
   );
 }
