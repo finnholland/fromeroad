@@ -7,7 +7,7 @@ import { useAppDispatch } from './redux/Actions';
 import { isMobile } from 'react-device-detect';
 import { API } from './constants';
 import Login from './screens/Login';
-import Hamster from './assets/svg/hamster';
+import Teddy from './assets/svg/teddy';
 import MobileLogin from './screens/mobile/MobileLogin';
 import MobileHome from './screens/mobile/MobileHome';
 import { setIsOpen } from './redux/slices/sidebarSlice';
@@ -68,7 +68,7 @@ function App() {
   } else {
     return (
       <div className='hamsterPage'>
-        <Hamster height={200} width={200} fill={'#8205FF'} />
+        <Teddy height={200} width={200} fill={'#8205FF'} />
       </div>
       
     )

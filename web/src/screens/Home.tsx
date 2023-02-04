@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { Interest, PostItem, Poster, RecentPosterType, TrendingUserType } from '../../types';
 import './Home.css'
 import SvgRemoveButton from '../assets/svg/removeButton';
@@ -15,7 +15,7 @@ import SvgPlus from '../assets/svg/SvgPlus';
 import { PostEditor } from '../components/PostEditor';
 import SvgRefresh from '../assets/svg/refreshIcon';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { API } from '../constants';
+import { API, EIGHT_MEGABYTES } from '../constants';
 import LogoutIcon from '../assets/svg/logoutIcon';
 import { setInterests } from '../redux/slices/userSlice';
 import { Header } from '../components/Header';
@@ -140,24 +140,31 @@ const Home: React.FC<Props> = (props: Props) => {
     })
   }
 
-  const uploadImage = (e: any) => {
-    const fd = new FormData();
-    fd.append('file', e.target.files[0])
-    fd.append('userID', selector.user.userID.toString())
-    Axios.post(`${API}/image/profileImage/${selector.user.userID}`, fd, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+  const uploadImage = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      if (e.target.files[0].size >= EIGHT_MEGABYTES) {
+        alert('too large! 8mb or less plz')
+        return;
+      } else {
+        const fd = new FormData();
+        fd.append('file', e.target.files[0])
+        fd.append('userID', selector.user.userID.toString())
+        Axios.post(`${API}/image/profileImage/${selector.user.userID}`, fd, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }).then(() => {
+          Axios.get(`${API}/image/profileImage/${selector.user.userID}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }).then(res => {
+            setProfileImageUrl(res.data[0].profileImageUrl)
+          })
+          
+        })
       }
-    }).then(() => {
-      Axios.get(`${API}/image/profileImage/${selector.user.userID}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    }).then(res => {
-        setProfileImageUrl(res.data[0].profileImageUrl)
-      })
-      
-    })
+    }
   }
 
   const addInterest = (interest: string) => {
@@ -355,7 +362,7 @@ const Home: React.FC<Props> = (props: Props) => {
               <div>
                 <div style={{ flexDirection: 'row', display: 'flex' }}>
                   <div>
-                    <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(${API}${profileImageUrl})`, backgroundSize: 'cover' }}>
+                    <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(${API}${profileImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
                       <div className='profileImageOverlay'>
                         <span style={{alignItems: 'center', display:'flex', marginBottom: 5, color: '#fff'}}>change</span>
                       </div>
@@ -407,7 +414,7 @@ const Home: React.FC<Props> = (props: Props) => {
         </footer>
 
       </div>
-      <input ref={ref} type={'file'} name="file" onChange={uploadImage} hidden/>
+      <input ref={ref} type={'file'} accept="image/png, image/jpeg" name="file" onChange={uploadImage} hidden/>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import '../../App.css';
 import './MobileStyles.css';
 import { API } from '../../constants';
-import Hamster from '../../assets/svg/hamster';
+import Teddy from '../../assets/svg/teddy';
 import { useAppDispatch } from '../../redux/Actions';
 import { setUser } from '../../redux/slices/userSlice';
 import { Header } from '../../components/Header';
@@ -78,7 +78,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
     <div className="mobile">
       <Header type='mobile'/>
       <div style={{justifyContent: 'space-between', flexDirection: 'column', display: 'flex', marginTop: '2rem', marginBottom: '2rem'}}>
-        <Hamster height={100} fill={'#5900B2'} />
+        <Teddy height={100} fill={'#5900B2'} />
         <span style={{color: '#5900B2', fontSize: 18, marginTop: 15}}>Welcome to frome_road</span>
       </div>
       <div className='body'>
