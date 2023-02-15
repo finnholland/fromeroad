@@ -1,6 +1,6 @@
 version: '3.3'
 services:
-  db:
+  mysql_db:
     container_name: fromeroad_mysql
     image: mysql:8.0.32
     restart: always
@@ -23,6 +23,18 @@ services:
       # Where our data will be persisted
     volumes:
       - fromeroad:/var/lib/mysql
+  nodejs_api:
+    container_name: fromeroad_api
+    image: fromeroadapi
+    build:
+      context: api
+      dockerfile: ./api/Dockerfile
+    environment:
+      NODE_ENV: production
+    depends_on:
+      - mysql_db
+    networks:
+      - docker_default
 # Names our volume
 volumes:
   fromeroad:
