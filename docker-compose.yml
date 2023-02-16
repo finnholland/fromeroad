@@ -1,6 +1,6 @@
 version: '3.3'
 services:
-  db:
+  mysql_db:
     container_name: fromeroad_mysql
     image: mysql:8.0.32
     restart: always
@@ -21,6 +21,8 @@ services:
       # Opens port 3306 on the container
       - '3306'
       # Where our data will be persisted
+    # volumes:
+    #   - ./db_data:/var/lib/mysql
   nodejs_api:
     container_name: fromeroad_api
     image: fromeroadapi
@@ -33,7 +35,13 @@ services:
       - mysql_db
     networks:
       - docker_default
+    volumes:
+      - ./api_data:/usr/src/app/images
 # Names our volume
+
+volumes:
+  api_data:
+  db_data:
    
 networks:
   docker_default:

@@ -11,7 +11,7 @@ const fs = require('fs')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const path = `/api_data/user/${req.params.userID}/`
+    const path = `./images/user/${req.params.userID}/`
     fs.mkdirSync(path, { recursive: true })
     cb(null, path)
   },
@@ -31,7 +31,7 @@ app.post('/profileImage/:userID', ejwt({ secret: process.env.SECRET, algorithms:
     console.log("No file upload");
     res.sendStatus(403)
   } else {
-    const imgsrc = `/api_data/user/${req.body.userID}/${req.file.filename.replace(' ', '_')}`
+    const imgsrc = `/images/user/${req.body.userID}/${req.file.filename.replace(' ', '_')}`
     db.query('update users set profileImageUrl = ? where userID = ?', [imgsrc, req.body.userID], (err, result, fields) => {
       if (err) {
         console.log('error occurred: '+ err)
@@ -42,7 +42,7 @@ app.post('/profileImage/:userID', ejwt({ secret: process.env.SECRET, algorithms:
   }
 });
 
-app.get('/profileImage/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.get('/profileImage/:userID', (req, res) => {
   console.log(req.body)
   db.query('select profileImageUrl from users where userID = ?', req.params.userID, (err, result, fields) => {
     if (err) {
