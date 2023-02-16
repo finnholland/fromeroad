@@ -26,6 +26,7 @@ services:
   nodejs_api:
     container_name: fromeroad_api
     image: fromeroadapi
+    restart: always
     build:
       context: api
       dockerfile: ./api/Dockerfile
@@ -36,7 +37,7 @@ services:
     networks:
       - docker_default
     volumes:
-      - ./api_data:/usr/src/app/images
+      - ./api_data:/usr/src/app/data
 # Names our volume
 
 volumes:
