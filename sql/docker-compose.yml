@@ -21,11 +21,19 @@ services:
       # Opens port 3306 on the container
       - '3306'
       # Where our data will be persisted
-    volumes:
-      - fromeroad:/var/lib/mysql
+  nodejs_api:
+    container_name: fromeroad_api
+    image: fromeroadapi
+    build:
+      context: api
+      dockerfile: ./api/Dockerfile
+    environment:
+      NODE_ENV: production
+    depends_on:
+      - mysql_db
+    networks:
+      - docker_default
 # Names our volume
-volumes:
-  fromeroad:
    
 networks:
   docker_default:
