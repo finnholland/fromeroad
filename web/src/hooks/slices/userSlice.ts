@@ -9,7 +9,8 @@ export const initialState: User = {
   company: '',
   trendPoints: 0,
   profileImageUrl: '',
-  interests: []
+  interests: [],
+  verified: false
 };
 
 export const userSlice = createSlice({
@@ -24,6 +25,7 @@ export const userSlice = createSlice({
       state.company = action.payload.company
       state.trendPoints = action.payload.trendPoints
       state.profileImageUrl = action.payload.profileImageUrl
+      state.verified = action.payload.verified
     },
     setInterests: (state, action: PayloadAction<Interest[]>) => {
       state.interests = action.payload

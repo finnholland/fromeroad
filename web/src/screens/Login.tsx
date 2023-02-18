@@ -38,6 +38,7 @@ const Login: React.FC<Props> = (props: Props) => {
         company: company,
         password: password
       }).then(res => {
+        localStorage.setItem('token', res.data.token)
         dispatch(setUser(res.data.user));
         props.setAuthenticated(true)
       }).catch(err => {

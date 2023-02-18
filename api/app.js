@@ -8,6 +8,7 @@ var cors = require("cors");
 var favicon = require('serve-favicon')
 
 var indexRouter = require('./routes/index');
+var verifyRouter = require('./routes/verify');
 var recentPostersRouter = require('./routes/recentPosters');
 var userRouter = require('./routes/user');
 var testAPIRouter = require("./routes/test");
@@ -31,6 +32,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 app.use('/data', express.static('data'));
 
 app.use('/', indexRouter);
+app.use('/verify', verifyRouter);
 app.use('/recentPosters', recentPostersRouter);
 app.use('/user', userRouter);
 app.use("/test", testAPIRouter);

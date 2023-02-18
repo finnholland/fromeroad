@@ -6,7 +6,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
-import ErrorPage from './Error';
+import {ErrorPage} from './Error';
 import { Provider } from 'react-redux';
 import store from './hooks/store';
 import App from './App';
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App/>,
-    errorElement: <ErrorPage />,
+    errorElement: <ErrorPage errorMessage={''} />,
   },
 ]);
 

@@ -114,6 +114,12 @@ const Home: React.FC<Props> = (props: Props) => {
       getTrendingUsers();
     }, HOUR);
 
+    if (selector.user.verified) {
+      alert('user verified!')
+    } else {
+      alert('u noob')
+    }
+
     return () => clearInterval(trendInterval);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

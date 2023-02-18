@@ -11,12 +11,14 @@ import Teddy from './assets/svg/teddy';
 import MobileLogin from './screens/mobile/MobileLogin';
 import MobileHome from './screens/mobile/MobileHome';
 import { setIsOpen } from './hooks/slices/sidebarSlice';
+import { ErrorPage } from './Error';
 
 
 function App() {
   const dispatch = useAppDispatch();
   const [authenticated, setAuthenticated] = useState(false)
   const [checked, setChecked] = useState(false)
+  const [verified, setVerified] = useState(false)
 
   useEffect(() => {
     if (localStorage.getItem('token') && localStorage.getItem('token') !== '') {
@@ -33,6 +35,7 @@ function App() {
       }
     }).then(res => {
       dispatch(setUser(res.data[0]));
+      setVerified(res.data[0].verified)
       setAuthenticated(true);
       setChecked(true)
     }).catch(err => {
@@ -48,7 +51,9 @@ function App() {
     dispatch(setIsOpen(false));
   }
 
-
+  if (checked && !verified) {
+    return <ErrorPage errorMessage={`Your email isn't verified yet!\nVerify then reload the page :)`}/>
+  }
   if (authenticated && checked && !isMobile) {
     return (
       <Home logout={logout}></Home>
