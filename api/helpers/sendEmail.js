@@ -31,7 +31,7 @@ function sendEmail(userID, email, name) {
                     <p>You will need to verify your email before using the site.</p>
                 </div>
 
-                <a href="https://192.168.1.100:9443/verify/${token}">
+                <a href="https://api.fromeroad.com/verify/${token}">
                     <button style="background-color: #5900B2; border: 0; color: white; 
                     font-size: large;  width: 100%;
                     padding-left: 15px; padding-right: 15px; padding-top: 5px; padding-bottom: 5px; border-radius: 5px;">verify</button>
