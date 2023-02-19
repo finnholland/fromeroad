@@ -38,9 +38,9 @@ function sendEmail(userID, email, name) {
                 </a>
             </body>
           </html>`,
-     //text: `Hi ${name}, thanks for signing up to frome_road. You will need to verify your email before using the site.
+     text: `Hi ${name}, thanks for signing up to frome_road. You will need to verify your email before using the site.
 
-     //https://192.168.1.100:9443/verify/${token}`,
+     https://192.168.1.100:9443/verify/${token}`,
   };
 
   transporter.sendMail(mailConfigurations, function (error, info) {
