@@ -3,6 +3,8 @@ const { expressjwt: ejwt } = require("express-jwt");
 const jwt = require('jsonwebtoken');
 var db = require('..');
 var express = require('express');
+const sendEmail = require('../helpers/sendEmail');
+
 app = express()
 
 app.get('/:token', (req, res) => {
@@ -30,7 +32,7 @@ app.get('/:token', (req, res) => {
   });
 })
 
-app.put('/reverify', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.put('/reverify', (req, res) => {
   const userID = req.body.userID
   const name = req.body.name
   const email = req.body.email

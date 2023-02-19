@@ -3,6 +3,7 @@ import React from 'react'
 import { useAppSelector } from "./hooks/Actions";
 import Axios from "axios";
 import { API } from "./constants";
+import { Header } from "./components/Header";
 
 interface Props {
   errorMessage: string
@@ -19,34 +20,38 @@ export const ErrorPage: React.FC<Props> = (props: Props) => {
       name: selector.user.name,
       email: selector.user.email,
     }
-    Axios.put(`${API}/verify/reverify`, params, {
-      headers:
-        { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).catch(err => {
-      alert('error: ' + err.response.status)
+    Axios.put(`${API}/verify/reverify`, params).catch(err => {
+      alert('error: ' + err.response)
     })
   }
 
-  if (props.errorMessage && props.errorMessage !== '') {
+  if (props.errorMessage && props.errorMessage !== '' && props.errorMessage.toLowerCase().includes('verify')) {
     return (
-      <div id="error-page">
-        <h1>Oops!</h1>
-        <p>{props.errorMessage}</p>
-        <button onClick={() => sendVerification()}>send verification email</button>
+      <div className="app">
+        <Header type='desktop'/>
+        <div id="error-page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div>
+            <h1>Oops!</h1>
+            <p>{props.errorMessage}</p>
+            <button style={{ width: '100%', backgroundColor: '#5900B2', border: 0, padding: 10, color: 'white', fontSize: 16, borderRadius: 10, cursor: 'pointer'}} onClick={() => sendVerification()}>send verification email</button>
+            <button style={{ width: '100%', backgroundColor: '#5900B2', border: 0, padding: 10, color: 'white', fontSize: 16, borderRadius: 10, cursor: 'pointer', marginTop: 20}} onClick={() => window.location.reload()}>refresh</button>
+          </div>
+        </div>
       </div>
     )
   }
 
   else {
     return (
-    <div id="error-page">
-      <h1>Oops!</h1>
-      <p>Sorry, an unexpected error has occurred.</p>
-      <p>
-        <i>{error.statusText || error.message}</i>
-      </p>
-    </div>
-  );
+      <div id="error-page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div>
+          <h1>Oops!</h1>
+          <p>Sorry, an unexpected error has occurred.</p>
+          <p>
+            <i>{error.statusText || error.message}</i>
+          </p>
+        </div>
+      </div>
+    );
   }
-
 }

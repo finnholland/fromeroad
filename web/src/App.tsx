@@ -51,10 +51,10 @@ function App() {
     dispatch(setIsOpen(false));
   }
 
-  if (checked && !verified) {
+  if (checked && !verified && authenticated) {
     return <ErrorPage errorMessage={`Your email isn't verified yet!\nVerify then reload the page :)`}/>
   }
-  if (authenticated && checked && !isMobile) {
+  else if (authenticated && checked && !isMobile) {
     return (
       <Home logout={logout}></Home>
     );
