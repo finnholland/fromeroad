@@ -52,7 +52,7 @@ function App() {
   }
 
   if (checked && !verified && authenticated) {
-    return <ErrorPage errorMessage={`Your email isn't verified yet!\nVerify then reload the page :)`}/>
+    return <ErrorPage logout={logout} errorMessage={`Your email isn't verified yet!\nVerify then reload the page :)`}/>
   }
   else if (authenticated && checked && !isMobile) {
     return (

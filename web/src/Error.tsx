@@ -6,7 +6,8 @@ import { API } from "./constants";
 import { Header } from "./components/Header";
 
 interface Props {
-  errorMessage: string
+  errorMessage: string,
+  logout: any
 } 
 
 export const ErrorPage: React.FC<Props> = (props: Props) => {
@@ -33,8 +34,12 @@ export const ErrorPage: React.FC<Props> = (props: Props) => {
           <div>
             <h1>Oops!</h1>
             <p>{props.errorMessage}</p>
-            <button style={{ width: '100%', backgroundColor: '#5900B2', border: 0, padding: 10, color: 'white', fontSize: 16, borderRadius: 10, cursor: 'pointer'}} onClick={() => sendVerification()}>send verification email</button>
-            <button style={{ width: '100%', backgroundColor: '#5900B2', border: 0, padding: 10, color: 'white', fontSize: 16, borderRadius: 10, cursor: 'pointer', marginTop: 20}} onClick={() => window.location.reload()}>refresh</button>
+            <button style={{ width: '100%', backgroundColor: '#5900B2', border: 0, padding: 10, color: 'white', fontSize: 16, borderRadius: 10, cursor: 'pointer' }} onClick={() => sendVerification()}>send verification email</button>
+            <div style={{ flexDirection: 'row', justifyContent: 'space-between', display: 'flex'}}>
+              <button style={{ flex: 1, backgroundColor: '#5900B2', border: 0, padding: 10, color: 'white', fontSize: 16, borderRadius: 10, cursor: 'pointer', marginTop: 20, marginRight: 10}} onClick={() => window.location.reload()}>refresh</button>
+              <button style={{ flex: 1, backgroundColor: '#5900B2', border: 0, padding: 10, color: 'white', fontSize: 16, borderRadius: 10, cursor: 'pointer', marginTop: 20, marginLeft: 10}} onClick={() => props.logout()}>logout</button>     
+            </div>
+
           </div>
         </div>
       </div>
