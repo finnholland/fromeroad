@@ -3,13 +3,14 @@ import React, { useState } from 'react'
 import '../App.css';
 import './Login.css';
 import { API } from '../constants';
-import Teddy from '../assets/svg/teddy';
+import TaroMatcha from '../assets/logo/TaroMatcha';
 import { useAppDispatch } from '../hooks/Actions';
 import { setUser } from '../hooks/slices/userSlice';
 import { Header } from '../components/Header';
 
 interface Props {
   setAuthenticated: any
+  setVerified: any
 }
 
 const Login: React.FC<Props> = (props: Props) => {
@@ -61,6 +62,7 @@ const Login: React.FC<Props> = (props: Props) => {
           localStorage.setItem('token', res.data.token)
         }
         dispatch(setUser(res.data.user));
+        props.setVerified(res.data.user.verified)
         props.setAuthenticated(true)
       })
     }
@@ -79,7 +81,7 @@ const Login: React.FC<Props> = (props: Props) => {
     <div className="app">
       <Header type='desktop'/>
       <div className='welcome'>
-        <Teddy height={100} fill={'#5900B2'} />
+        <TaroMatcha height={175}/>
         <span style={{color: '#5900B2', fontSize: 18, marginTop: 15}}>Welcome to frome_road</span>
       </div>
       <div className='body'>

@@ -3,13 +3,14 @@ import React, { useState } from 'react'
 import '../../App.css';
 import './MobileStyles.css';
 import { API } from '../../constants';
-import Teddy from '../../assets/svg/teddy';
+import TaroMatcha from '../../assets/logo/TaroMatcha';
 import { useAppDispatch } from '../../hooks/Actions';
 import { setUser } from '../../hooks/slices/userSlice';
 import { Header } from '../../components/Header';
 
 interface Props {
-  setAuthenticated: any
+  setAuthenticated: any,
+  setVerified: any
 }
 
 const MobileLogin: React.FC<Props> = (props: Props) => {
@@ -60,6 +61,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
           localStorage.setItem('token', res.data.token)
         }
         dispatch(setUser(res.data.user));
+        props.setVerified(res.data.user.verified)
         props.setAuthenticated(true)
       })
     }
@@ -78,7 +80,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
     <div className="mobile">
       <Header type='mobile'/>
       <div style={{justifyContent: 'space-between', flexDirection: 'column', display: 'flex', marginTop: '2rem', marginBottom: '2rem'}}>
-        <Teddy height={100} fill={'#5900B2'} />
+        <TaroMatcha height={100} />
         <span style={{color: '#5900B2', fontSize: 18, marginTop: 15}}>Welcome to frome_road</span>
       </div>
       <div className='body'>

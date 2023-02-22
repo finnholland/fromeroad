@@ -7,7 +7,7 @@ import { useAppDispatch } from './hooks/Actions';
 import { isMobile } from 'react-device-detect';
 import { API } from './constants';
 import Login from './screens/Login';
-import Teddy from './assets/svg/teddy';
+import TaroMatcha from './assets/logo/TaroMatcha';
 import MobileLogin from './screens/mobile/MobileLogin';
 import MobileHome from './screens/mobile/MobileHome';
 import { setIsOpen } from './hooks/slices/sidebarSlice';
@@ -60,7 +60,7 @@ function App() {
     );
   } else if (!authenticated && checked && !isMobile) {
     return (
-      <Login setAuthenticated={setAuthenticated}></Login>
+      <Login setVerified={setVerified} setAuthenticated={setAuthenticated}></Login>
     );
   } else if (authenticated && checked && isMobile) {
     return (
@@ -68,12 +68,12 @@ function App() {
     );
   } else if (!authenticated && checked && isMobile) {
     return (
-      <MobileLogin setAuthenticated={setAuthenticated}></MobileLogin>
+      <MobileLogin setVerified={setVerified} setAuthenticated={setAuthenticated}></MobileLogin>
     );
   } else {
     return (
       <div className='hamsterPage'>
-        <Teddy height={200} width={200} fill={'#8205FF'} />
+        <TaroMatcha height={200} width={200}/>
       </div>
       
     )
