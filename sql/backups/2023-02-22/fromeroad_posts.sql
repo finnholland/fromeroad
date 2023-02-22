@@ -2,7 +2,7 @@
 --
 -- Host: 127.0.0.1    Database: fromeroad
 -- ------------------------------------------------------
--- Server version	8.0.31
+-- Server version	8.0.32
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,30 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `topten`
+-- Table structure for table `posts`
 --
 
-DROP TABLE IF EXISTS `topten`;
+DROP TABLE IF EXISTS `posts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `topten` (
+CREATE TABLE `posts` (
+  `postID` int NOT NULL AUTO_INCREMENT,
+  `body` varchar(255) NOT NULL,
+  `postImageUrl` varchar(255) DEFAULT NULL,
+  `createdAt` datetime NOT NULL,
   `userID` int NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `trendPoints` int NOT NULL,
-  `pos` int NOT NULL AUTO_INCREMENT,
-  `difference` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`pos`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `trendPoints` int NOT NULL DEFAULT '0',
+  `visible` tinyint NOT NULL DEFAULT '1',
+  PRIMARY KEY (`postID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `topten`
+-- Dumping data for table `posts`
 --
 
-LOCK TABLES `topten` WRITE;
-/*!40000 ALTER TABLE `topten` DISABLE KEYS */;
-INSERT INTO `topten` VALUES (1,'finn holland',0,1,0),(2,'finn holland',0,2,0),(3,'Ada Lovelace',0,3,0),(4,'Marie Curie',0,4,0),(5,'Yuan Shuai',0,5,0),(6,'Nikola Tesla',0,6,0),(7,'Du Lei',0,7,0),(8,'David Bowie',0,8,0),(9,'Mike Pound',0,9,0),(10,'Eduardo Saverin',0,10,0);
-/*!40000 ALTER TABLE `topten` ENABLE KEYS */;
+LOCK TABLES `posts` WRITE;
+/*!40000 ALTER TABLE `posts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -51,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-20  8:40:10
+-- Dump completed on 2023-02-22 12:55:46

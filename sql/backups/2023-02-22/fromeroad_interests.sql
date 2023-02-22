@@ -2,7 +2,7 @@
 --
 -- Host: 127.0.0.1    Database: fromeroad
 -- ------------------------------------------------------
--- Server version	8.0.31
+-- Server version	8.0.32
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,27 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `postvotes`
+-- Table structure for table `interests`
 --
 
-DROP TABLE IF EXISTS `postvotes`;
+DROP TABLE IF EXISTS `interests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `postvotes` (
-  `postID` int NOT NULL,
-  `userID` int NOT NULL,
-  `vote` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`postID`,`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `interests` (
+  `interestID` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`interestID`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `postvotes`
+-- Dumping data for table `interests`
 --
 
-LOCK TABLES `postvotes` WRITE;
-/*!40000 ALTER TABLE `postvotes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `postvotes` ENABLE KEYS */;
+LOCK TABLES `interests` WRITE;
+/*!40000 ALTER TABLE `interests` DISABLE KEYS */;
+INSERT INTO `interests` VALUES (2,'interest'),(5,'interest2'),(1,'react/native');
+/*!40000 ALTER TABLE `interests` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -48,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-20  8:40:10
+-- Dump completed on 2023-02-22 12:55:47
