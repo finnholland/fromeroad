@@ -29,7 +29,7 @@ services:
     restart: always
     build:
       context: api
-      dockerfile: ./api/Dockerfile
+      dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
     depends_on:
