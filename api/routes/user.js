@@ -8,6 +8,7 @@ const cors = require('cors')
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
 const salt = 10
+const sendEmail = require('../helpers/sendEmail');
 app.use(cors());
 
 
@@ -69,13 +70,15 @@ app.post('/login', async (req, res) => {
 })
 
 // create user
-app.post('/signup', async (req, res) => {
+app.post('/signup', async (req, res, next) => {
   const user = {
     name: req.body.name,
     email: req.body.email,
     company: req.body.company,
     password: req.body.password,
   }
+
+  let userID = 0
 
   db.query('select * from users where email = ?', user.email, (err, result) => { 
     if (err) throw (err)
@@ -87,6 +90,7 @@ app.post('/signup', async (req, res) => {
         user.password = hash;
         db.query('insert into users (name, email, company, password) values (?,?,?,?)', [user.name, user.email, user.company, user.password], (err, result, fields) => {
           if (err) throw (err)
+          userID = result.insertId
         })
       
         db.query('SELECT * FROM users WHERE email = ?', user.email, (err,result) => {
@@ -95,9 +99,15 @@ app.post('/signup', async (req, res) => {
                 msg:err
             })
           }
+          const encryptToken = jwt.sign({
+            userID: userID.toString(),
+            name: user.name
+          }, process.env.SECRET, { algorithm: 'HS256' });
+          sendEmail(userID, user.email, user.name)
           return res.status(201).send({
               user: user,
-              msg:"successfully registered"
+              msg: "successfully registered",
+              token: encryptToken
             })
         })
       })

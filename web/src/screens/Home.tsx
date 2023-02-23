@@ -113,7 +113,6 @@ const Home: React.FC<Props> = (props: Props) => {
       getRecentPosters();
       getTrendingUsers();
     }, HOUR);
-
     return () => clearInterval(trendInterval);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -315,7 +314,7 @@ const Home: React.FC<Props> = (props: Props) => {
 
   return (
     <div className="app">
-      <Header type='desktop'/>
+      <Header type='desktop' showGithub={true} />
       <div className='home'>
         <div id='body' style={{ flexDirection: 'row', display: 'flex', flex: 6, paddingBottom: 100}}>
           

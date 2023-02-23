@@ -7,16 +7,18 @@ import { useAppDispatch } from './hooks/Actions';
 import { isMobile } from 'react-device-detect';
 import { API } from './constants';
 import Login from './screens/Login';
-import Teddy from './assets/svg/teddy';
+import Allen from './assets/logo/Allen';
 import MobileLogin from './screens/mobile/MobileLogin';
 import MobileHome from './screens/mobile/MobileHome';
 import { setIsOpen } from './hooks/slices/sidebarSlice';
+import { ErrorPage } from './Error';
 
 
 function App() {
   const dispatch = useAppDispatch();
   const [authenticated, setAuthenticated] = useState(false)
   const [checked, setChecked] = useState(false)
+  const [verified, setVerified] = useState(false)
 
   useEffect(() => {
     if (localStorage.getItem('token') && localStorage.getItem('token') !== '') {
@@ -33,6 +35,7 @@ function App() {
       }
     }).then(res => {
       dispatch(setUser(res.data[0]));
+      setVerified(res.data[0].verified)
       setAuthenticated(true);
       setChecked(true)
     }).catch(err => {
@@ -48,14 +51,16 @@ function App() {
     dispatch(setIsOpen(false));
   }
 
-
-  if (authenticated && checked && !isMobile) {
+  if (checked && !verified && authenticated) {
+    return <ErrorPage logout={logout} errorMessage={`Your email isn't verified yet!\nVerify then reload the page :)`}/>
+  }
+  else if (authenticated && checked && !isMobile) {
     return (
       <Home logout={logout}></Home>
     );
   } else if (!authenticated && checked && !isMobile) {
     return (
-      <Login setAuthenticated={setAuthenticated}></Login>
+      <Login setVerified={setVerified} setAuthenticated={setAuthenticated}></Login>
     );
   } else if (authenticated && checked && isMobile) {
     return (
@@ -63,12 +68,12 @@ function App() {
     );
   } else if (!authenticated && checked && isMobile) {
     return (
-      <MobileLogin setAuthenticated={setAuthenticated}></MobileLogin>
+      <MobileLogin setVerified={setVerified} setAuthenticated={setAuthenticated}></MobileLogin>
     );
   } else {
     return (
       <div className='hamsterPage'>
-        <Teddy height={200} width={200} fill={'#8205FF'} />
+        <Allen height={200} width={200} className='purple'/>
       </div>
       
     )
