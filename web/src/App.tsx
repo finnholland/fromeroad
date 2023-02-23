@@ -7,7 +7,7 @@ import { useAppDispatch } from './hooks/Actions';
 import { isMobile } from 'react-device-detect';
 import { API } from './constants';
 import Login from './screens/Login';
-import TaroMatcha from './assets/logo/TaroMatcha';
+import Allen from './assets/logo/Allen';
 import MobileLogin from './screens/mobile/MobileLogin';
 import MobileHome from './screens/mobile/MobileHome';
 import { setIsOpen } from './hooks/slices/sidebarSlice';
@@ -73,7 +73,7 @@ function App() {
   } else {
     return (
       <div className='hamsterPage'>
-        <TaroMatcha height={200} width={200}/>
+        <Allen height={200} width={200} className='purple'/>
       </div>
       
     )

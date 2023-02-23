@@ -29,7 +29,7 @@ export const ErrorPage: React.FC<Props> = (props: Props) => {
   if (props.errorMessage && props.errorMessage !== '' && props.errorMessage.toLowerCase().includes('verify')) {
     return (
       <div className="app">
-        <Header type='desktop'/>
+        <Header type='desktop' showGithub={false} />
         <div id="error-page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div>
             <h1>Oops!</h1>
