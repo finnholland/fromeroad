@@ -5,7 +5,8 @@ export interface User {
   company: string,
   trendPoints: number,
   profileImageUrl: string,
-  interests: Interest[]
+  interests: Interest[],
+  verified: boolean
 }
 
 export interface Interest {

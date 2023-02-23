@@ -11,7 +11,7 @@ const fs = require('fs')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const path = `./images/user/${req.params.userID}/`
+    const path = `./data/user/${req.params.userID}/images/profile`
     fs.mkdirSync(path, { recursive: true })
     cb(null, path)
   },
@@ -31,7 +31,7 @@ app.post('/profileImage/:userID', ejwt({ secret: process.env.SECRET, algorithms:
     console.log("No file upload");
     res.sendStatus(403)
   } else {
-    const imgsrc = `/images/user/${req.body.userID}/${req.file.filename.replace(' ', '_')}`
+    const imgsrc = `/data/user/${req.params.userID}/images/profile/${req.file.filename.replace(' ', '_')}`
     db.query('update users set profileImageUrl = ? where userID = ?', [imgsrc, req.body.userID], (err, result, fields) => {
       if (err) {
         console.log('error occurred: '+ err)

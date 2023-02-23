@@ -3,13 +3,14 @@ import React, { useState } from 'react'
 import '../../App.css';
 import './MobileStyles.css';
 import { API } from '../../constants';
-import Teddy from '../../assets/svg/teddy';
+import Allen from '../../assets/logo/Allen';
 import { useAppDispatch } from '../../hooks/Actions';
 import { setUser } from '../../hooks/slices/userSlice';
 import { Header } from '../../components/Header';
 
 interface Props {
-  setAuthenticated: any
+  setAuthenticated: any,
+  setVerified: any
 }
 
 const MobileLogin: React.FC<Props> = (props: Props) => {
@@ -60,6 +61,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
           localStorage.setItem('token', res.data.token)
         }
         dispatch(setUser(res.data.user));
+        props.setVerified(res.data.user.verified)
         props.setAuthenticated(true)
       })
     }
@@ -76,9 +78,9 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
 
   return (
     <div className="mobile">
-      <Header type='mobile'/>
+      <Header type='mobile' showGithub={false} />
       <div style={{justifyContent: 'space-between', flexDirection: 'column', display: 'flex', marginTop: '2rem', marginBottom: '2rem'}}>
-        <Teddy height={100} fill={'#5900B2'} />
+        <Allen height={100} className='purple'/>
         <span style={{color: '#5900B2', fontSize: 18, marginTop: 15}}>Welcome to frome_road</span>
       </div>
       <div className='body'>
@@ -143,9 +145,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
               <p className='aboutText' style={{marginTop: 0}}>I originally created this project as a way to get into full-stack devving.</p>
               <p className='aboutText'>The project stack is ReactJS, NodeJS, and MySQL, hosted on AWS Amplify with a dedicated server.</p>
               <p className='aboutText'>I honestly have no idea if it'll work or how many bugs there'll be so please don't hesitate to report them.</p>
-              <div style={{flexDirection: 'row', display: 'flex'}}>
-                <p style={{ display: 'inline-block', marginTop: '1.5rem', textAlign: 'justify'}}>The <a href='https://github.com/fhllnd/fromeroad' rel="noreferrer" target={'_blank'}> Repo</a> should anyone care to fix said bugs</p>
-              </div>
+              <p className='aboutText'>You can access the repo once logged in and verified :)</p>
           </div>
         </div>
       </div>
