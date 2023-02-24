@@ -2,8 +2,7 @@
 
 # STORAGE FILES
 *api_data/user/
-*db_data/*
-!*db_data/fromeroad
+*db_data/
 
 # dependencies
 /web/node_modules
