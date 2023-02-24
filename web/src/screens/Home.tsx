@@ -19,6 +19,8 @@ import { API, EIGHT_MEGABYTES } from '../constants';
 import LogoutIcon from '../assets/svg/logoutIcon';
 import { setInterests } from '../hooks/slices/userSlice';
 import { Header } from '../components/Header';
+import { updateName } from '../hooks/api/users';
+import Tick from '../assets/svg/tick';
 
 const HOUR = 60000 * 60
 interface Props {
@@ -29,6 +31,8 @@ const Home: React.FC<Props> = (props: Props) => {
   const selector = useAppSelector(state => state);
   const dispatch = useAppDispatch();
   const [profileImageUrl, setProfileImageUrl] = useState(selector.user.profileImageUrl);
+  const [name, setName] = useState(selector.user.name);
+  const [editingName, setEditingName] = useState(false);
 
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
   const [addSvgHover, setAddSvgHover] = useState(-2);
@@ -312,6 +316,15 @@ const Home: React.FC<Props> = (props: Props) => {
     })
   }
 
+  const finishEditingName = (saving: boolean) => {
+    if (saving) {
+      updateName(dispatch, name, selector.user.userID, setName);
+    } else {
+      setName(selector.user.name)
+    }
+    setEditingName(false);
+  }
+
   return (
     <div className="app">
       <Header type='desktop' showGithub={true} />
@@ -356,7 +369,12 @@ const Home: React.FC<Props> = (props: Props) => {
             <div className='titleDiv'>
               <p className='sectionTitle'>me</p>
               <hr className='line' />
-              <LogoutIcon onClick={() => props.logout()} height={25} width={25} style={{ marginLeft: 15 }} fill={'#8205ff'} />
+              {editingName ?
+                ( <Tick stroke='#8205ff' strokeWidth={2} height={25} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} onMouseDown={() => finishEditingName(true)}/> )
+                :
+                ( <LogoutIcon onClick={() => props.logout()} height={25} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} stroke={'#8205ff'} strokeWidth={2} /> )
+              }
+              
             </div>
               <div>
                 <div style={{ flexDirection: 'row', display: 'flex' }}>
@@ -367,8 +385,8 @@ const Home: React.FC<Props> = (props: Props) => {
                       </div>
                     </div>
                   </div>
-                  <div className='detailsDiv'>
-                    <p className='name'>{selector.user.name}</p>
+                <div className='detailsDiv'>
+                    <input className='nameInput name' onChange={(e) => setName(e.target.value)} onFocus={() => setEditingName(true)} onBlur={() => finishEditingName(false)} value={name}/>
                     <p className='company'>{selector.user.company}</p>
                   </div>
 
