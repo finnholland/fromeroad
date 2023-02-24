@@ -1,7 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # STORAGE FILES
-api_data/
+*api_data/
+*db_data/
 
 # dependencies
 /web/node_modules

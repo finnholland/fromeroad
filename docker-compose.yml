@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   mysql_db:
-    container_name: fromeroad_mysql
+    container_name: ${env}_fromeroad_mysql
     image: mysql:8.0.32
     restart: always
     environment:
@@ -16,33 +16,36 @@ services:
       - docker_default
     ports:
       # <Port exposed> : < MySQL Port running inside container>
-      - '10714:3306'
+      - ${port}
     expose:
       # Opens port 3306 on the container
-      - '3306'
+      - ${exposed_port}
       # Where our data will be persisted
-    # volumes:
-    #   - ./db_data:/var/lib/mysql
+    volumes:
+      - ./${env}_db_data:/var/lib/mysql
   nodejs_api:
-    container_name: fromeroad_api
+    container_name: ${env}_fromeroad_api
     image: fromeroadapi
     restart: always
     build:
       context: api
       dockerfile: ./Dockerfile
     environment:
-      NODE_ENV: production
+      NODE_ENV: ${env}
     depends_on:
       - mysql_db
     networks:
       - docker_default
     volumes:
-      - ./api_data:/usr/src/app/data
+      - ./${env}_api_data:/usr/src/app/data
 # Names our volume
 
 volumes:
-  api_data:
-  db_data:
+  dev_api_data:
+  dev_db_data:
+  prod_api_data:
+  prod_db_data:
+
    
 networks:
   docker_default:
