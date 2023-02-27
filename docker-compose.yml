@@ -23,7 +23,7 @@ services:
       # Where our data will be persisted
     volumes:
       - ./${env}_db_data:/var/lib/mysql
-      - ./sql/backups/${env}:/docker-entrypoint-initdb.d
+      - ./sql/${env}/backups:/docker-entrypoint-initdb.d
   nodejs_api:
     container_name: ${env}_fromeroad_api
     image: fromeroadapi
