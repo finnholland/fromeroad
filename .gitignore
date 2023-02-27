@@ -2,7 +2,8 @@
 
 # STORAGE FILES
 *api_data/user/
-*db_data/
+*db_data
+sql/prod/backups/
 
 # dependencies
 /web/node_modules
@@ -26,3 +27,4 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+

@@ -1,6 +1,6 @@
 
 const API_URLS = {
-  env: process.env.REACT_APP_ENV_API_KEY,
+  env: process.env.REACT_APP_API_KEY,
   dev: 'https://dev.api.fromeroad.com',
   prod: 'https://dev.api.fromeroad.com',
   local: 'http://localhost'
