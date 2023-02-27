@@ -29,11 +29,14 @@ export const userSlice = createSlice({
     },
     setInterests: (state, action: PayloadAction<Interest[]>) => {
       state.interests = action.payload
+    },
+    setName: (state, action: PayloadAction<string>) => { 
+      state.name = action.payload
     }
   },
 });
 
-export const { setUser, setInterests } = userSlice.actions;
+export const { setUser, setInterests, setName } = userSlice.actions;
 
 
 export default userSlice.reducer;

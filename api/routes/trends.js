@@ -8,7 +8,7 @@ const cors = require('cors')
 app.use(cors());
 
 app.get('/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
-  db.query(`select tt.*, u.company, u.profileImageUrl from topten as tt inner join users as u on u.userID = tt.userID limit 5;`, (err, result, fields) => {
+  db.query(`select tt.*, u.company, u.profileImageUrl, u.name from topten as tt inner join users as u on u.userID = tt.userID limit 5;`, (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)
     } else {

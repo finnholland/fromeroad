@@ -115,6 +115,21 @@ app.post('/signup', async (req, res, next) => {
   })
 })
 
+app.post('/updateName', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res, next) => { 
+  const name = req.body.name
+  const userID = req.body.userID
+  console.log(name)
+  db.query(`update users set name = ? where userID = ?`, [name, userID],
+    (err, result, fields) => {
+    if (err) {
+      console.log('error occurred: ' + err)
+      return err.code
+    } else {
+      res.send(result)
+    }
+  })
+})
+
 // add interest
 app.post('/interests/addInterests/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
   const interestName = req.body.name;

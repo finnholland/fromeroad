@@ -108,6 +108,10 @@
   pointer-events: none;
 }
 
+.nameInput {
+  border: 0;
+}
+
 .app .titleContainer {
   margin: 0;
   padding: 0;
