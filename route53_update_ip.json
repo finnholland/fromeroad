@@ -1,0 +1,18 @@
+{
+    "Comment": "Update records to use new dynamic IP",
+    "Changes": [
+        {
+            "Action": "UPSERT",
+            "ResourceRecordSet": {
+                "Name": "api.fromeroad.com",
+                "Type": "A",
+                "TTL": 300,
+                "ResourceRecords": [
+                    {
+                        "Value": "110.175.230.111"
+                    }
+                ]
+            }
+        }
+    ]
+}
