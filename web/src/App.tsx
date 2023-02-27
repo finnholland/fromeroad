@@ -24,6 +24,7 @@ function App() {
     if (localStorage.getItem('token') && localStorage.getItem('token') !== '') {
       setAuthenticated(true)
     }
+    console.log(API)
     getUserFromToken()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
