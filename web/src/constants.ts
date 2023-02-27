@@ -2,10 +2,10 @@
 const API_URLS = {
   env: process.env.REACT_APP_API_KEY,
   dev: 'https://dev.api.fromeroad.com',
-  prod: 'https://dev.api.fromeroad.com',
+  prod: 'https://api.fromeroad.com',
   local: 'http://localhost'
 }
-const API = API_URLS.local;
+const API = API_URLS.env; // reset to env each commit
 
 const HOUR = 60000 * 60;
 const EIGHT_MEGABYTES = 1048576 * 8; // 1mb * 8 in bytes
