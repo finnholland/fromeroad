@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "docker": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command docker rm $(docker stop $(docker ps -aqf \"name=^.*_fromeroad_api$\")) && docker rmi fromeroadapi && cd .. && docker compose --env-file .dev.env up -d && docker compose --env-file .env up -d"
   },
   "dependencies": {
     "@types/express": "^4.17.15",
