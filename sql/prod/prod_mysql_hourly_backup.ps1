@@ -1,6 +1,6 @@
 $filename = (Get-Date -Format FileDateTime) + ".sql"
 $dirname = "backups/"
 
-mysqldump --defaults-extra-file=mysqldump_config.cnf -u root --port=10714 fromeroad > $dirname$filename
+mysqldump --defaults-extra-file=mysqldump_config.cnf --user=root --host=127.0.0.1 --port=10715 --default-character-set=utf8 --protocol=tcp --routines --events fromeroad -r $dirname$filename
 
 # aws s3 cp $dirname+$filename s3://fromeroad-db-backups/prod/$filename
