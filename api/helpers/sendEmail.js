@@ -1,14 +1,23 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
+let aws = require("@aws-sdk/client-ses");
 
 function sendEmail(userID, email, name) {
-  const transporter = nodemailer.createTransport({
-    service: 'Outlook365',
-    auth: {
-      user: 'finnholland@outlook.com',
-      pass: 'RRz9a#kiMdts#W'
-    }
+  const subdomain = process.env.NODE_ENV === 'prod' ? '' : 'dev.'
+
+  const ses = new aws.SES({
+    apiVersion: "2010-12-01",
+    region: "ap-southeast-2",
+    credentials: {
+      accessKeyId: 'AKIAVTABPBBLB2V4QLGQ',
+      secretAccessKey: '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'
+    },
+  });
+
+  let transporter = nodemailer.createTransport({
+    SES: { ses, aws },
+    sendingRate: 1
   });
 
   const token = jwt.sign({
@@ -18,7 +27,7 @@ function sendEmail(userID, email, name) {
   );
 
   const mailConfigurations = {
-    from: 'finnholland@outlook.com',
+    from: 'no-reply-fromeroad@fromeroad.com',
     to: email,
     subject: 'Fromeroad Email Verification',
     
@@ -31,7 +40,7 @@ function sendEmail(userID, email, name) {
                     <p>You will need to verify your email before using the site.</p>
                 </div>
 
-                <a href="https://api.fromeroad.com/verify/${token}">
+                <a href="https://${subdomain}api.fromeroad.com/verify/${token}">
                     <button style="background-color: #5900B2; border: 0; color: white; 
                     font-size: large;  width: 100%;
                     padding-left: 15px; padding-right: 15px; padding-top: 5px; padding-bottom: 5px; border-radius: 5px;">verify</button>

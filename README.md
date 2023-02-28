@@ -50,4 +50,5 @@ These steps are not really necessary for anyone as it's done for the server only
  - [ ] write docker install instructions
  - [ ] profile view
  - [ ] give alIen a backstory
+ - [ ] move and change all secrets for API and AWS - api/helpers/sendEmail, api/index, api/env
 
