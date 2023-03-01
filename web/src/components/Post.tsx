@@ -115,7 +115,7 @@ export const Post: React.FC<Props> = (props: Props) => {
   const commentItems = comments.map((i) => {
     if (comments.findIndex(c => c.commentID === i.commentID) <= 1 || showAll) {
       return (
-        <Comment key={i.commentID} comment={i} lastCommentID={comments[comments.length - 1].commentID} getComments={getComments} editComment={editComment} setEditing={setEditing} editing={editing} />
+        <Comment key={i.commentID} comment={i} lastCommentID={comments[comments.length - 1].commentID} setComments={setComments} comments={comments} editComment={editComment} setEditing={setEditing} editing={editing} />
       )
     } else return (null)
   });

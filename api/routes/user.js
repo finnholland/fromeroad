@@ -16,7 +16,7 @@ app.use(cors());
 
 // get user by ID
 app.get('/userID/:id', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
-  db.query('select * from users where userID = ?', [req.params.id], (err, result, fields) => {
+  db.query('select name, email, trendpoints, company from users where userID = ?', [req.params.id], (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)
     } else {
@@ -116,6 +116,9 @@ app.post('/signup', async (req, res, next) => {
 })
 
 app.post('/updateName', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res, next) => { 
+  if (req.auth.userID !== req.body.userID.toString()) {
+    return res.sendStatus(401)
+  }
   const name = req.body.name
   const userID = req.body.userID
   console.log(name)
@@ -132,6 +135,9 @@ app.post('/updateName', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"]
 
 // add interest
 app.post('/interests/addInterests/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userID !== req.body.userID.toString()) {
+    return res.sendStatus(401)
+  }
   const interestName = req.body.name;
   const userID = req.body.userID;
   console.log(interestName, userID)
@@ -172,8 +178,10 @@ app.post('/interests/addInterests/', ejwt({ secret: process.env.SECRET, algorith
 
 // get interest
 app.get('/interests/getInterests/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userID !== req.params.userID) {
+    return res.sendStatus(401)
+  }
   const userID = req.params.userID;
-  console.log(userID)
   
   db.query('SELECT * FROM interests JOIN userinterests ON interests.interestID = userinterests.interestID WHERE userinterests.userID = ?', userID, (err, result, fields) => {
     if (err) throw (err)
@@ -185,9 +193,11 @@ app.get('/interests/getInterests/:userID', ejwt({ secret: process.env.SECRET, al
 
 // remove interest
 app.delete('/interests/removeInterests/:userID/:interestID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userID !== req.params.userID) {
+    return res.sendStatus(401)
+  }
   const userID = req.params.userID;
   const interestID = req.params.interestID;
-  console.log(userID)
   
   db.query('delete from userinterests where userID = ? and interestID = ?', [userID, interestID], (err, result, fields) => {
     if (err) throw (err)

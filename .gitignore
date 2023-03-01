@@ -4,6 +4,7 @@
 *api_data/user/
 *db_data
 sql/prod/backups/
+api/data/user
 
 # dependencies
 /web/node_modules
