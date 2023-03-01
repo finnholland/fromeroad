@@ -1,0 +1,36 @@
+.sectionHeader {
+  font-size: 1rem;
+  color: #FFB405;
+  margin: 0;
+}
+
+.sectionHeaderLine {
+  color: #FFB405;
+  border: #FFB405 solid 1px;
+  flex: 1; 
+  margin: 0;
+  margin-left: 10px;
+}
+
+.sectionDiv {
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.detailHeader {
+  color: #B594D6;
+  font-size: .75rem;
+  margin: 0;
+  margin-top: 15px;
+}
+
+.detailBody {
+  color: #8205ff;
+  font-size: .875rem;
+  margin: 0;
+  margin-top: 5px;
+}

@@ -21,6 +21,7 @@ import { setInterests } from '../hooks/slices/userSlice';
 import { Header } from '../components/Header';
 import { updateName } from '../hooks/api/users';
 import Tick from '../assets/svg/tick';
+import { Profile } from '../components/Profile/Profile';
 
 const HOUR = 60000 * 60
 interface Props {
@@ -122,7 +123,12 @@ const Home: React.FC<Props> = (props: Props) => {
   }, [])
 
   const removeInterest = (interestID: number) => {
-    Axios.delete(`${API}/user/interests/removeInterests/${selector.user.userID}/${interestID}`, {
+    const params = {
+      userID: selector.user.userID,
+      interestID: interestID
+    }
+    Axios.delete(`${API}/user/interests/removeInterests`, {
+      data: params,
       headers:
         { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(() => {
@@ -365,57 +371,7 @@ const Home: React.FC<Props> = (props: Props) => {
             </InfiniteScroll>
           </div>
 
-          <div id='profile' style={{ flex: 1 }}>
-            <div className='titleDiv'>
-              <p className='sectionTitle'>me</p>
-              <hr className='line' />
-              {editingName ?
-                ( <Tick stroke='#8205ff' strokeWidth={2} height={25} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} onMouseDown={() => finishEditingName(true)}/> )
-                :
-                ( <LogoutIcon onClick={() => props.logout()} height={25} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} stroke={'#8205ff'} strokeWidth={2} /> )
-              }
-              
-            </div>
-              <div>
-                <div style={{ flexDirection: 'row', display: 'flex' }}>
-                  <div>
-                    <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(${API}${profileImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
-                      <div className='profileImageOverlay'>
-                        <span style={{alignItems: 'center', display:'flex', marginBottom: 5, color: '#fff'}}>change</span>
-                      </div>
-                    </div>
-                  </div>
-                <div className='detailsDiv'>
-                    <input className='nameInput name' onChange={(e) => setName(e.target.value)} onFocus={() => setEditingName(true)} onBlur={() => finishEditingName(false)} value={name}/>
-                    <p className='company'>{selector.user.company}</p>
-                  </div>
-
-                </div>
-                <hr className='subline' />
-                <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column' }}>
-                  {interestItems}
-                </div>
-                <div className='addInterestDiv'>
-                  <input type={'text'} placeholder='add interests' className='interestInput' value={interest} onChange={(e) => changeInterestSearch(e.target.value)}/>
-                  <SvgAddButton fill={addSvgHover === -1 ? '#ffb405' : '#DECCF0'} stroke={addSvgHover === -1 ? '#ffb405' : '#c182ff'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
-                    onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
-
-                </div>
-                <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column', textAlign: 'left' }}>
-                  {
-                    interestSearchResults.length !== 0 ?
-                      <div style={{justifyContent: 'space-between', display: 'flex'}}>
-                        <span style={{ fontSize: 12 }}>suggestions:</span>
-                        <span style={{ fontSize: 12, color: 'red', cursor: 'pointer' }} onClick={() => changeInterestSearch('')}>clear</span>
-                      </div>
-                    
-                    : null
-                  }
-                  {interestSearchResults}
-                </div>
-              <hr className='subline'/>
-            </div>
-          </div>
+            <Profile logout={props.logout}/>
 
         </div>
 

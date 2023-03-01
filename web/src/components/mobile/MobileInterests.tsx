@@ -105,7 +105,12 @@ export const MobileInterests = () => {
   }
   
   const removeInterest = (interestID: number) => {
-    Axios.delete(`${API}/user/interests/removeInterests/${selector.user.userID}/${interestID}`, {
+    const params = {
+      userID: selector.user.userID,
+      interestID: interestID
+    }
+    Axios.delete(`${API}/user/interests/removeInterests`, {
+      data: params,
       headers:
         { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(() => {

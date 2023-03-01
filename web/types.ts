@@ -65,3 +65,12 @@ export interface CommentType {
   company: string
   profileImageUrl: string
 }
+
+export interface Profile {
+  company: string
+  email: string
+  name: string
+  profileImageUrl: string
+  trendPoints: number
+  interests: Interest[]
+}

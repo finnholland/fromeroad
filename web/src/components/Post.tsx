@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { CommentType, Poster, PostType } from '../../types'
+import { CommentType, Poster, PostType, Profile } from '../../types'
 import './Post.css'
 import Axios from 'axios';
-import { useAppSelector } from '../hooks/Actions';
+import { useAppDispatch, useAppSelector } from '../hooks/Actions';
 import SvgAddButton from '../assets/svg/SvgAddButton';
 import { Comment } from './Comment';
 import { getMessageAge } from '../hooks/helpers';
 import { API, DEFAULT_PROFILE_IMAGE } from '../constants';
 import Highlighter from "react-highlight-words";
+import { getUserProfile } from '../hooks/api/users';
 
 interface Props {
   post: PostType,
@@ -17,6 +18,7 @@ interface Props {
 export const Post: React.FC<Props> = (props: Props) => {
 
   const selector = useAppSelector(state => state)
+  const dispatch = useAppDispatch();
   const [trendPoints, setTrendPoints] = useState(props.post.trendPoints)
   const [comments, setComments] = useState<CommentType[]>([])
   const [comment, setComment] = useState('')
@@ -130,7 +132,7 @@ export const Post: React.FC<Props> = (props: Props) => {
   if (props.post.postImageUrl && props.post.postImageUrl !== '') {
     return (
       <div className='post'>
-        <div id='header' className='postHeader'>
+        <div id='header' className='postHeader' onClick={() => getUserProfile(dispatch, selector.user.userID, props.poster.userID)}>
           <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage'/>
           <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
@@ -180,7 +182,7 @@ export const Post: React.FC<Props> = (props: Props) => {
   else {
     return (
       <div className='post'>
-        <div id='header' className='postHeader'>
+        <div id='header' className='postHeader' onClick={() => getUserProfile(dispatch, selector.user.userID, props.poster.userID )}>
           <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage'/>
           <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
@@ -227,7 +229,6 @@ export const Post: React.FC<Props> = (props: Props) => {
       </div>
     )
   }
- 
 }
 
 // needs upvote button + image posts + post editor + comments)
