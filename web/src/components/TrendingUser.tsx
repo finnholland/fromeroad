@@ -26,6 +26,7 @@ export const TrendingUser: React.FC<Props> = ({ user }) => {
         <span className='text' style={{color: (user.difference > 0 ? '#05ff37' : user.difference < 0 ? '#ff1f3a' : '#8205ff')}}>{user.name}</span>
         <div className='subHeader subtext'>
           <span>trend points: {user.trendPoints}</span> 
+          {/* <span>posts: {user.postCount}</span>  */}
         </div>
         
       </div> 

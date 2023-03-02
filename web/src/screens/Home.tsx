@@ -189,15 +189,19 @@ const Home: React.FC<Props> = (props: Props) => {
     <div className="app">
       <Header type='desktop' showGithub={true} />
       <div className='home'>
-        <div id='body' style={{ flexDirection: 'row', display: 'flex', paddingBottom: 100}}>
-          <div id='recentPosters' style={{ flex: 1, paddingLeft: 40 }}>
+        <div id='body' style={{ flexDirection: 'row', display: 'flex', paddingTop: 70, justifyContent: 'space-between'}}>
+          <div id='recentPosters' className='topTenList'>
             <div className='titleDiv'>
-              <p className='sectionTitle'>activity</p>
+              <p className='sectionTitle'>top ten</p>
               <hr className='line'/>
             </div>
-            {activityLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
-            {recentPostersItems}
+            <div className='topTenScrollable'>
+              {activityLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
+              {trendingUserItem}
+            </div>
+
           </div>
+          <div style={{width: '25vw'}}/>
           <div id='feed' className='feed'>
             <div className='titleDiv'>
               <p className='sectionTitle'>feed</p>
@@ -223,20 +227,9 @@ const Home: React.FC<Props> = (props: Props) => {
               {postItem}
             </InfiniteScroll>
           </div>
-          <Profile logout={props.logout}/>
+          <Profile logout={props.logout} />
+          <div style={{width: '20vw'}}/>
         </div>
-
-        <footer className='footer'>
-          <div id='trendsTitle' className='titleDiv' style={{marginTop: 0}}>
-            <p className='sectionTitle'>trends</p>
-            <hr className='line'/>
-          </div>
-          <div className='footerBody'>
-            {trendingLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
-            {trendingUserItem}
-          </div>         
-        </footer>
-
       </div>
     </div>
   );

@@ -55,6 +55,7 @@ export interface TrendingUserType {
   difference: number,
   company: string,
   profileImageUrl: string
+  postCount: number
 }
 
 export interface CommentType {

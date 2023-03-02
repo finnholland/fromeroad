@@ -247,7 +247,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
         <div className='titleDiv'>
           <p className='sectionTitle'>me</p>
           <hr className='line' />
-          <LogoutIcon onClick={() => props.logout()} height={25} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} stroke={'#8205ff'} strokeWidth={2} />
+          <LogoutIcon onClick={() => props.logout()} height={24} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} stroke={'#8205ff'} strokeWidth={2} />
         </div>
         <div>
           {/* edit here */}

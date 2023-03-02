@@ -4,12 +4,16 @@
   align-items: center;
   justify-content: space-between;
   height: 60px;
-  margin-right: 1.5rem;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 1.25rem;
+  direction: ltr;
 }
 
 .trendingUser .subHeader {
   justify-content: space-between;
-  display: flex
+  display: flex;
+  flex-direction: column;
 }
 
 .trendingUser .subtext {
