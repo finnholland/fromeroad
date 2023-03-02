@@ -30,20 +30,12 @@ interface Props {
 const Home: React.FC<Props> = (props: Props) => {
   const selector = useAppSelector(state => state);
   const dispatch = useAppDispatch();
-  const [profileImageUrl, setProfileImageUrl] = useState(selector.user.profileImageUrl);
-  const [name, setName] = useState(selector.user.name);
-  const [editingName, setEditingName] = useState(false);
 
-  const [removeSvgHover, setRemoveSvgHover] = useState(-1);
-  const [addSvgHover, setAddSvgHover] = useState(-2);
   const [plusHover, setPlusHover] = useState(false);
   const [refreshHover, setRefreshHover] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [creatingPost, setCreatingPost] = useState(false);
 
-  const [interest, setInterest] = useState('');
-  const [interestList, setInterestList] = useState<Interest[]>([]);
-  const [interestSearch, setInterestSearch] = useState<Interest[]>([]);
   const [posts, setPosts] = useState<PostItem[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
@@ -53,33 +45,6 @@ const Home: React.FC<Props> = (props: Props) => {
   const [loading, setLoading] = useState(true);
   const [activityLoading, setActivityLoading] = useState(true);
   const [trendingLoading, setTrendingLoading] = useState(true);
-
-  const ref = useRef<HTMLInputElement>(null);
-  const handleClick = (e: any) => {
-    if (ref.current && e.target.id === 'profileImage') {
-      ref.current.click();
-    }
-  }
-
-  const interestItems = interestList.map((i) => {
-    return (
-      <div key={i.interestID} className='interestDiv' onMouseEnter={() => setRemoveSvgHover(i.interestID)}
-          onMouseLeave={() => setRemoveSvgHover(-1)} onClick={() => removeInterest(i.interestID)}>
-        <span className='interestTitle'>{i.name}</span>
-        <SvgRemoveButton height={20} stroke={removeSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
-      </div>
-    )
-  });
-
-  const interestSearchResults = interestSearch.map((i) => {
-    return (
-      <div className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestID)}
-          onMouseLeave={() => setAddSvgHover(-2)} onClick={() => addInterestHelper(i)}>
-        <span className='interestTitle'>{i.name}</span>
-          <SvgAddButton height={20} stroke={addSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
-      </div>
-    )
-  });
 
   const recentPostersItems = recentPosters.map((i) => {
     return (
@@ -99,20 +64,10 @@ const Home: React.FC<Props> = (props: Props) => {
     )
   });
 
-  const addInterestHelper = (interest: Interest) => {
-    if (interest.interestID) {
-      let removalArray: Interest[] = interestSearch
-      removalArray = removalArray.filter(i => i.interestID !== interest.interestID)
-      setInterestSearch(removalArray)
-    }
-    addInterest(interest.name)
-  }
-
   useEffect(() => {
     getPosts();
     getRecentPosters();
     getTrendingUsers();
-    getInterests(selector.user.userID);
     const trendInterval = setInterval(() => {
       getRecentPosters();
       getTrendingUsers();
@@ -120,20 +75,6 @@ const Home: React.FC<Props> = (props: Props) => {
     return () => clearInterval(trendInterval);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const removeInterest = (interestID: number) => {
-    const params = {
-      userID: selector.user.userID,
-      interestID: interestID
-    }
-    Axios.delete(`${API}/user/interests/removeInterests`, {
-      data: params,
-      headers:
-        { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).then(() => {
-      getInterests(selector.user.userID)
-    })
-  }
 
   const getRecentPosters = () => {
     setActivityLoading(true)
@@ -146,83 +87,6 @@ const Home: React.FC<Props> = (props: Props) => {
       setRecentPosters(res.data)
       setActivityLoading(false)
     })
-  }
-
-  const uploadImage = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      if (e.target.files[0].size >= EIGHT_MEGABYTES) {
-        alert('too large! 8mb or less plz')
-        return;
-      } else {
-        const fd = new FormData();
-        fd.append('file', e.target.files[0])
-        fd.append('userID', selector.user.userID.toString())
-        Axios.post(`${API}/image/profileImage/${selector.user.userID}`, fd, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        }).then(() => {
-          Axios.get(`${API}/image/profileImage/${selector.user.userID}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        }).then(res => {
-            setProfileImageUrl(res.data[0].profileImageUrl)
-          })
-          
-        })
-      }
-    }
-  }
-
-  const addInterest = (interest: string) => {
-    const params = {
-      userID: selector.user.userID,
-      name: interest,
-    }
-    Axios.post(`${API}/user/interests/addInterests`, params, {
-      headers:
-        { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).then((res) => {
-      if (res.status !== 409) {
-        getInterests(selector.user.userID)
-        setRemoveSvgHover(-1)
-      } else {
-        alert('interest already exists')
-      }
-    }).catch(err => {
-      alert('error: ' + err.response.status + ' - interest already added')
-    })
-  }
-
-  const getInterests = (userID: number) => {
-    Axios.get(`${API}/user/interests/getInterests/${userID}`, {
-      headers:
-        { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).then((res) => {
-      dispatch(setInterests(res.data));
-      setInterestList(res.data)
-    })
-  }
-
-  const changeInterestSearch = (search: string) => {
-    setInterest(search);
-    if (!search || search === '') {
-      setInterestSearch([])
-    } else {
-      Axios.get(`${API}/user/interests/searchInterests/${search}`, {
-        headers:
-          { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      }).then((res) => {
-        const tempArr: Interest[] = []
-        res.data.forEach((interest: Interest) => {
-          if (interestList.findIndex(i => i.interestID === interest.interestID) === -1) {
-            tempArr.push(interest)
-          }
-        });
-        setInterestSearch(tempArr)
-      })
-    }
   }
 
   const getPosts = () => {
@@ -325,9 +189,8 @@ const Home: React.FC<Props> = (props: Props) => {
     <div className="app">
       <Header type='desktop' showGithub={true} />
       <div className='home'>
-        <div id='body' style={{ flexDirection: 'row', display: 'flex', flex: 6, paddingBottom: 100}}>
-          
-          <div id='recentPosters' style={{ flex: 1 }}>
+        <div id='body' style={{ flexDirection: 'row', display: 'flex', paddingBottom: 100}}>
+          <div id='recentPosters' style={{ flex: 1, paddingLeft: 40 }}>
             <div className='titleDiv'>
               <p className='sectionTitle'>activity</p>
               <hr className='line'/>
@@ -360,9 +223,7 @@ const Home: React.FC<Props> = (props: Props) => {
               {postItem}
             </InfiniteScroll>
           </div>
-
-            <Profile logout={props.logout}/>
-
+          <Profile logout={props.logout}/>
         </div>
 
         <footer className='footer'>
@@ -377,7 +238,6 @@ const Home: React.FC<Props> = (props: Props) => {
         </footer>
 
       </div>
-      <input ref={ref} type={'file'} accept="image/png, image/jpeg" name="file" onChange={uploadImage} hidden/>
     </div>
   );
 }

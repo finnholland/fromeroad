@@ -40,6 +40,14 @@
   display: flex;
   width: 100%;
   margin-bottom: 1rem;
+  justify-content: space-between;
+}
+
+.postHeader .user {
+  flex-direction: row;
+  display: flex;
+  cursor: pointer;
+  padding-right: 1rem;
 }
 
 .headerTextName {

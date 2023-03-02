@@ -1,16 +1,15 @@
 import Axios from 'axios';
-import React, { ChangeEvent, useRef, useState } from 'react'
-import { Interest, ProfileType, User } from '../../../types';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { Interest, User } from '../../../types';
 import LogoutIcon from '../../assets/svg/logoutIcon';
 import SvgRemoveButton from '../../assets/svg/removeButton';
 import SvgAddButton from '../../assets/svg/SvgAddButton';
-import Tick from '../../assets/svg/tick';
 import { API, EIGHT_MEGABYTES } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../hooks/Actions';
 import { updateUserDetails } from '../../hooks/api/users';
 import { convertTrendPoints } from '../../hooks/helpers';
 import { profileInitialState, setProfile } from '../../hooks/slices/profileSlice';
-import { setInterests, userInitialState } from '../../hooks/slices/userSlice';
+import { setInterests } from '../../hooks/slices/userSlice';
 import './Profile.css'
 
 interface Props {
@@ -30,9 +29,15 @@ export const Profile: React.FC<Props> = (props: Props) => {
   const [interestSearch, setInterestSearch] = useState<Interest[]>([]);
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
   const [addSvgHover, setAddSvgHover] = useState(-2);
+  const [interestLoading, setInterestLoading] = useState(true);
 
   const [closeProfileView, setCloseProfileView] = useState(false);
   
+  useEffect(() => {
+    getInterests(selector.user.userID);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const interestItems = interestList.map((i) => {
     return (
       <div key={i.interestID} className='interestDiv' onMouseEnter={() => setRemoveSvgHover(i.interestID)}
@@ -105,7 +110,8 @@ export const Profile: React.FC<Props> = (props: Props) => {
     }).then((res) => {
       if (res.status !== 409) {
         getInterests(selector.user.userID)
-        setRemoveSvgHover(-1)
+        setRemoveSvgHover(-1);
+        setInterest('');
       } else {
         alert('interest already exists')
       }
@@ -115,12 +121,14 @@ export const Profile: React.FC<Props> = (props: Props) => {
   }
 
   const getInterests = (userID: number) => {
+    setInterestLoading(true)
     Axios.get(`${API}/user/interests/getInterests/${userID}`, {
       headers:
         { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
       dispatch(setInterests(res.data));
-      setInterestList(res.data)
+      setInterestList(res.data);
+      setInterestLoading(false)
     })
   }
 
@@ -293,6 +301,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
           </div>
           <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column' }}>
             {interestItems}
+            {interestLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
           </div>
           <div className='addInterestDiv'>
             <input type={'text'} placeholder='add interests' className='interestInput' value={interest} onChange={(e) => changeInterestSearch(e.target.value)}/>

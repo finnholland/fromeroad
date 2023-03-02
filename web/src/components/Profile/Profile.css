@@ -1,5 +1,6 @@
 .profile {
   flex: 1;
+  padding-right: 40px;
 }
 
 .profile .profileImage {
@@ -14,6 +15,16 @@
   display: flex;
   overflow: hidden;
   cursor: pointer;
+}
+
+.profileImageOverlay {
+  background-color: #ffffffaa;
+  width: 100%; 
+  height: 35%;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
 }
 
 .sectionHeader {
@@ -105,6 +116,19 @@
 
 .detailInput::-ms-input-placeholder { /* Microsoft Edge */
   color: #8205ff;
+}
+
+.interestInput::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #fff;
+  opacity: 1; /* Firefox */
+}
+
+.interestInput:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #fff;
+}
+
+.interestInput::-ms-input-placeholder { /* Microsoft Edge */
+  color: #fff;
 }
 
 
