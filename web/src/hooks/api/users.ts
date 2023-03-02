@@ -1,21 +1,25 @@
 import Axios from "axios";
-import { Profile } from "../../../types";
+import { ProfileType, User } from "../../../types";
 import { API, JWT_TOKEN } from "../../constants";
-import { setName as setSelectorName} from "../slices/userSlice";
+import { setUser} from "../slices/userSlice";
 import { setProfile, setProfileInterests } from "../slices/profileSlice";
 
-export const updateName = (dispatch: any, name: string, userID: number, setName: any) => {
+export const updateUserDetails = (dispatch: any, userState: User, userID: number, setUserState: any) => {
   const params = {
     userID: userID,
-    name: name,
+    name: userState.name,
+    project: userState.project,
+    phone: userState.phone,
   }
-  Axios.post(`${API}/user/updateName`, params, {
+
+  console.log(params)
+  Axios.post(`${API}/user/updateuser`, params, {
     headers: {
       Authorization: JWT_TOKEN
     }
   }).then(res => {
-    setName(name)
-    dispatch(setSelectorName(name))
+    setUserState(userState);
+    dispatch(setUser(userState))
     return res
   }).catch(err => {
     return err

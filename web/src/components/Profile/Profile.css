@@ -1,7 +1,26 @@
+.profile {
+  flex: 1;
+}
+
+.profile .profileImage {
+  aspect-ratio: 1/1;
+  width: 80px;
+  border-radius: 80px;
+  border: 3px solid #fff;
+  box-shadow: 0px 2px 3px #888;
+  justify-content: center;
+  align-items: flex-end;
+  object-fit: cover;
+  display: flex;
+  overflow: hidden;
+  cursor: pointer;
+}
+
 .sectionHeader {
   font-size: 1rem;
   color: #FFB405;
   margin: 0;
+  
 }
 
 .sectionHeaderLine {
@@ -10,6 +29,7 @@
   flex: 1; 
   margin: 0;
   margin-left: 10px;
+  margin-right: 10px;
 }
 
 .sectionDiv {
@@ -33,4 +53,92 @@
   font-size: .875rem;
   margin: 0;
   margin-top: 5px;
+}
+
+.nameInput {
+  border: 0;
+  min-width: 0px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.name {
+  font-size: 1rem;
+  font-weight:600;
+  color: #8205ff;
+  margin: 0;
+  margin-bottom: 5px;
+}
+
+.detailsDiv {
+  margin-left: 15px;
+  text-align: start;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.detailInput {
+  border: 0;
+  color: #8205ff;
+  font-size: .875rem;
+  margin: 0;
+  margin-top: 5px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0;
+}
+
+.details {
+  padding: 10px;
+}
+
+.detailInput::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #8205ff;
+  opacity: 1; /* Firefox */
+}
+
+.detailInput:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #8205ff;
+}
+
+.detailInput::-ms-input-placeholder { /* Microsoft Edge */
+  color: #8205ff;
+}
+
+
+.interestDiv {
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  flex: 1;
+  color: #c182ff;
+  cursor: pointer;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.interestDiv:hover {
+  color: #ffb405;
+}
+
+.addInterestDiv {
+  justify-content: space-between; 
+  align-items: center; 
+  display: flex; 
+  background-color: #DECCF0; 
+  height: 40px; 
+  border-radius: 20px; 
+  padding-left: 15px; 
+  margin-top: 20px
+}
+
+.interestInput {
+  flex: 1; 
+  margin-right: 10px; 
+  background-color:#DECCF0; 
+  border: none; 
+  border-bottom: 2px solid #c182ff;
+  color: white;
 }

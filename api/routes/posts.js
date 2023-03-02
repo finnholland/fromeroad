@@ -32,7 +32,6 @@ app.post('/create/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS2
   const userID = req.body.userID;
   const body = req.body.body;
   const initialUpvoteValue = 0;
-  console.log(req.body)
   if (!req.file) {
     db.query('insert into posts (body, createdAt, userID) values (?, now(), ?)', [body, userID], (err, result, fields) => {
       if (err) {

@@ -1,15 +1,16 @@
 import Axios from 'axios';
 import React, { ChangeEvent, useRef, useState } from 'react'
-import { Interest } from '../../../types';
+import { Interest, ProfileType, User } from '../../../types';
 import LogoutIcon from '../../assets/svg/logoutIcon';
 import SvgRemoveButton from '../../assets/svg/removeButton';
 import SvgAddButton from '../../assets/svg/SvgAddButton';
 import Tick from '../../assets/svg/tick';
 import { API, EIGHT_MEGABYTES } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../hooks/Actions';
-import { updateName } from '../../hooks/api/users';
+import { updateUserDetails } from '../../hooks/api/users';
+import { convertTrendPoints } from '../../hooks/helpers';
 import { profileInitialState, setProfile } from '../../hooks/slices/profileSlice';
-import { setInterests } from '../../hooks/slices/userSlice';
+import { setInterests, userInitialState } from '../../hooks/slices/userSlice';
 import './Profile.css'
 
 interface Props {
@@ -20,11 +21,12 @@ export const Profile: React.FC<Props> = (props: Props) => {
   const selector = useAppSelector(state => state)
   const dispatch = useAppDispatch();
   
-  const [name, setName] = useState(selector.user.name);
-  const [editingName, setEditingName] = useState(false);
+
+  const [userState, setUserState] = useState<User>(selector.user);
+  const [editing, setEditing] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState(selector.user.profileImageUrl);
   const [interest, setInterest] = useState('');
-  const [interestList, setInterestList] = useState<Interest[]>([]);
+  const [interestList, setInterestList] = useState<Interest[]>(selector.user.interests);
   const [interestSearch, setInterestSearch] = useState<Interest[]>([]);
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
   const [addSvgHover, setAddSvgHover] = useState(-2);
@@ -42,13 +44,21 @@ export const Profile: React.FC<Props> = (props: Props) => {
   });
 
   const profileInterests = selector.profile.interests.map((i) => {
-    return (
-      <div key={i.interestID} className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestID)}
-          onMouseLeave={() => setAddSvgHover(-1)} onClick={() => removeInterest(i.interestID)}>
-        <span className='interestTitle'>{i.name}</span>
-        <SvgAddButton height={20} stroke={addSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
-      </div>
-    )
+    if (selector.user.interests.some(ui => ui.interestID === i.interestID)) {
+      return (
+        <div key={i.interestID} className='interestDiv'>
+          <span className='interestTitle'>{i.name}</span>
+        </div>
+      )
+    } else {
+      return (
+        <div key={i.interestID} className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestID)}
+            onMouseLeave={() => setAddSvgHover(-1)} onClick={() => addInterestHelper(i)}>
+          <span className='interestTitle'>{i.name}</span>
+          <SvgAddButton height={20} strokeWidth={2} stroke={addSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
+        </div>
+      )
+    }
   });
 
   const interestSearchResults = interestSearch.map((i) => {
@@ -141,13 +151,9 @@ export const Profile: React.FC<Props> = (props: Props) => {
     }
   }
 
-  const finishEditingName = (saving: boolean) => {
-    if (saving) {
-      updateName(dispatch, name, selector.user.userID, setName);
-    } else {
-      setName(selector.user.name)
-    }
-    setEditingName(false);
+  const finishEditingDetails = () => {
+    updateUserDetails(dispatch, userState, selector.user.userID, setUserState);
+    setEditing(false);
   }
 
   const uploadImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -179,11 +185,11 @@ export const Profile: React.FC<Props> = (props: Props) => {
 
   if (selector.profile.email !== '') {
     return (
-      <div id='profile' style={{ flex: 1 }}>
+      <div id='profile' className='profile'>
         <div className='titleDiv'>
           <hr className='line' />
           <SvgRemoveButton style={{marginLeft: 15}} onMouseEnter={() => setCloseProfileView(true)} onMouseLeave={() => setCloseProfileView(false)}
-            onClick={() => { dispatch(setProfile(profileInitialState)); setCloseProfileView(false) }} height={20} stroke={closeProfileView ? '#ffb405' : '#8205ff'} />
+            onClick={() => { dispatch(setProfile(profileInitialState)); setCloseProfileView(false) }} height={25} strokeWidth={1} stroke={closeProfileView ? '#ffb405' : '#8205ff'} />
         </div>
         <div>
           <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
@@ -229,32 +235,62 @@ export const Profile: React.FC<Props> = (props: Props) => {
     )
   } else {
     return (
-      <div id='profile' style={{ flex: 1 }}>
+      <div id='profile' className='profile'>
         <div className='titleDiv'>
           <p className='sectionTitle'>me</p>
           <hr className='line' />
-          {editingName ?
-            ( <Tick stroke='#8205ff' strokeWidth={2} height={25} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} onMouseDown={() => finishEditingName(true)}/> )
-            :
-            ( <LogoutIcon onClick={() => props.logout()} height={25} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} stroke={'#8205ff'} strokeWidth={2} /> )
-          }
-          
+          <LogoutIcon onClick={() => props.logout()} height={25} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} stroke={'#8205ff'} strokeWidth={2} />
         </div>
         <div>
           {/* edit here */}
-          <div style={{ flexDirection: 'row', display: 'flex' }}>
-            <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(${API}${profileImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
+          <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
+            <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)}
+              style={{ backgroundImage: `url(${API}${profileImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
               <div className='profileImageOverlay'>
                 <span style={{alignItems: 'center', display:'flex', marginBottom: 5, color: '#fff'}}>change</span>
               </div>
             </div>
-          <div className='detailsDiv'>
-              <input className='nameInput name' onChange={(e) => setName(e.target.value)} onFocus={() => setEditingName(true)} onBlur={() => finishEditingName(false)} value={name}/>
+            <div className='detailsDiv'>
+              <input type={'text'} disabled={!editing} className='name nameInput' style={{ textDecorationLine: (editing) ? 'underline' : 'none' }}
+                onChange={(e) => setUserState((prevState) => ({ ...prevState, name: e.target.value }))} value={userState.name} />
               <p className='company'>{selector.user.company}</p>
             </div>
-
           </div>
-          <hr className='subline' />
+          <div className='sectionDiv'>
+            <p className='sectionHeader'>details</p>
+            <hr className='sectionHeaderLine' style={{ marginTop: 0 }} />
+            {editing ? (<div style={{flexDirection: 'row', display: 'flex', alignItems: 'center'}}>
+              <p className='sectionHeader' style={{color: '#3fffb9', userSelect: 'none'}} onClick={() => finishEditingDetails()}>save</p>
+              <hr className='sectionHeaderLine' style={{ marginTop: 0, width: 10 }} />
+            </div>) : (null)}
+            
+            <p className='sectionHeader' style={{color: (editing ? 'red' : '#FFB405'), userSelect: 'none'}} onClick={() => setEditing(!editing)}>{editing ? 'cancel' : 'edit'}</p>
+          </div>
+          <div className='details'>
+            <div>
+              <p className='detailHeader' style={{marginTop: 0}}>email</p>
+              <p className='detailBody'>{selector.user.email}</p>
+            </div>
+            <div>
+              <p className='detailHeader'>project</p>
+              <input type={'text'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.project} 
+              style={{ textDecorationLine: (editing) ? 'underline' : 'none' }} onChange={(e) => setUserState((prevState) => ({ ...prevState, project: e.target.value }))}/>
+            </div>
+            <div>
+              <p className='detailHeader'>phone</p>
+              <input type={'tel'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.phone}
+              style={{ textDecorationLine: (editing) ? 'underline' : 'none' }} onChange={(e) => setUserState((prevState) => ({ ...prevState, phone: e.target.value }))}
+              />
+            </div>
+            <div>
+              <p className='detailHeader'>trend points</p>
+              <p className='detailBody'>{convertTrendPoints(selector.user.trendPoints)}</p>
+            </div>
+          </div>
+          <div className='sectionDiv'>
+            <p className='sectionHeader'>interests</p>
+            <hr className='sectionHeaderLine' style={{marginTop: 0}}/>          
+          </div>
           <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column' }}>
             {interestItems}
           </div>
@@ -264,18 +300,15 @@ export const Profile: React.FC<Props> = (props: Props) => {
               onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
 
           </div>
-          <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column', textAlign: 'left' }}>
-            {
-              interestSearchResults.length !== 0 ?
-                <div style={{justifyContent: 'space-between', display: 'flex'}}>
-                  <span style={{ fontSize: 12 }}>suggestions:</span>
-                  <span style={{ fontSize: 12, color: 'red', cursor: 'pointer' }} onClick={() => changeInterestSearch('')}>clear</span>
-                </div>
-              
-              : null
-            }
-            {interestSearchResults}
-          </div>
+          {interestSearchResults.length !== 0 ? (
+            <div hidden={interestSearchResults.length !== 0} style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column', textAlign: 'left' }}>
+              <div style={{justifyContent: 'space-between', display: 'flex'}}>
+                <span style={{ fontSize: 12 }}>suggestions:</span>
+                <span style={{ fontSize: 12, color: 'red', cursor: 'pointer' }} onClick={() => changeInterestSearch('')}>clear</span>
+              </div>
+              {interestSearchResults}
+            </div>
+          ) : (null)}
         <hr className='subline'/>
       </div>
       <input ref={ref} type={'file'} accept="image/png, image/jpeg" name="file" onChange={uploadImage} hidden/>

@@ -3,6 +3,8 @@ export interface User {
   name: string,
   email: string,
   company: string,
+  project: string,
+  phone: string,
   trendPoints: number,
   profileImageUrl: string,
   interests: Interest[],
@@ -66,10 +68,12 @@ export interface CommentType {
   profileImageUrl: string
 }
 
-export interface Profile {
+export interface ProfileType {
   company: string
   email: string
   name: string
+  phone: string
+  project: string
   profileImageUrl: string
   trendPoints: number
   interests: Interest[]

@@ -1,11 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { Interest, Profile } from '../../../types';
+import { Interest, ProfileType } from '../../../types';
 
-export const profileInitialState: Profile = {
+export const profileInitialState: ProfileType = {
   name: '',
   email: '',
   company: '',
+  phone: '',
+  project: '',
   profileImageUrl: '',
   trendPoints: 0,
   interests: []
@@ -16,7 +18,7 @@ export const userProfile = createSlice({
   initialState: profileInitialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    setProfile: (state, action: PayloadAction<Profile>) => {
+    setProfile: (state, action: PayloadAction<ProfileType>) => {
       state.name = action.payload.name
       state.email = action.payload.email
       state.company = action.payload.company

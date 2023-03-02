@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { CommentType, Poster, PostType, Profile } from '../../types'
+import { CommentType, Poster, PostType, ProfileType } from '../../types'
 import './Post.css'
 import Axios from 'axios';
 import { useAppDispatch, useAppSelector } from '../hooks/Actions';
 import SvgAddButton from '../assets/svg/SvgAddButton';
 import { Comment } from './Comment';
-import { getMessageAge } from '../hooks/helpers';
+import { convertTrendPoints, getMessageAge } from '../hooks/helpers';
 import { API, DEFAULT_PROFILE_IMAGE } from '../constants';
 import Highlighter from "react-highlight-words";
 import { getUserProfile } from '../hooks/api/users';
@@ -52,14 +52,6 @@ export const Post: React.FC<Props> = (props: Props) => {
       setTrendPoints(props.post.voted ? trendPoints - 1 : trendPoints + 1)
       props.post.voted = !props.post.voted
     })
-  }
-
-  const convertTrendPoints = (points: number): string => {
-    let pointString = points.toString()
-    if (points > 1000) {
-      pointString = `${Math.round(points/1000 * 10) / 10}k`
-    }
-    return pointString
   }
 
   const postComment = () => {

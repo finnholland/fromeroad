@@ -19,7 +19,6 @@ import { API, EIGHT_MEGABYTES } from '../constants';
 import LogoutIcon from '../assets/svg/logoutIcon';
 import { setInterests } from '../hooks/slices/userSlice';
 import { Header } from '../components/Header';
-import { updateName } from '../hooks/api/users';
 import Tick from '../assets/svg/tick';
 import { Profile } from '../components/Profile/Profile';
 
@@ -320,15 +319,6 @@ const Home: React.FC<Props> = (props: Props) => {
       setTrendingUsers(res.data)
       setTrendingLoading(false)
     })
-  }
-
-  const finishEditingName = (saving: boolean) => {
-    if (saving) {
-      updateName(dispatch, name, selector.user.userID, setName);
-    } else {
-      setName(selector.user.name)
-    }
-    setEditingName(false);
   }
 
   return (

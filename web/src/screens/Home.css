@@ -26,62 +26,11 @@
    margin-bottom: 1.5rem; 
 }
 
-.name {
-  font-size: 1rem;
-  font-weight:600;
-  color: #8205ff;
-  margin: 0;
-  margin-bottom: 5px;
-}
-
 .company {
   font-size: 1rem;
   color: #c182ff;
   margin: 0;
   margin-top: 5px;
-}
-
-.detailsDiv {
-  margin-left: 15px;
-  text-align: start;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.interestDiv {
-  justify-content: space-between;
-  align-items: center;
-  display: flex;
-  flex: 1;
-  color: #c182ff;
-  cursor: pointer;
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
-
-.interestDiv:hover {
-  color: #ffb405;
-}
-
-.addInterestDiv {
-  justify-content: space-between; 
-  align-items: center; 
-  display: flex; 
-  background-color: #DECCF0; 
-  height: 40px; 
-  border-radius: 20px; 
-  padding-left: 15px; 
-  margin-top: 20px
-}
-
-.interestInput {
-  flex: 1; 
-  margin-right: 10px; 
-  background-color:#DECCF0; 
-  border: none; 
-  border-bottom: 2px solid #c182ff;
-  color: white;
 }
 
 .app .profileImage {
@@ -106,10 +55,6 @@
   display: flex;
   justify-content: center;
   pointer-events: none;
-}
-
-.nameInput {
-  border: 0;
 }
 
 .app .titleContainer {

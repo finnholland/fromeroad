@@ -126,14 +126,15 @@ app.post('/signup', async (req, res, next) => {
   })
 })
 
-app.post('/updateName', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res, next) => { 
+app.post('/updateuser', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res, next) => { 
   if (req.auth.userID !== req.body.userID.toString()) {
     return res.sendStatus(401)
   }
   const name = req.body.name
+  const project = req.body.project
+  const phone = req.body.phone
   const userID = req.body.userID
-  console.log(name)
-  db.query(`update users set name = ? where userID = ?`, [name, userID],
+  db.query(`update users set name = ?, project = ?, phone = ? where userID = ?`, [name, project, phone, userID],
     (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)
@@ -151,20 +152,17 @@ app.post('/interests/addInterests/', ejwt({ secret: process.env.SECRET, algorith
   }
   const interestName = req.body.name;
   const userID = req.body.userID;
-  console.log(interestName, userID)
   let interestID = null;
 
   db.query('select interestID from interests where name = ?', [interestName], async (err, result, fields) => {
     if (err) throw (err)
     else {
       interestID = result[0]?.interestID
-      console.log(result[0]?.interestID)
     }
 
     if (!interestID || interestID === 0) {
       db.query('insert into interests (name) values (?)', interestName, (err, result, fields) => {
         if (err) throw (err)
-        console.log(result.insertId)
         interestID = result.insertId
 
         db.query('insert into userinterests (userID, interestID) values (?, ?)', [userID, interestID], (err, result, fields) => {
@@ -221,7 +219,6 @@ app.delete('/interests/removeInterests', ejwt({ secret: process.env.SECRET, algo
 // get interest
 app.get('/interests/searchInterests/:searchQuery', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
   const searchQuery = req.params.searchQuery;
-  console.log(searchQuery)
   
   db.query('SELECT * FROM interests WHERE name like ?', searchQuery+'%', (err, result, fields) => {
     if (err) throw (err)
