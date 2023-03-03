@@ -199,7 +199,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
         <div className='titleDiv'>
           <hr className='line' />
           <SvgRemoveButton style={{marginLeft: 15}} onMouseEnter={() => setCloseProfileView(true)} onMouseLeave={() => setCloseProfileView(false)}
-            onClick={() => { dispatch(setProfile(profileInitialState)); setCloseProfileView(false) }} height={25} strokeWidth={1} stroke={closeProfileView ? '#ffb405' : '#8205ff'} />
+            onClick={() => { dispatch(setProfile(profileInitialState)); setCloseProfileView(false) }} height={24} strokeWidth={1} stroke={closeProfileView ? '#ffb405' : '#8205ff'} />
         </div>
         <div>
           <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
@@ -213,7 +213,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
             <p className='sectionHeader'>details</p>
             <hr className='sectionHeaderLine' style={{marginTop: 0}}/>          
           </div>
-          <div style={{padding: 10}}>
+          <div className='details'>
             <div>
               <p className='detailHeader' style={{marginTop: 0}}>email</p>
               <p className='detailBody'>{selector.profile.email}</p>
