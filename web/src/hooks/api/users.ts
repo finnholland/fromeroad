@@ -1,21 +1,69 @@
 import Axios from "axios";
+import { User } from "../../../types";
 import { API, JWT_TOKEN } from "../../constants";
-import { setName as setSelectorName} from "../slices/userSlice";
+import { setUser} from "../slices/userSlice";
+import { setProfile, setProfileInterests } from "../slices/profileSlice";
 
-export const updateName = (dispatch: any, name: string, userID: number, setName: any) => {
+export const updateUserDetails = (dispatch: any, userState: User, userID: number, setUserState: any) => {
   const params = {
     userID: userID,
-    name: name,
+    name: userState.name,
+    project: userState.project,
+    phone: userState.phone,
   }
-  Axios.post(`${API}/user/updateName`, params, {
+
+  console.log(params)
+  Axios.post(`${API}/user/updateuser`, params, {
     headers: {
       Authorization: JWT_TOKEN
     }
   }).then(res => {
-    setName(name)
-    dispatch(setSelectorName(name))
+    setUserState(userState);
+    dispatch(setUser(userState))
     return res
   }).catch(err => {
     return err
+  })
+}
+
+export const getUserProfile = (dispatch: any, userID: number, profileID: number) => {
+  const params = {
+    userID: userID,
+    profileID: profileID,
+  }
+  Axios.get(`${API}/user/profile`, {
+    params: params,
+    headers: {
+      Authorization: JWT_TOKEN
+    }
+  }).then(res => {
+    dispatch(setProfile(res.data[0]))
+    console.log(res.data[0])
+  }).catch(err => {
+    return err
+  });
+
+  Axios.get(`${API}/user/profile/interests/${profileID}`, {
+    headers: {
+      Authorization: JWT_TOKEN
+  }
+}).then(res => {
+    dispatch(setProfileInterests(res.data))
+    console.log(res.data)
+  }).catch(err => {
+    return err
+  });
+}
+
+export const getRecentPosters = (setActivityLoading: any, setRecentPosters: any) => {
+  setActivityLoading(true)
+  setRecentPosters([])
+  Axios.get(`${API}/recentPosters`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    }
+  }).then(res => {
+    setRecentPosters(res.data)
+    setActivityLoading(false)
   })
 }

@@ -1,26 +1,20 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { Interest, PostItem, Poster, RecentPosterType, TrendingUserType } from '../../types';
+import React, {  useEffect, useState } from 'react'
+import { PostItem, Poster, TrendingUserType } from '../../types';
 import './Home.css'
-import SvgRemoveButton from '../assets/svg/removeButton';
-import SvgAddButton from '../assets/svg/SvgAddButton';
 import Axios from 'axios';
-import { useAppDispatch, useAppSelector } from '../hooks/Actions';
+import { useAppSelector } from '../hooks/Actions';
 import moment from 'moment';
 
 import { Post } from '../components/Post';
 
-import { RecentPoster } from '../components/RecentPoster';
 import { TrendingUser } from '../components/TrendingUser';
 import SvgPlus from '../assets/svg/SvgPlus';
 import { PostEditor } from '../components/PostEditor';
 import SvgRefresh from '../assets/svg/refreshIcon';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { API, EIGHT_MEGABYTES } from '../constants';
-import LogoutIcon from '../assets/svg/logoutIcon';
-import { setInterests } from '../hooks/slices/userSlice';
+import { API } from '../constants';
 import { Header } from '../components/Header';
-import { updateName } from '../hooks/api/users';
-import Tick from '../assets/svg/tick';
+import { Profile } from '../components/Profile/Profile';
 
 const HOUR = 60000 * 60
 interface Props {
@@ -29,63 +23,19 @@ interface Props {
 
 const Home: React.FC<Props> = (props: Props) => {
   const selector = useAppSelector(state => state);
-  const dispatch = useAppDispatch();
-  const [profileImageUrl, setProfileImageUrl] = useState(selector.user.profileImageUrl);
-  const [name, setName] = useState(selector.user.name);
-  const [editingName, setEditingName] = useState(false);
 
-  const [removeSvgHover, setRemoveSvgHover] = useState(-1);
-  const [addSvgHover, setAddSvgHover] = useState(-2);
   const [plusHover, setPlusHover] = useState(false);
   const [refreshHover, setRefreshHover] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [creatingPost, setCreatingPost] = useState(false);
 
-  const [interest, setInterest] = useState('');
-  const [interestList, setInterestList] = useState<Interest[]>([]);
-  const [interestSearch, setInterestSearch] = useState<Interest[]>([]);
   const [posts, setPosts] = useState<PostItem[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
-  const [recentPosters, setRecentPosters] = useState<RecentPosterType[]>([]);
   const [trendingUsers, setTrendingUsers] = useState<TrendingUserType[]>([]);
 
   const [loading, setLoading] = useState(true);
-  const [activityLoading, setActivityLoading] = useState(true);
   const [trendingLoading, setTrendingLoading] = useState(true);
-
-  const ref = useRef<HTMLInputElement>(null);
-  const handleClick = (e: any) => {
-    if (ref.current && e.target.id === 'profileImage') {
-      ref.current.click();
-    }
-  }
-
-  const interestItems = interestList.map((i) => {
-    return (
-      <div key={i.interestID} className='interestDiv' onMouseEnter={() => setRemoveSvgHover(i.interestID)}
-          onMouseLeave={() => setRemoveSvgHover(-1)} onClick={() => removeInterest(i.interestID)}>
-        <span className='interestTitle'>{i.name}</span>
-        <SvgRemoveButton height={20} stroke={removeSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
-      </div>
-    )
-  });
-
-  const interestSearchResults = interestSearch.map((i) => {
-    return (
-      <div className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestID)}
-          onMouseLeave={() => setAddSvgHover(-2)} onClick={() => addInterestHelper(i)}>
-        <span className='interestTitle'>{i.name}</span>
-          <SvgAddButton height={20} stroke={addSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
-      </div>
-    )
-  });
-
-  const recentPostersItems = recentPosters.map((i) => {
-    return (
-      <RecentPoster key={i.userID} user={i} />
-    )
-  });
 
   const postItem = posts.map((i) => {
     return (
@@ -99,126 +49,15 @@ const Home: React.FC<Props> = (props: Props) => {
     )
   });
 
-  const addInterestHelper = (interest: Interest) => {
-    if (interest.interestID) {
-      let removalArray: Interest[] = interestSearch
-      removalArray = removalArray.filter(i => i.interestID !== interest.interestID)
-      setInterestSearch(removalArray)
-    }
-    addInterest(interest.name)
-  }
-
   useEffect(() => {
     getPosts();
-    getRecentPosters();
     getTrendingUsers();
-    getInterests(selector.user.userID);
     const trendInterval = setInterval(() => {
-      getRecentPosters();
       getTrendingUsers();
     }, HOUR);
     return () => clearInterval(trendInterval);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const removeInterest = (interestID: number) => {
-    Axios.delete(`${API}/user/interests/removeInterests/${selector.user.userID}/${interestID}`, {
-      headers:
-        { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).then(() => {
-      getInterests(selector.user.userID)
-    })
-  }
-
-  const getRecentPosters = () => {
-    setActivityLoading(true)
-    setRecentPosters([])
-    Axios.get(`${API}/recentPosters`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    }).then(res => {
-      setRecentPosters(res.data)
-      setActivityLoading(false)
-    })
-  }
-
-  const uploadImage = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      if (e.target.files[0].size >= EIGHT_MEGABYTES) {
-        alert('too large! 8mb or less plz')
-        return;
-      } else {
-        const fd = new FormData();
-        fd.append('file', e.target.files[0])
-        fd.append('userID', selector.user.userID.toString())
-        Axios.post(`${API}/image/profileImage/${selector.user.userID}`, fd, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        }).then(() => {
-          Axios.get(`${API}/image/profileImage/${selector.user.userID}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        }).then(res => {
-            setProfileImageUrl(res.data[0].profileImageUrl)
-          })
-          
-        })
-      }
-    }
-  }
-
-  const addInterest = (interest: string) => {
-    const params = {
-      userID: selector.user.userID,
-      name: interest,
-    }
-    Axios.post(`${API}/user/interests/addInterests`, params, {
-      headers:
-        { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).then((res) => {
-      if (res.status !== 409) {
-        getInterests(selector.user.userID)
-        setRemoveSvgHover(-1)
-      } else {
-        alert('interest already exists')
-      }
-    }).catch(err => {
-      alert('error: ' + err.response.status + ' - interest already added')
-    })
-  }
-
-  const getInterests = (userID: number) => {
-    Axios.get(`${API}/user/interests/getInterests/${userID}`, {
-      headers:
-        { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).then((res) => {
-      dispatch(setInterests(res.data));
-      setInterestList(res.data)
-    })
-  }
-
-  const changeInterestSearch = (search: string) => {
-    setInterest(search);
-    if (!search || search === '') {
-      setInterestSearch([])
-    } else {
-      Axios.get(`${API}/user/interests/searchInterests/${search}`, {
-        headers:
-          { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      }).then((res) => {
-        const tempArr: Interest[] = []
-        res.data.forEach((interest: Interest) => {
-          if (interestList.findIndex(i => i.interestID === interest.interestID) === -1) {
-            tempArr.push(interest)
-          }
-        });
-        setInterestSearch(tempArr)
-      })
-    }
-  }
 
   const getPosts = () => {
     setRefreshing(true)
@@ -262,7 +101,6 @@ const Home: React.FC<Props> = (props: Props) => {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
       updatePosts(res.data, direction)
-      getRecentPosters()
       setLoading(false)
       if (res.data.length <= 0) {
         setHasMore(false)
@@ -316,29 +154,22 @@ const Home: React.FC<Props> = (props: Props) => {
     })
   }
 
-  const finishEditingName = (saving: boolean) => {
-    if (saving) {
-      updateName(dispatch, name, selector.user.userID, setName);
-    } else {
-      setName(selector.user.name)
-    }
-    setEditingName(false);
-  }
-
   return (
     <div className="app">
       <Header type='desktop' showGithub={true} />
       <div className='home'>
-        <div id='body' style={{ flexDirection: 'row', display: 'flex', flex: 6, paddingBottom: 100}}>
-          
-          <div id='recentPosters' style={{ flex: 1 }}>
+        <div id='body' style={{ flexDirection: 'row', display: 'flex', paddingTop: 70, justifyContent: 'space-between'}}>
+          <div id='topten' className='topTenList'>
             <div className='titleDiv'>
-              <p className='sectionTitle'>activity</p>
+              <p className='sectionTitle'>top ten</p>
               <hr className='line'/>
             </div>
-            {activityLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
-            {recentPostersItems}
+            <div className='topTenScrollable'>
+              {trendingLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
+              {trendingUserItem}
+            </div>
           </div>
+          <div style={{width: '25vw'}}/>
           <div id='feed' className='feed'>
             <div className='titleDiv'>
               <p className='sectionTitle'>feed</p>
@@ -364,74 +195,10 @@ const Home: React.FC<Props> = (props: Props) => {
               {postItem}
             </InfiniteScroll>
           </div>
-
-          <div id='profile' style={{ flex: 1 }}>
-            <div className='titleDiv'>
-              <p className='sectionTitle'>me</p>
-              <hr className='line' />
-              {editingName ?
-                ( <Tick stroke='#8205ff' strokeWidth={2} height={25} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} onMouseDown={() => finishEditingName(true)}/> )
-                :
-                ( <LogoutIcon onClick={() => props.logout()} height={25} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} stroke={'#8205ff'} strokeWidth={2} /> )
-              }
-              
-            </div>
-              <div>
-                <div style={{ flexDirection: 'row', display: 'flex' }}>
-                  <div>
-                    <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(${API}${profileImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
-                      <div className='profileImageOverlay'>
-                        <span style={{alignItems: 'center', display:'flex', marginBottom: 5, color: '#fff'}}>change</span>
-                      </div>
-                    </div>
-                  </div>
-                <div className='detailsDiv'>
-                    <input className='nameInput name' onChange={(e) => setName(e.target.value)} onFocus={() => setEditingName(true)} onBlur={() => finishEditingName(false)} value={name}/>
-                    <p className='company'>{selector.user.company}</p>
-                  </div>
-
-                </div>
-                <hr className='subline' />
-                <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column' }}>
-                  {interestItems}
-                </div>
-                <div className='addInterestDiv'>
-                  <input type={'text'} placeholder='add interests' className='interestInput' value={interest} onChange={(e) => changeInterestSearch(e.target.value)}/>
-                  <SvgAddButton fill={addSvgHover === -1 ? '#ffb405' : '#DECCF0'} stroke={addSvgHover === -1 ? '#ffb405' : '#c182ff'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
-                    onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
-
-                </div>
-                <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column', textAlign: 'left' }}>
-                  {
-                    interestSearchResults.length !== 0 ?
-                      <div style={{justifyContent: 'space-between', display: 'flex'}}>
-                        <span style={{ fontSize: 12 }}>suggestions:</span>
-                        <span style={{ fontSize: 12, color: 'red', cursor: 'pointer' }} onClick={() => changeInterestSearch('')}>clear</span>
-                      </div>
-                    
-                    : null
-                  }
-                  {interestSearchResults}
-                </div>
-              <hr className='subline'/>
-            </div>
-          </div>
-
+          <Profile logout={props.logout} />
+          <div style={{width: '20vw'}}/>
         </div>
-
-        <footer className='footer'>
-          <div id='trendsTitle' className='titleDiv' style={{marginTop: 0}}>
-            <p className='sectionTitle'>trends</p>
-            <hr className='line'/>
-          </div>
-          <div className='footerBody'>
-            {trendingLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
-            {trendingUserItem}
-          </div>         
-        </footer>
-
       </div>
-      <input ref={ref} type={'file'} accept="image/png, image/jpeg" name="file" onChange={uploadImage} hidden/>
     </div>
   );
 }

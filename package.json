@@ -1,0 +1,12 @@
+{
+  "name": "fromeroad",
+  "version": "1.0.0",
+  "description": "the global npm scripts for fromeroad",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "web": "cd web && npm start",
+    "api": "cd api && npm start",
+    "docker": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command docker rm $(docker stop $(docker ps -aqf \"name=^.*_fromeroad_api$\")) && docker rmi fromeroadapi docker compose --env-file .dev.env up -d && docker compose --env-file .env up -d"
+  }
+}

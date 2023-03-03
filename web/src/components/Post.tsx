@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { CommentType, Poster, PostType } from '../../types'
+import { CommentType, Poster, PostType, ProfileType } from '../../types'
 import './Post.css'
 import Axios from 'axios';
-import { useAppSelector } from '../hooks/Actions';
+import { useAppDispatch, useAppSelector } from '../hooks/Actions';
 import SvgAddButton from '../assets/svg/SvgAddButton';
 import { Comment } from './Comment';
-import { getMessageAge } from '../hooks/helpers';
+import { convertTrendPoints, getMessageAge } from '../hooks/helpers';
 import { API, DEFAULT_PROFILE_IMAGE } from '../constants';
 import Highlighter from "react-highlight-words";
+import { getUserProfile } from '../hooks/api/users';
+import Heart from '../assets/svg/Heart';
 
 interface Props {
   post: PostType,
@@ -17,6 +19,7 @@ interface Props {
 export const Post: React.FC<Props> = (props: Props) => {
 
   const selector = useAppSelector(state => state)
+  const dispatch = useAppDispatch();
   const [trendPoints, setTrendPoints] = useState(props.post.trendPoints)
   const [comments, setComments] = useState<CommentType[]>([])
   const [comment, setComment] = useState('')
@@ -27,6 +30,7 @@ export const Post: React.FC<Props> = (props: Props) => {
   const [errored, setErrored] = useState(false)
   const [loading, setLoading] = useState(true);
   const [searchWords, setSearchWords] = useState<string[]>([]);
+  const [profileHover, setProfileHover] = useState(false);
 
   useEffect(() => {
     getComments();
@@ -52,14 +56,6 @@ export const Post: React.FC<Props> = (props: Props) => {
     })
   }
 
-  const convertTrendPoints = (points: number): string => {
-    let pointString = points.toString()
-    if (points > 1000) {
-      pointString = `${Math.round(points/1000 * 10) / 10}k`
-    }
-    return pointString
-  }
-
   const postComment = () => {
     if (editingComment !== -1) {
       updateComment();
@@ -68,7 +64,7 @@ export const Post: React.FC<Props> = (props: Props) => {
     Axios.post(`${API}/post/comments/post`, {
       postID: props.post.postID,
       userID: selector.user.userID,
-      body: comment
+      body: comment.trim()
     }, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
@@ -131,15 +127,14 @@ export const Post: React.FC<Props> = (props: Props) => {
     return (
       <div className='post'>
         <div id='header' className='postHeader'>
-          <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage'/>
-          <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
-            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-              <span className='headerTextName'>{props.poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
-            </div>
-            <div className='headerTextCompany' style={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'row', width: '100%' }}>
+          <div className='user' onMouseOver={() => setProfileHover(true)} onMouseLeave={() => setProfileHover(false)} onClick={() => getUserProfile(dispatch, selector.user.userID, props.poster.userID )}>
+            <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage' />
+            <div style={{flexDirection: 'column', display: 'flex', justifyContent: 'center'}}>
+              <span style={{textDecoration: profileHover ? 'underline' : 'none'}} className='headerTextName'>{props.poster.name}</span>
               <span className='headerTextCompany'>{props.poster.company}</span>
             </div>
           </div>
+          <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
         </div>
         <div id='body' className='postBody'>
           <Highlighter
@@ -172,7 +167,7 @@ export const Post: React.FC<Props> = (props: Props) => {
           )}
           <input type={'text'} color='#3fffb9' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something'
            style={{marginLeft: (selector.user.userID === props.poster.userID ? 0 : '15px')}}/>
-          <button className='submitButton' style={{backgroundColor: (comment === '' ? '#d9fff1' : '#3fffb9')}} disabled={comment === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
+          <button className='submitButton' style={{backgroundColor: (comment.trim() === '' ? '#d9fff1' : '#3fffb9')}} disabled={comment.trim() === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
         </div>
       </div>
     )
@@ -181,16 +176,14 @@ export const Post: React.FC<Props> = (props: Props) => {
     return (
       <div className='post'>
         <div id='header' className='postHeader'>
-          <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage'/>
-          <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
-            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-              <span className='headerTextName'>{props.poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
-            </div>
-            <div className='headerTextCompany' style={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'row', width: '100%' }}>
+          <div className='user' onMouseOver={() => setProfileHover(true)} onMouseLeave={() => setProfileHover(false)} onClick={() => getUserProfile(dispatch, selector.user.userID, props.poster.userID )}>
+            <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage' />
+            <div style={{flexDirection: 'column', display: 'flex', justifyContent: 'center'}}>
+              <span style={{textDecoration: profileHover ? 'underline' : 'none'}} className='headerTextName'>{props.poster.name}</span>
               <span className='headerTextCompany'>{props.poster.company}</span>
             </div>
-            
           </div>
+          <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
         </div>
         <div id='body' className='postBody'>
           <Highlighter
@@ -213,21 +206,18 @@ export const Post: React.FC<Props> = (props: Props) => {
         </div>
         <div id='footer' className='postFooter' style={{ marginTop: (comments.length <= 0 ? '1rem' : 0) }}>
           {selector.user.userID === props.poster.userID ? (null) : (
-          <div className='upvoteButtonPill' onClick={() => upvotePost()}>
-            <span style={{flex: 1, paddingLeft: 20}}>{convertTrendPoints(trendPoints)}</span>
-            <div className='upvoteButton'>
-              <SvgAddButton height={30} fontVariant={props.post.voted ? 'hidden' : 'visible'} stroke={'#3fffb9'}/>
+            <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer', userSelect: 'none', textAlign: 'start'}} onClick={() => upvotePost()}>
+              <Heart stroke={'#00FFA3'} fill={props.post.voted ? '#CCFFED' : '#fff'} strokeWidth={1} height={30} />
+              <span style={{flex: 1, paddingLeft: 10, color: '#00FFA3'}}>{convertTrendPoints(trendPoints)}</span>
             </div>
-          </div>
           )}
           <input type={'text'} color='#3fffb9' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something'
            style={{marginLeft: (selector.user.userID === props.poster.userID ? 0 : '15px')}}/>
-          <button className='submitButton' style={{backgroundColor: (comment === '' ? '#d9fff1' : '#3fffb9')}} disabled={comment === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
+          <button className='submitButton' style={{backgroundColor: (comment.trim() === '' ? '#d9fff1' : '#3fffb9')}} disabled={comment.trim() === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
         </div>
       </div>
     )
   }
- 
 }
 
 // needs upvote button + image posts + post editor + comments)
