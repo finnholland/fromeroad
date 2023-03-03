@@ -9,6 +9,7 @@ import { convertTrendPoints, getMessageAge } from '../hooks/helpers';
 import { API, DEFAULT_PROFILE_IMAGE } from '../constants';
 import Highlighter from "react-highlight-words";
 import { getUserProfile } from '../hooks/api/users';
+import Heart from '../assets/svg/Heart';
 
 interface Props {
   post: PostType,
@@ -205,12 +206,10 @@ export const Post: React.FC<Props> = (props: Props) => {
         </div>
         <div id='footer' className='postFooter' style={{ marginTop: (comments.length <= 0 ? '1rem' : 0) }}>
           {selector.user.userID === props.poster.userID ? (null) : (
-          <div className='upvoteButtonPill' onClick={() => upvotePost()}>
-            <span style={{flex: 1, paddingLeft: 20}}>{convertTrendPoints(trendPoints)}</span>
-            <div className='upvoteButton'>
-              <SvgAddButton height={30} fontVariant={props.post.voted ? 'hidden' : 'visible'} stroke={'#3fffb9'}/>
+            <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer', userSelect: 'none', textAlign: 'start'}} onClick={() => upvotePost()}>
+              <Heart stroke={'#00FFA3'} fill={props.post.voted ? '#CCFFED' : '#fff'} strokeWidth={1} height={30} />
+              <span style={{flex: 1, paddingLeft: 10, color: '#00FFA3'}}>{convertTrendPoints(trendPoints)}</span>
             </div>
-          </div>
           )}
           <input type={'text'} color='#3fffb9' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something'
            style={{marginLeft: (selector.user.userID === props.poster.userID ? 0 : '15px')}}/>

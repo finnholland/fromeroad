@@ -159,7 +159,7 @@ const Home: React.FC<Props> = (props: Props) => {
       <Header type='desktop' showGithub={true} />
       <div className='home'>
         <div id='body' style={{ flexDirection: 'row', display: 'flex', paddingTop: 70, justifyContent: 'space-between'}}>
-          <div id='recentPosters' className='topTenList'>
+          <div id='topten' className='topTenList'>
             <div className='titleDiv'>
               <p className='sectionTitle'>top ten</p>
               <hr className='line'/>
