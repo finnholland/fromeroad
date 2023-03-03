@@ -1,5 +1,5 @@
 import Axios from "axios";
-import { ProfileType, User } from "../../../types";
+import { User } from "../../../types";
 import { API, JWT_TOKEN } from "../../constants";
 import { setUser} from "../slices/userSlice";
 import { setProfile, setProfileInterests } from "../slices/profileSlice";
@@ -53,4 +53,17 @@ export const getUserProfile = (dispatch: any, userID: number, profileID: number)
   }).catch(err => {
     return err
   });
+}
+
+export const getRecentPosters = (setActivityLoading: any, setRecentPosters: any) => {
+  setActivityLoading(true)
+  setRecentPosters([])
+  Axios.get(`${API}/recentPosters`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    }
+  }).then(res => {
+    setRecentPosters(res.data)
+    setActivityLoading(false)
+  })
 }

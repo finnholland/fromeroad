@@ -111,7 +111,9 @@ export const Profile: React.FC<Props> = (props: Props) => {
       if (res.status !== 409) {
         getInterests(selector.user.userID)
         setRemoveSvgHover(-1);
-        setInterest('');
+        let removalArray: Interest[] = interestSearch
+        removalArray = removalArray.filter(i => i.name !== interest)
+        setInterestSearch(removalArray)
       } else {
         alert('interest already exists')
       }
@@ -137,7 +139,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
     if (!search || search === '') {
       setInterestSearch([])
     } else {
-      Axios.get(`${API}/user/interests/searchInterests/${search}`, {
+      Axios.get(`${API}/user/interests/searchInterests/${search.trim()}`, {
         headers:
           { Authorization: `Bearer ${localStorage.getItem('token')}` }
       }).then((res) => {
@@ -214,19 +216,19 @@ export const Profile: React.FC<Props> = (props: Props) => {
           <div style={{padding: 10}}>
             <div>
               <p className='detailHeader' style={{marginTop: 0}}>email</p>
-              <p className='detailBody'>hello world @ gmail .com</p>
+              <p className='detailBody'>{selector.profile.email}</p>
             </div>
             <div>
               <p className='detailHeader'>project</p>
-              <p className='detailBody'>national pharmacies</p>
+              <p className='detailBody'>{selector.profile.project ? selector.profile.project : '-'}</p>
             </div>
             <div>
               <p className='detailHeader'>phone</p>
-              <p className='detailBody'>0451 107 339</p>
+              <p className='detailBody'>{selector.profile.phone ? selector.profile.phone : '-'}</p>
             </div>
             <div>
               <p className='detailHeader'>trend points</p>
-              <p className='detailBody'>3.5k</p>
+              <p className='detailBody'>{convertTrendPoints(selector.profile.trendPoints)}</p>
             </div>
           </div>
           <div className='sectionDiv'>
@@ -236,8 +238,6 @@ export const Profile: React.FC<Props> = (props: Props) => {
           <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column' }}>
             {profileInterests}
           </div>
-          
-          <hr className='subline' style={{marginTop: 15}}/>
         </div>
       </div>
     )
@@ -299,26 +299,25 @@ export const Profile: React.FC<Props> = (props: Props) => {
             <p className='sectionHeader'>interests</p>
             <hr className='sectionHeaderLine' style={{marginTop: 0}}/>          
           </div>
-          <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column' }}>
-            {interestItems}
-            {interestLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
-          </div>
           <div className='addInterestDiv'>
             <input type={'text'} placeholder='add interests' className='interestInput' value={interest} onChange={(e) => changeInterestSearch(e.target.value)}/>
             <SvgAddButton fill={addSvgHover === -1 ? '#ffb405' : '#DECCF0'} stroke={addSvgHover === -1 ? '#ffb405' : '#c182ff'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
               onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
-
           </div>
-          {interestSearchResults.length !== 0 ? (
-            <div hidden={interestSearchResults.length !== 0} style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column', textAlign: 'left' }}>
-              <div style={{justifyContent: 'space-between', display: 'flex'}}>
-                <span style={{ fontSize: 12 }}>suggestions:</span>
-                <span style={{ fontSize: 12, color: 'red', cursor: 'pointer' }} onClick={() => changeInterestSearch('')}>clear</span>
-              </div>
-              {interestSearchResults}
-            </div>
-          ) : (null)}
-        <hr className='subline'/>
+          <div id='interestList' className='interestScrollable'>
+            {interestSearchResults.length === 0 && interest === '' ? interestItems :
+              (
+                <div>
+                  <div style={{ justifyContent: 'space-between', display: 'flex' }}>
+                    <span style={{ fontSize: 12 }}>{ interestSearchResults.length === 0 ? 'no results' : 'results:'}</span>
+                    <span style={{ fontSize: 12, color: 'red', cursor: 'pointer' }} onClick={() => changeInterestSearch('')}>clear</span>
+                  </div>
+                  {interestSearchResults}
+                </div>
+              )
+            }
+            {interestLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
+          </div>
       </div>
       <input ref={ref} type={'file'} accept="image/png, image/jpeg" name="file" onChange={uploadImage} hidden/>
       </div>

@@ -17,7 +17,7 @@ app.use(cors());
 // get user by ID
 app.get('/profile', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
   const profileID = req.query.profileID
-  db.query(`select name, email, trendpoints, company, profileImageUrl from users where userID = ?`, [profileID], (err, result, fields) => {
+  db.query(`select name, email, trendPoints, company, profileImageUrl from users where userID = ?`, [profileID], (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)
     } else {
@@ -220,7 +220,7 @@ app.delete('/interests/removeInterests', ejwt({ secret: process.env.SECRET, algo
 app.get('/interests/searchInterests/:searchQuery', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
   const searchQuery = req.params.searchQuery;
   
-  db.query('SELECT * FROM interests WHERE name like ?', searchQuery+'%', (err, result, fields) => {
+  db.query('SELECT * FROM interests WHERE name like ? order by LOCATE(?, name)', ['%'+searchQuery+'%', searchQuery], (err, result, fields) => {
     if (err) throw (err)
     else {
       return res.status(200).send(result)

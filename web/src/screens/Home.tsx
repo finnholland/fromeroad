@@ -1,25 +1,19 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { Interest, PostItem, Poster, RecentPosterType, TrendingUserType } from '../../types';
+import React, {  useEffect, useState } from 'react'
+import { PostItem, Poster, TrendingUserType } from '../../types';
 import './Home.css'
-import SvgRemoveButton from '../assets/svg/removeButton';
-import SvgAddButton from '../assets/svg/SvgAddButton';
 import Axios from 'axios';
-import { useAppDispatch, useAppSelector } from '../hooks/Actions';
+import { useAppSelector } from '../hooks/Actions';
 import moment from 'moment';
 
 import { Post } from '../components/Post';
 
-import { RecentPoster } from '../components/RecentPoster';
 import { TrendingUser } from '../components/TrendingUser';
 import SvgPlus from '../assets/svg/SvgPlus';
 import { PostEditor } from '../components/PostEditor';
 import SvgRefresh from '../assets/svg/refreshIcon';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { API, EIGHT_MEGABYTES } from '../constants';
-import LogoutIcon from '../assets/svg/logoutIcon';
-import { setInterests } from '../hooks/slices/userSlice';
+import { API } from '../constants';
 import { Header } from '../components/Header';
-import Tick from '../assets/svg/tick';
 import { Profile } from '../components/Profile/Profile';
 
 const HOUR = 60000 * 60
@@ -29,7 +23,6 @@ interface Props {
 
 const Home: React.FC<Props> = (props: Props) => {
   const selector = useAppSelector(state => state);
-  const dispatch = useAppDispatch();
 
   const [plusHover, setPlusHover] = useState(false);
   const [refreshHover, setRefreshHover] = useState(false);
@@ -39,18 +32,10 @@ const Home: React.FC<Props> = (props: Props) => {
   const [posts, setPosts] = useState<PostItem[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
-  const [recentPosters, setRecentPosters] = useState<RecentPosterType[]>([]);
   const [trendingUsers, setTrendingUsers] = useState<TrendingUserType[]>([]);
 
   const [loading, setLoading] = useState(true);
-  const [activityLoading, setActivityLoading] = useState(true);
   const [trendingLoading, setTrendingLoading] = useState(true);
-
-  const recentPostersItems = recentPosters.map((i) => {
-    return (
-      <RecentPoster key={i.userID} user={i} />
-    )
-  });
 
   const postItem = posts.map((i) => {
     return (
@@ -66,28 +51,13 @@ const Home: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     getPosts();
-    getRecentPosters();
     getTrendingUsers();
     const trendInterval = setInterval(() => {
-      getRecentPosters();
       getTrendingUsers();
     }, HOUR);
     return () => clearInterval(trendInterval);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const getRecentPosters = () => {
-    setActivityLoading(true)
-    setRecentPosters([])
-    Axios.get(`${API}/recentPosters`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    }).then(res => {
-      setRecentPosters(res.data)
-      setActivityLoading(false)
-    })
-  }
 
   const getPosts = () => {
     setRefreshing(true)
@@ -131,7 +101,6 @@ const Home: React.FC<Props> = (props: Props) => {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
       updatePosts(res.data, direction)
-      getRecentPosters()
       setLoading(false)
       if (res.data.length <= 0) {
         setHasMore(false)
@@ -196,10 +165,9 @@ const Home: React.FC<Props> = (props: Props) => {
               <hr className='line'/>
             </div>
             <div className='topTenScrollable'>
-              {activityLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
+              {trendingLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
               {trendingUserItem}
             </div>
-
           </div>
           <div style={{width: '25vw'}}/>
           <div id='feed' className='feed'>

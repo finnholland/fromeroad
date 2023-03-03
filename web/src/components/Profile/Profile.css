@@ -1,17 +1,27 @@
 .profile {
   padding-right: 40px;
   width: 20vw;
-  flex: 1;  
-  height: calc(100vh - 70px - 40px - 24px); 
+  flex: 1;
+  height: calc(100vh - 70px);
   position: fixed;
   right: 0;
 }
 
-.topTenScrollable {
-  height: 100%;
-  direction: rtl;
-  overflow: auto;
-  overflow-x: hidden
+.interestScrollable {
+  overflow: hidden;
+  display: flex; 
+  flex: 1; 
+  padding: 10px;
+  padding-top: 0;
+  flex-direction: column;
+  max-height: 32vh;
+  scrollbar-color: #ddd #eee;
+  scrollbar-width: thin;
+  padding-right: 10px;
+}
+
+.interestScrollable:hover {
+  overflow-y: auto;
 }
 
 .profile .profileImage {
@@ -59,6 +69,7 @@
   display: flex;
   align-items: center;
   margin-top: 15px;
+  margin-bottom: 10px;
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -114,6 +125,7 @@
 
 .details {
   padding: 10px;
+  padding-top: 0;
 }
 
 .detailInput::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -157,11 +169,6 @@
   color: #ffb405;
 }
 
-.interestScrollable {
-  overflow: auto;
-  overflow-x: hidden
-}
-
 .addInterestDiv {
   justify-content: space-between; 
   align-items: center; 
@@ -170,7 +177,7 @@
   height: 40px; 
   border-radius: 20px; 
   padding-left: 15px; 
-  margin-top: 20px
+  margin-bottom: 10px
 }
 
 .interestInput {
@@ -180,4 +187,30 @@
   border: none; 
   border-bottom: 2px solid #c182ff;
   color: white;
+}
+
+
+
+
+/* Hide scrollbar for IE, Edge and Firefox */
+/* width */
+.interestScrollable::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+.interestScrollable::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: #ddd;
+}
+ 
+/* Handle */
+.interestScrollable::-webkit-scrollbar-thumb {
+  background: #eee; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.interestScrollable::-webkit-scrollbar-thumb:hover {
+  background: #d1d1d1; 
 }

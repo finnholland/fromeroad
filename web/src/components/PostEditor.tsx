@@ -74,7 +74,7 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
         </div>
 
       </div>
-      <textarea className='postBodyInput' placeholder='hello moon - 🌏' onChange={handleChange} value={postContent.body} rows={2}
+      <textarea className='postBodyInput' maxLength={157} placeholder='hello moon - 🌏' onChange={handleChange} value={postContent.body} rows={2}
         ref={textAreaRef} />
       
       {postImage !== '' ? (<img src={postImage} alt='post' className='postImage'/>) : null}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { TrendingUserType } from '../../types'
 import { DEFAULT_PROFILE_IMAGE, API } from '../constants'
+import { convertTrendPoints } from '../hooks/helpers'
 import './TrendingUser.css'
 
 interface Props {
@@ -25,7 +26,7 @@ export const TrendingUser: React.FC<Props> = ({ user }) => {
       <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
         <span className='text' style={{color: (user.difference > 0 ? '#05ff37' : user.difference < 0 ? '#ff1f3a' : '#8205ff')}}>{user.name}</span>
         <div className='subHeader subtext'>
-          <span>trend points: {user.trendPoints}</span> 
+          <span>trend points: {convertTrendPoints(user.trendPoints)}</span> 
           {/* <span>posts: {user.postCount}</span>  */}
         </div>
         

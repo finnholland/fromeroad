@@ -94,21 +94,20 @@
 .topTenList {
   flex: 1; 
   width: 20vw; 
-  height: calc(100vh - 70px - 40px - 24px); 
+  height: calc(100vh - 70px); 
   padding-left: 40px; 
   position: fixed;
-  direction: ltr,
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
 }
 
 .topTenScrollable {
   height: 100%;
   direction: rtl;
   overflow: auto;
-  overflow-x: hidden
-}
-
-.topTenScrollable {
-  scrollbar-color: #eee #eee;
+  overflow-x: hidden;
+  scrollbar-color: #ddd #eee;
   scrollbar-width: thin;
 }
 
@@ -117,28 +116,7 @@ textarea:focus, input:focus{
     outline: none;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
-/* width */
-.topTenScrollable::-webkit-scrollbar {
-  width: 10px;
-}
 
-/* Track */
-.topTenScrollable::-webkit-scrollbar-track {
-  border-radius: 10px;
-  background: #ddd;
-}
- 
-/* Handle */
-.topTenScrollable::-webkit-scrollbar-thumb {
-  background: #eee; 
-  border-radius: 10px;
-}
-
-/* Handle on hover */
-.topTenScrollable::-webkit-scrollbar-thumb:hover {
-  background: #d1d1d1; 
-}
 
 /* spinner -- license https://loading.io/css/ */
 .lds-ellipsis {
