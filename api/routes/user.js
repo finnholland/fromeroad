@@ -57,7 +57,7 @@ app.post('/login', async (req, res) => {
       res.sendStatus(err.code)
     } else if (result.length <= 0) {
       res.status(401).send({
-          msg:'email or password is incorrect'
+        message: 'invalid email or password'
       })
     } else {
       bcrypt.compare(password, result[0].password, function (err, valid) {
@@ -67,13 +67,15 @@ app.post('/login', async (req, res) => {
         if (valid) {
           const encryptToken = jwt.sign({ userID: result[0].userID.toString() }, process.env.SECRET, { algorithm: 'HS256' });
           return res.status(200).send({
-              msg: "logged in successfully",
-              user: result[0],
-              token: encryptToken,
+            message: "logged in successfully",
+            user: result[0],
+            token: encryptToken,
           })
         }
         else {
-          return res.status(401)
+          return res.status(401).send({
+            message: 'invalid email or password'
+          })
         }
       })
     }

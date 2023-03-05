@@ -20,18 +20,21 @@ const Login: React.FC<Props> = (props: Props) => {
   const [company, setCompany] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [formatErrorMessage, setFormatErrorMessage] = useState('')
   
   const dispatch = useAppDispatch()
 
   const signUp = async () => {
-    if (!email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
-      alert('invalid email format')
+    if (email !== '' && !email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
+      setFormatErrorMessage('invalid email format')
+    } else if (name === '' && company === '' && confirmPassword === '') {
+      setErrorMessage('signup needs purple starred fields');
     }
-    else if (password !== confirmPassword || password === '' || !password) {
-      alert('passowrds no matchy');
-    }
-    else if (name === '' || email === '' || company === '') {
-      alert('form must be filled!');
+    else if (password !== confirmPassword) {
+      setErrorMessage('passwords do not match');
+    } else if (password === '' || confirmPassword === '') {
+      setErrorMessage('both passwords are required');
     } else {
       Axios.post(`${API}/user/signup`, {
         name: name,
@@ -50,27 +53,32 @@ const Login: React.FC<Props> = (props: Props) => {
 
   const login = () => {
     if (!email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
-      alert('invalid email format')
+      setErrorMessage('invalid email format')
     } else {
       Axios.post(`${API}/user/login`, {
         email: email,
         password: password
       }).then(res => {
         if (res.status !== 200) {
-          alert('incorrect email or password')
+          alert(res.data)
+          console.log(res.data)
         } else {
           localStorage.setItem('token', res.data.token)
         }
         dispatch(setUser(res.data.user));
         props.setVerified(res.data.user.verified)
         props.setAuthenticated(true)
+      }).catch(err => {
+        setErrorMessage(err.response.data.message)
       })
     }
   }
 
   const onSubmit = (e: any) => {
     e.preventDefault();
-    if (confirmPassword !== '') {
+    if (name === '' && email === '' && company === '' && password === '' && confirmPassword === '') {
+      setErrorMessage('form must be filled!');
+    } else if (name !== '' || company !== '' || confirmPassword !== '') {
       signUp()
     } else {
       login()
@@ -98,7 +106,7 @@ const Login: React.FC<Props> = (props: Props) => {
             </div>
             <div className='inputDiv'>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>email</span> <span style={{color: '#8205ff'}}>*</span><span style={{color: '#FFB405'}}>*</span>
+                <span className='label'>email</span> <span style={{ color: '#8205ff' }}>*</span><span style={{ color: '#FFB405' }}>*</span><span>{formatErrorMessage}</span>
               </div>
               <input type={'email'} className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
             </div>
@@ -130,6 +138,7 @@ const Login: React.FC<Props> = (props: Props) => {
                 <span style={{color: '#FFB405', marginLeft: 5}}>*</span>
               </button>
             </div>
+            <span style={{fontSize: 14, justifySelf: 'flex-end'}}>{errorMessage}</span>
           </form>
         </div>
         <div style={{ flex: 1 }}>
