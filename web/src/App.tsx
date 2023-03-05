@@ -2,7 +2,7 @@ import { useEffect, useState, } from 'react'
 import './App.css';
 import Axios from 'axios';
 import Home from './screens/Home';
-import { initialState, setUser } from './hooks/slices/userSlice';
+import { userInitialState, setUser } from './hooks/slices/userSlice';
 import { useAppDispatch } from './hooks/Actions';
 import { isMobile } from 'react-device-detect';
 import { API } from './constants';
@@ -24,6 +24,7 @@ function App() {
     if (localStorage.getItem('token') && localStorage.getItem('token') !== '') {
       setAuthenticated(true)
     }
+    console.log(API)
     getUserFromToken()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -47,7 +48,7 @@ function App() {
   const logout = () => {
     setAuthenticated(false);
     localStorage.removeItem('token');
-    dispatch(setUser(initialState));
+    dispatch(setUser(userInitialState));
     dispatch(setIsOpen(false));
   }
 

@@ -9,7 +9,8 @@ import './Comment.css'
 interface Props {
   comment: CommentType
   lastCommentID: number,
-  getComments: any
+  setComments: any
+  comments: CommentType[]
   editComment: any
   setEditing: any
   editing: any
@@ -20,9 +21,9 @@ export const Comment: React.FC<Props> = (props: Props) => {
   const selector = useAppSelector(state => state)
 
   const deleteComment = () => {
-    Axios.delete(`${API}/post/comments/delete/${props.comment.commentID}`, {
+    Axios.delete(`${API}/post/comments/delete/${selector.user.userID}/${props.comment.commentID}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } 
-    }).then(props.getComments())
+    }).then(res => { props.setComments(props.comments.filter(c => c.commentID !== props.comment.commentID)) })
   }
 
   const editHandler = () => {

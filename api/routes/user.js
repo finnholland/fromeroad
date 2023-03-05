@@ -15,8 +15,19 @@ app.use(cors());
 // ROUTES RELATING TO USER ~~~~ api/user/{route}
 
 // get user by ID
-app.get('/userID/:id', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
-  db.query('select * from users where userID = ?', [req.params.id], (err, result, fields) => {
+app.get('/profile', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+  const profileID = req.query.profileID
+  db.query(`select name, email, trendPoints, company, profileImageUrl from users where userID = ?`, [profileID], (err, result, fields) => {
+    if (err) {
+      console.log('error occurred: '+ err)
+    } else {
+      res.send(result)
+    }
+  })
+})
+app.get('/profile/interests/:profileID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+  const profileID = req.params.profileID
+  db.query(`SELECT interests.interestID, name FROM interests JOIN userinterests ON interests.interestID = userinterests.interestID WHERE userinterests.userID = ?`, [profileID], (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)
     } else {
@@ -115,24 +126,43 @@ app.post('/signup', async (req, res, next) => {
   })
 })
 
+app.post('/updateuser', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res, next) => { 
+  if (req.auth.userID !== req.body.userID.toString()) {
+    return res.sendStatus(401)
+  }
+  const name = req.body.name
+  const project = req.body.project
+  const phone = req.body.phone
+  const userID = req.body.userID
+  db.query(`update users set name = ?, project = ?, phone = ? where userID = ?`, [name, project, phone, userID],
+    (err, result, fields) => {
+    if (err) {
+      console.log('error occurred: ' + err)
+      return err.code
+    } else {
+      res.send(result)
+    }
+  })
+})
+
 // add interest
 app.post('/interests/addInterests/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userID !== req.body.userID.toString()) {
+    return res.sendStatus(401)
+  }
   const interestName = req.body.name;
   const userID = req.body.userID;
-  console.log(interestName, userID)
   let interestID = null;
 
   db.query('select interestID from interests where name = ?', [interestName], async (err, result, fields) => {
     if (err) throw (err)
     else {
       interestID = result[0]?.interestID
-      console.log(result[0]?.interestID)
     }
 
     if (!interestID || interestID === 0) {
       db.query('insert into interests (name) values (?)', interestName, (err, result, fields) => {
         if (err) throw (err)
-        console.log(result.insertId)
         interestID = result.insertId
 
         db.query('insert into userinterests (userID, interestID) values (?, ?)', [userID, interestID], (err, result, fields) => {
@@ -157,8 +187,10 @@ app.post('/interests/addInterests/', ejwt({ secret: process.env.SECRET, algorith
 
 // get interest
 app.get('/interests/getInterests/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userID !== req.params.userID) {
+    return res.sendStatus(401)
+  }
   const userID = req.params.userID;
-  console.log(userID)
   
   db.query('SELECT * FROM interests JOIN userinterests ON interests.interestID = userinterests.interestID WHERE userinterests.userID = ?', userID, (err, result, fields) => {
     if (err) throw (err)
@@ -169,10 +201,12 @@ app.get('/interests/getInterests/:userID', ejwt({ secret: process.env.SECRET, al
 })
 
 // remove interest
-app.delete('/interests/removeInterests/:userID/:interestID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
-  const userID = req.params.userID;
-  const interestID = req.params.interestID;
-  console.log(userID)
+app.delete('/interests/removeInterests', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userID !== req.body.userID.toString()) {
+    return res.sendStatus(401)
+  }
+  const userID = req.body.userID;
+  const interestID = req.body.interestID;
   
   db.query('delete from userinterests where userID = ? and interestID = ?', [userID, interestID], (err, result, fields) => {
     if (err) throw (err)
@@ -185,9 +219,8 @@ app.delete('/interests/removeInterests/:userID/:interestID', ejwt({ secret: proc
 // get interest
 app.get('/interests/searchInterests/:searchQuery', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
   const searchQuery = req.params.searchQuery;
-  console.log(searchQuery)
   
-  db.query('SELECT * FROM interests WHERE name like ?', searchQuery+'%', (err, result, fields) => {
+  db.query('SELECT * FROM interests WHERE name like ? order by LOCATE(?, name)', ['%'+searchQuery+'%', searchQuery], (err, result, fields) => {
     if (err) throw (err)
     else {
       return res.status(200).send(result)

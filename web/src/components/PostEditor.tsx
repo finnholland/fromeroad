@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import React, { useRef, useState } from 'react'
 import SvgUploadImage from '../assets/svg/SvgUploadImage';
-import { API, DEFAULT_PROFILE_IMAGE } from '../constants';
+import { API, DEFAULT_PROFILE_IMAGE, EIGHT_MEGABYTES } from '../constants';
 import { useAppSelector } from '../hooks/Actions';
 import { useAutosizeTextArea } from '../hooks/helpers';
 import './PostEditor.css'
@@ -25,6 +25,7 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
   const [postImage, setPostImage] = useState('')
   const [errored, setErrored] = useState(false)
   const [imageHover, setImageHover] = useState(false);
+  const [fileTooLarge, setFileTooLarge] = useState(false);
 
   const ref = useRef<HTMLInputElement>(null);
 
@@ -42,10 +43,23 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
   };
 
   const uploadPostImage = (e: any) => {
+    if (e.target.files && e.target.files.length > 0) {
+      if (e.target.files[0].size >= EIGHT_MEGABYTES) {
+        setTimeout(() => {
+          setFileTooLarge(false)
+        }, 5000);
+        setFileTooLarge(true)
+        return;
+      } else {
+        const fd = new FormData();
+        fd.append('file', e.target.files[0])
+        fd.append('userID', selector.user.userID.toString())
+        setPostContent(prevState => ({ ...prevState, formData: fd }));
+        setPostImage(URL.createObjectURL(e.target.files[0]))
+      }
+    }
     const fd = new FormData();
     fd.append('file', e.target.files[0])
-    setPostContent(prevState => ({ ...prevState, formData: fd }));
-    setPostImage(URL.createObjectURL(e.target.files[0]))
   }
 
   const createPost = () => {
@@ -74,11 +88,11 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
         </div>
 
       </div>
-      <textarea className='postBodyInput' placeholder='hello moon - 🌏' onChange={handleChange} value={postContent.body} rows={2}
+      <textarea className='postBodyInput' maxLength={157} placeholder='hello moon - 🌏' onChange={handleChange} value={postContent.body} rows={2}
         ref={textAreaRef} />
       
       {postImage !== '' ? (<img src={postImage} alt='post' className='postImage'/>) : null}
-      
+      {fileTooLarge ? (<span style={{color: 'red', fontSize: 12, marginTop: 10}}>files cannot be more than <b>8mb</b> thanks!</span>) : null}
       <div style={{flexDirection: 'row', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1rem'}}>
         <SvgUploadImage onMouseEnter={() => setImageHover(true)} onMouseLeave={() => setImageHover(false)}
           style={{ cursor: 'pointer'}} width={30} height={30} onClick={(e) => handleClick(e)} fill={imageHover ? '#3fffb9' : '#CCFFED'} />
