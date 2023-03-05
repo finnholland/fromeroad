@@ -14,16 +14,41 @@ Despite this I am not a savage, the site is still hosted as a webapp using AWS A
 
 
 # How can you help?
-## Coding
-This project is public and so is the repo... kinda. anyone who is able to log in and verifies their email can access the repo by clicking on the page header "**frome_road**" on the homepage.
-clone project with git clone https://github.com/fhllnd/fromeroad.git
-developing UI `cd web && npm start` 
-developing API (you will need MySQL db(Workbench or CLI))
-- start the local API `cd api && npm start` 
+## Contributing
+This project is public and so is the repo... kinda. anyone who is able to log in and verifies their email can access the repo by clicking on the github icon in the page header on the homepage.
 
+### Step one
+clone project with `git clone https://github.com/fhllnd/fromeroad.git`
+
+**UI**
+ 1. To develop the UI run `cd web && npm start`
+ 2. You can find the react docs [here](https://reactjs.org/)
+ 3. It is possible to develop without the API but painful. Follow the steps below to start the API and use along side the UI
+
+**API**
+
+ 1. Install MySQL from [here](https://dev.mysql.com/downloads/mysql/) and choose your OS
+ 2. Select MySQL Server and Workbench. You may also wish to choose .NET and Python connector if you plan on using them in the future personally. - The install will require Visual Studio to be installed.
+ 3. Inside MySQL Workbench connect to your localhost db with a new connection and user root.
+ 4. Import the data from frome_road by opening the menu server>data import>import from dump project folder>/repo_location/sql/backups/<latest_date>
+ 5. Start import, you may have to expand the window to see the button (it's silly)
+ 6. Start the local API `cd api && npm start`
+ 7. Uncomment the line `const  API  =  'http://localhost'` and comment `const API = 'https://api.fromeroad.com';` in `/web/src/constants.ts`
+ 8. Check if you can access the API by going to [localhost](http://localhost/)
+
+### Docker
+These steps are not really necessary for anyone as it's done for the server only.
+#### Install NGINX Proxy Manager
+- `docker pull jc21/nginx-proxy-manager`
+- `docker-compose -d up`
+#### Create and run frome_road DB and API images.
+
+- [ ] todo
 
 # TODO
-write docker install instructions
 
-
+ - [ ] write docker install instructions
+ - [ ] profile view
+ - [ ] give alIen a backstory
+ - [ ] move and change all secrets for API and AWS - api/helpers/sendEmail, api/index, api/env
 

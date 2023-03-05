@@ -26,10 +26,12 @@ const upload = multer({
 })
 
 app.post('/create/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), upload.single('file'), (req, res) => {
+  if (req.auth.userID !== req.body.userID.toString()) {
+    return res.sendStatus(401)
+  }
   const userID = req.body.userID;
   const body = req.body.body;
   const initialUpvoteValue = 0;
-  console.log(req.body)
   if (!req.file) {
     db.query('insert into posts (body, createdAt, userID) values (?, now(), ?)', [body, userID], (err, result, fields) => {
       if (err) {
@@ -57,6 +59,9 @@ app.post('/create/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS2
 });
 
 app.get('/get', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userID !== req.query.userID.toString()) {
+    return res.sendStatus(401)
+  }
   const userID = req.query.userID
   const sign = req.query.sign
   const condition = req.query.condition
@@ -92,7 +97,10 @@ app.get('/comments/get/:postID', ejwt({ secret: process.env.SECRET, algorithms: 
   })
 })
 
-app.delete('/comments/delete/:commentID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.delete('/comments/delete/:userID/:commentID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userID !== req.params.userID) {
+    return res.sendStatus(401)
+  }
   const commentID = req.params.commentID
   db.query(`delete from postcomments where commentID = ?`, [commentID],
     (err, result, fields) => {
@@ -106,6 +114,9 @@ app.delete('/comments/delete/:commentID', ejwt({ secret: process.env.SECRET, alg
 })
 
 app.post('/comments/post/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userID !== req.body.userID.toString()) {
+    return res.sendStatus(401)
+  }
   const postID = req.body.postID
   const userID = req.body.userID
   const body = req.body.body
@@ -121,6 +132,9 @@ app.post('/comments/post/', ejwt({ secret: process.env.SECRET, algorithms: ["HS2
 })
 
 app.post('/comments/update/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userID !== req.body.userID.toString()) {
+    return res.sendStatus(401)
+  }
   const postID = req.body.postID
   const userID = req.body.userID
   const commentID = req.body.commentID
@@ -137,6 +151,9 @@ app.post('/comments/update/', ejwt({ secret: process.env.SECRET, algorithms: ["H
 })
 
 app.post('/upvote/:postID/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userID !== req.body.userID.toString() || req.body.userID === req.body.posterID) {
+    return res.sendStatus(401)
+  }
   const postID = req.params.postID;
   const posterID = req.body.posterID;
   const upvoteValue = 1 

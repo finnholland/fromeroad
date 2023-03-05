@@ -26,7 +26,9 @@ const upload = multer({
 })
 
 app.post('/profileImage/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), upload.single('file'), (req, res) => {
-  console.log(req.params.userID)
+  if (req.auth.userID !== req.body.userID || req.body.userID !== req.params.userID) {
+    return res.sendStatus(401)
+  }
   if (!req.file) {
     console.log("No file upload");
     res.sendStatus(403)
@@ -43,7 +45,9 @@ app.post('/profileImage/:userID', ejwt({ secret: process.env.SECRET, algorithms:
 });
 
 app.get('/profileImage/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
-  console.log(req.body)
+  if (req.auth.userID !== req.params.userID) {
+    return res.sendStatus(401)
+  }
   db.query('select profileImageUrl from users where userID = ?', req.params.userID, (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)

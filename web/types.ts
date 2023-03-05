@@ -3,6 +3,8 @@ export interface User {
   name: string,
   email: string,
   company: string,
+  project: string,
+  phone: string,
   trendPoints: number,
   profileImageUrl: string,
   interests: Interest[],
@@ -53,6 +55,7 @@ export interface TrendingUserType {
   difference: number,
   company: string,
   profileImageUrl: string
+  postCount: number
 }
 
 export interface CommentType {
@@ -64,4 +67,15 @@ export interface CommentType {
   name: string,
   company: string
   profileImageUrl: string
+}
+
+export interface ProfileType {
+  company: string
+  email: string
+  name: string
+  phone: string
+  project: string
+  profileImageUrl: string
+  trendPoints: number
+  interests: Interest[]
 }

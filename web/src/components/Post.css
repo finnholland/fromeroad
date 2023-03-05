@@ -40,6 +40,14 @@
   display: flex;
   width: 100%;
   margin-bottom: 1rem;
+  justify-content: space-between;
+}
+
+.postHeader .user {
+  flex-direction: row;
+  display: flex;
+  cursor: pointer;
+  padding-right: 1rem;
 }
 
 .headerTextName {
@@ -49,9 +57,9 @@
 }
 
 .headerTextCompany {
-  color: #8205ff;
+  color: #c182ff;
   font-size: .9rem;
-  font-weight: 200;
+  font-weight: 300;
 }
 
 .post .body {
@@ -75,7 +83,7 @@
 .postFooter {
   display: flex;
   width: 100%;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   height: 3rem;
 }
@@ -96,6 +104,7 @@
   background-color: #3fffb9;
   justify-content: center;
   width: 100px;
+  height: 30px;
   display: flex;
   border-radius: 30px;
   align-items: center;
@@ -112,7 +121,7 @@
   margin-right: 15px;
   border-radius: 15px;
   padding-left: 15px;
-  padding-right: 15px
+  padding-right: 15px;
 }
 
 .submitButton {
@@ -127,5 +136,21 @@
 }
 
 .commentSection {
-  padding: 2rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.commentInput::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #3fffb9;
+  opacity: 1; /* Firefox */
+}
+
+.commentInput:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #3fffb9;
+}
+
+.commentInput::-ms-input-placeholder { /* Microsoft Edge */
+  color: #3fffb9;
 }
