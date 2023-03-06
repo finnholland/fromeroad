@@ -18,26 +18,30 @@ export const Header: React.FC<Props> = (props: Props) => {
 
   if (props.type === 'desktop') {
     return (
-      <header className="header">
-        <div className='lotfourteen'>
-          <a href='http://www.lotfourteen.com.au' target={'_blank'} rel='noreferrer' style={{marginRight: 20}}>
-            <SvgLotfourteen height={25} fill={'#fff'}/>
-          </a>
-          {
-            props.showGithub ? (<a href='https://github.com/fhllnd/fromeroad' target={'_blank'} rel='noreferrer'> <GitHub height={25} fill={'#fff'} /> </a>) :
-              ( null )
-          }
+      <div>
+        <header className="header">
+          <div className='lotfourteen'>
+            <a href='http://www.lotfourteen.com.au' target={'_blank'} rel='noreferrer' style={{marginRight: 20}}>
+              <SvgLotfourteen height={25} fill={'#fff'}/>
+            </a>
+            {
+              props.showGithub ? (<a href='https://github.com/fhllnd/fromeroad' target={'_blank'} rel='noreferrer'> <GitHub height={25} fill={'#fff'} /> </a>) :
+                ( null )
+            }
 
-        </div>
-        <div className='titleContainer'>
-          <p className='title'>frome_road</p>
-        </div>
-        <div className='chamonix' style={{ justifyContent: 'flex-end' }}>
-          <a href='http://www.chamonix.com.au' target={'_blank'} rel='noreferrer'>
-            <SvgChamonix height={20} fill={'#fff'}/>
-          </a>
-        </div>
-      </header>
+          </div>
+          <div className='titleContainer'>
+            <p className='title'>frome_road</p>
+          </div>
+          <div className='chamonix' style={{ justifyContent: 'flex-end' }}>
+            <a href='http://www.chamonix.com.au' target={'_blank'} rel='noreferrer'>
+              <SvgChamonix height={20} fill={'#fff'}/>
+            </a>
+          </div>
+        </header>
+        <div id='padding' style={{minHeight: 50}}/>
+      </div>
+
     )
   } else {
     return (

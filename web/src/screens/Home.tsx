@@ -158,7 +158,7 @@ const Home: React.FC<Props> = (props: Props) => {
     <div className="app">
       <Header type='desktop' showGithub={true} />
       <div className='home'>
-        <div id='body' style={{ flexDirection: 'row', display: 'flex', paddingTop: 70, justifyContent: 'space-between'}}>
+        <div id='body' style={{ flexDirection: 'row', display: 'flex', paddingTop: 20, justifyContent: 'space-between'}}>
           <div id='topten' className='topTenList'>
             <div className='titleDiv'>
               <p className='sectionTitle'>top ten</p>

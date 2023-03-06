@@ -13,6 +13,12 @@ interface Props {
   setVerified: any
 }
 
+const unknownErrors = ['Some moof milker put a compressor on the ignition line.',
+  'I got a bad feeling about this.',
+  'Laugh it up, Fuzzball',
+  'INCONCEIVABLE!!!',
+  'These aren\'t the droids you\'re looking for.', 'What a piece of junk.']
+
 const Login: React.FC<Props> = (props: Props) => {
   
   const [name, setName] = useState('')
@@ -20,21 +26,20 @@ const Login: React.FC<Props> = (props: Props) => {
   const [company, setCompany] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
-  const [formatErrorMessage, setFormatErrorMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState({ type: '', message: '' })
+  const [errorHighlights, setErrorHighlights] = useState<string[]>([])
+  
   
   const dispatch = useAppDispatch()
 
   const signUp = async () => {
-    if (email !== '' && !email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
-      setFormatErrorMessage('invalid email format')
-    } else if (name === '' && company === '' && confirmPassword === '') {
-      setErrorMessage('signup needs purple starred fields');
+    if (name === '' || company === '' || confirmPassword === '') {
+      setErrorMessage({ type: 'signup', message: 'signup needs purple starred fields' });
+      setErrorHighlights(['email', 'password', 'confirmPassword', 'name', 'company'])
     }
     else if (password !== confirmPassword) {
-      setErrorMessage('passwords do not match');
-    } else if (password === '' || confirmPassword === '') {
-      setErrorMessage('both passwords are required');
+      setErrorMessage({ type: 'signup', message: 'passwords do not match' });
+      setErrorHighlights(['password', 'confirmPassword'])
     } else {
       Axios.post(`${API}/user/signup`, {
         name: name,
@@ -46,42 +51,66 @@ const Login: React.FC<Props> = (props: Props) => {
         dispatch(setUser(res.data.user));
         props.setAuthenticated(true)
       }).catch(err => {
-        alert(err)
+        if (err.response?.data?.message) {
+          setErrorMessage({ type: 'signup', message: err.response?.data?.message })
+          if(err.response.status === 409) {
+            setErrorHighlights(['email'])
+          }
+        } else {
+          if (err.code === 'ERR_NETWORK') {
+            setErrorMessage({type: 'global', message: 'network error, please try again later'})
+          } else {
+            setErrorMessage({type: 'global', message: unknownErrors[Math.floor(Math.random()*unknownErrors.length)]})
+          }
+        }
       })
     }
   }
 
   const login = () => {
-    if (!email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
-      setErrorMessage('invalid email format')
-    } else {
-      Axios.post(`${API}/user/login`, {
-        email: email,
-        password: password
-      }).then(res => {
-        if (res.status !== 200) {
-          alert(res.data)
-          console.log(res.data)
-        } else {
-          localStorage.setItem('token', res.data.token)
+    Axios.post(`${API}/user/login`, {
+      email: email,
+      password: password
+    }).then(res => {
+      if (res.status !== 200) {
+        alert(res.data)
+        console.log(res.data)
+      } else {
+        localStorage.setItem('token', res.data.token)
+      }
+      dispatch(setUser(res.data.user));
+      props.setVerified(res.data.user.verified)
+      props.setAuthenticated(true)
+    }).catch(err => {
+      console.log(err.response?.data?.message)
+      if (err.response?.data?.message) {
+        setErrorMessage({ type: 'login', message: err.response?.data?.message })
+        if (err.response.status === 401) {
+          setErrorHighlights(['email', 'password'])
         }
-        dispatch(setUser(res.data.user));
-        props.setVerified(res.data.user.verified)
-        props.setAuthenticated(true)
-      }).catch(err => {
-        setErrorMessage(err.response.data.message)
-      })
-    }
+      } else {
+        if (err.code === 'ERR_NETWORK') {
+          setErrorMessage({type: 'global', message: 'network error, please try again later'})
+        } else {
+          setErrorMessage({type: 'global', message: unknownErrors[Math.floor(Math.random()*unknownErrors.length)]})
+        }
+      }
+    })
   }
 
   const onSubmit = (e: any) => {
-    e.preventDefault();
-    if (name === '' && email === '' && company === '' && password === '' && confirmPassword === '') {
-      setErrorMessage('form must be filled!');
-    } else if (name !== '' || company !== '' || confirmPassword !== '') {
-      signUp()
+    setErrorHighlights([])
+    console.log(e.nativeEvent.submitter.name)
+    e.preventDefault()
+    if (email !== '' && !email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
+      setErrorMessage({ type: 'global', message: 'invalid email format' })
+      setErrorHighlights(['email'])
+    } else if (name === '' && email === '' && company === '' && password === '' && confirmPassword === '') {
+      setErrorMessage({type: 'global', message: 'form must be filled!'});
+    } else if (e.nativeEvent.submitter.name === 'login') {
+      login();
     } else {
-      login()
+      signUp();
     }
   }
 
@@ -98,48 +127,55 @@ const Login: React.FC<Props> = (props: Props) => {
         </div>
         <div style={{flex: 1}}>
           <form style={{width: '100%'}} onSubmit={onSubmit}>
+
             <div className='inputDiv'>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>name</span> <span style={{color: '#8205ff'}}>*</span>
+                <span className='label'>email</span> <span style={{ color: '#8205ff' }}>*</span><span style={{ color: '#FFB405' }}>*</span>
               </div>
-              <input className='input' value={name} onChange={(e) => setName(e.target.value)}/>
-            </div>
-            <div className='inputDiv'>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>email</span> <span style={{ color: '#8205ff' }}>*</span><span style={{ color: '#FFB405' }}>*</span><span>{formatErrorMessage}</span>
-              </div>
-              <input type={'email'} className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
-            </div>
-            <div className='inputDiv'>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>company</span> <span style={{color: '#8205ff'}}>*</span> 
-              </div>
-              <input className='input' value={company} onChange={(e) => setCompany(e.target.value)} />
+              <input type={'text'} className='input' style={{borderColor: (errorHighlights.includes('email') ? '#ff0000' : '#8205ff')}} value={email} onChange={(e) => setEmail(e.target.value)}/>
             </div>
             <div className='inputDiv'>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <span className='label'>password</span> <span style={{color: '#8205ff'}}>*</span><span style={{color: '#FFB405'}}>*</span>
               </div>
-                <input type={'password'} className='input' value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input type={'password'} className='input' style={{borderColor: (errorHighlights.includes('password') ? '#ff0000' : '#8205ff')}} value={password} onChange={(e) => setPassword(e.target.value)} />
+            </div>
+            <div className='inputDiv'>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <span className='label'>name</span> <span style={{color: '#8205ff'}}>*</span>
+              </div>
+              <input className='input' style={{borderColor: (errorHighlights.includes('name') ? '#ff0000' : '#8205ff')}} value={name} onChange={(e) => setName(e.target.value)}/>
+            </div>
+            <div className='inputDiv'>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <span className='label'>company</span> <span style={{color: '#8205ff'}}>*</span> 
+              </div>
+              <input className='input' style={{borderColor: (errorHighlights.includes('company') ? '#ff0000' : '#8205ff')}} value={company} onChange={(e) => setCompany(e.target.value)} />
             </div>
             <div className='inputDiv'>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <span className='label'>confirm password</span> <span style={{color: '#8205ff'}}>*</span>
               </div>
-              <input type={'password'} className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+              <input type={'password'} className='input' style={{borderColor: (errorHighlights.includes('confirmPassword') ? '#ff0000' : '#8205ff')}} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
             </div>
             <div className='buttonDiv'>
-              <button className='button'>
-                sign up
-                <span style={{color: '#8205ff', marginLeft: 5}}>*</span><span style={{color: '#FFB405'}}>*</span>
-              </button>
-              <button type='submit' className='button'>
-                login
-                <span style={{color: '#FFB405', marginLeft: 5}}>*</span>
-              </button>
+              <div style={{width: '40%'}}>
+                <button type='submit' className='button' name='signup'>
+                  sign up
+                  <span style={{color: '#8205ff', marginLeft: 5}}>*</span><span style={{color: '#FFB405'}}>*</span>
+                </button>
+                <p style={{fontSize: 13, color: 'red', marginTop: 5}}>{errorMessage.type === 'signup' ? errorMessage.message : ''}</p>
+              </div>
+              <div style={{ width: '40%' }}>
+                <button type='submit' className='button' name='login'>
+                  login
+                  <span style={{color: '#FFB405', marginLeft: 5}}>*</span>
+                </button>
+                <p style={{fontSize: 13, textAlign: 'end', color: 'red', marginTop: 5}}>{errorMessage.type === 'login' ? errorMessage.message : ''}</p>
+              </div>
             </div>
-            <span style={{fontSize: 14, justifySelf: 'flex-end'}}>{errorMessage}</span>
           </form>
+          <p style={{fontSize: 14, width: '100%', textAlign: 'center', marginTop: '2rem', color: 'red'}}>{errorMessage.type === 'global' ? errorMessage.message : ''}</p>
         </div>
         <div style={{ flex: 1 }}>
           <div className='aboutDiv'>

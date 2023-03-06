@@ -54,7 +54,9 @@ app.post('/login', async (req, res) => {
   db.query('select * from users where email = ?', email, (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)
-      res.sendStatus(err.code)
+      res.status(err.code).send({
+        message: err.message
+      })
     } else if (result.length <= 0) {
       res.status(401).send({
         message: 'invalid email or password'
@@ -96,7 +98,9 @@ app.post('/signup', async (req, res, next) => {
   db.query('select * from users where email = ?', user.email, (err, result) => { 
     if (err) throw (err)
     if (result.length != 0) {
-      res.sendStatus(409)
+      return res.status(409).send({
+        message: 'this person exists :O'
+      })
     }
     else {
       bcrypt.hash(user.password, 10).then((hash) => { 
