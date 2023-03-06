@@ -56,6 +56,7 @@
 
 .app .feed {
   max-width: 30vw;
+  flex-grow: 1;
   margin-left: 100px;
   margin-right: 100px;
 }
