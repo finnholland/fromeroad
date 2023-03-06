@@ -68,7 +68,7 @@ app.get('/get', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (re
   db.query(`SELECT posts.*, UNIX_TIMESTAMP(createdAt) AS createdAtUnix, name, company, profileImageUrl, IFNULL(vote, 0) as vote FROM posts
             inner join users on posts.userID = users.userID
             LEFT JOIN postvotes ON postvotes.postID = posts.postID AND postvotes.userID = ?
-            where TIMESTAMPDIFF(day, createdAt, NOW()) < 7 and posts.postID ${sign} ?
+            where TIMESTAMPDIFF(day, createdAt, NOW()) < 7 and posts.postID ${sign} ? and visible = 1
             GROUP BY postID
             order by createdAt desc
             limit 10;`, [userID, condition],
