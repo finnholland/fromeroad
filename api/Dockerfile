@@ -1,7 +1,18 @@
 FROM node:lts-alpine
-ARG env
-ENV NODE_ENV=${env}
-ENV SECRET=e99a4deca0aa32edc0d24d9a8aaae9941099749d6def0493284d7a96f1f9e2e1baf83320f415e8d3058a29987e1a7b70061ddba763c9aaeffab3d47b521c419b
+ARG ENV
+ARG SES_KEY
+ARG SES_SECRET
+ARG S3_KEY
+ARG S3_SECRET
+ARG JWT_SECRET
+
+ENV ENV=${ENV}
+ENV SES_KEY=${SES_KEY}
+ENV SES_SECRET=${SES_SECRET}
+ENV S3_KEY=${S3_KEY}
+ENV S3_SECRET=${S3_SECRET}
+ENV JWT_SECRET=${JWT_SECRET}
+
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 RUN npm install --production --silent && mv node_modules ../

@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/Actions';
 import SvgAddButton from '../assets/svg/SvgAddButton';
 import { Comment } from './Comment';
 import { convertTrendPoints, getMessageAge } from '../hooks/helpers';
-import { API, DEFAULT_PROFILE_IMAGE } from '../constants';
+import { API, DEFAULT_PROFILE_IMAGE, S3_BUCKET } from '../constants';
 import Highlighter from "react-highlight-words";
 import { getUserProfile } from '../hooks/api/users';
 import Heart from '../assets/svg/Heart';
@@ -128,7 +128,7 @@ export const Post: React.FC<Props> = (props: Props) => {
       <div className='post'>
         <div id='header' className='postHeader'>
           <div className='user' onMouseOver={() => setProfileHover(true)} onMouseLeave={() => setProfileHover(false)} onClick={() => getUserProfile(dispatch, selector.user.userID, props.poster.userID )}>
-            <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage' />
+            <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage' />
             <div style={{flexDirection: 'column', display: 'flex', justifyContent: 'center'}}>
               <span style={{textDecoration: profileHover ? 'underline' : 'none'}} className='headerTextName'>{props.poster.name}</span>
               <span className='headerTextCompany'>{props.poster.company}</span>
@@ -144,7 +144,7 @@ export const Post: React.FC<Props> = (props: Props) => {
             highlightStyle={undefined}
             className='bodyText'
           />
-          <img src={API + props.post.postImageUrl} alt='postImage' className='postImage'/>
+          <img src={S3_BUCKET + props.post.postImageUrl} alt='postImage' className='postImage'/>
         </div>
         <div hidden={comments.length <= 0} className='commentSection'>
           {loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
@@ -177,7 +177,7 @@ export const Post: React.FC<Props> = (props: Props) => {
       <div className='post'>
         <div id='header' className='postHeader'>
           <div className='user' onMouseOver={() => setProfileHover(true)} onMouseLeave={() => setProfileHover(false)} onClick={() => getUserProfile(dispatch, selector.user.userID, props.poster.userID )}>
-            <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage' />
+            <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage' />
             <div style={{flexDirection: 'column', display: 'flex', justifyContent: 'center'}}>
               <span style={{textDecoration: profileHover ? 'underline' : 'none'}} className='headerTextName'>{props.poster.name}</span>
               <span className='headerTextCompany'>{props.poster.company}</span>

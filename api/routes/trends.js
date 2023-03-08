@@ -7,7 +7,7 @@ var db = require('..');
 const cors = require('cors')
 app.use(cors());
 
-app.get('/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.get('/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   db.query(`select tt.*, u.company, u.profileImageUrl, IFNULL(postCount, 0) as postCount from topten as tt 
               inner join users as u on u.userID = tt.userID
               left join (
