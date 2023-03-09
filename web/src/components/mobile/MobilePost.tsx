@@ -7,7 +7,7 @@ import { useAppSelector } from '../../hooks/Actions';
 import SvgAddButton from '../../assets/svg/SvgAddButton';
 import { MobileComment } from './MobileComment';
 import { getMessageAge } from '../../hooks/helpers';
-import { API, DEFAULT_PROFILE_IMAGE } from '../../constants';
+import { API, DEFAULT_PROFILE_IMAGE, S3_BUCKET } from '../../constants';
 import Highlighter from "react-highlight-words";
 
 interface Props {
@@ -132,7 +132,7 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
     return (
       <div className='post'>
         <div id='header' className='postHeader'>
-          <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage'/>
+          <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage'/>
           <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
               <span className='headerTextName'>{props.poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
@@ -150,7 +150,7 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
             highlightStyle={undefined}
             className='bodyText'
           />
-          <img src={API + props.post.postImageUrl} alt='postImage' className='postImage'/>
+          <img src={S3_BUCKET + props.post.postImageUrl} alt='postImage' className='postImage'/>
         </div>
         <div hidden={comments.length <= 0} className='commentSection'>
           {loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
@@ -181,7 +181,7 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
     return (
       <div className='post'>
         <div id='header' className='postHeader'>
-          <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage'/>
+          <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage'/>
           <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
               <span className='headerTextName'>{props.poster.name}</span> <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>

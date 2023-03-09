@@ -4,7 +4,7 @@ import { Interest, User } from '../../../types';
 import LogoutIcon from '../../assets/svg/logoutIcon';
 import SvgRemoveButton from '../../assets/svg/removeButton';
 import SvgAddButton from '../../assets/svg/SvgAddButton';
-import { API, EIGHT_MEGABYTES } from '../../constants';
+import { API, EIGHT_MEGABYTES, S3_BUCKET } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../hooks/Actions';
 import { updateUserDetails } from '../../hooks/api/users';
 import { convertTrendPoints } from '../../hooks/helpers';
@@ -253,7 +253,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
           {/* edit here */}
           <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
             <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)}
-              style={{ backgroundImage: `url(${API}${profileImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
+              style={{ backgroundImage: `url(${S3_BUCKET}${profileImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
               <div className='profileImageOverlay'>
                 <span style={{alignItems: 'center', display:'flex', marginBottom: 5, color: '#fff'}}>change</span>
               </div>

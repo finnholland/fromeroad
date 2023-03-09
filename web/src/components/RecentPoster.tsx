@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { RecentPosterType } from '../../types'
-import { API, DEFAULT_PROFILE_IMAGE } from '../constants'
+import { DEFAULT_PROFILE_IMAGE, S3_BUCKET } from '../constants'
 import './RecentPoster.css'
 
 export interface Props {
@@ -21,7 +21,7 @@ export const RecentPoster: React.FC<Props> = ({ user }) => {
 
   return (
     <div className='recentPoster'>
-      <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage' />
+      <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage' />
       <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
         <span className='text'>{user.name}</span>
         <div className='subHeader subtext'>

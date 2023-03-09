@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { TrendingUserType } from '../../types'
-import { DEFAULT_PROFILE_IMAGE, API } from '../constants'
+import { DEFAULT_PROFILE_IMAGE, S3_BUCKET } from '../constants'
 import { convertTrendPoints } from '../hooks/helpers'
 import './TrendingUser.css'
 
@@ -22,7 +22,7 @@ export const TrendingUser: React.FC<Props> = ({ user }) => {
   
   return (
     <div className='trendingUser'>
-      <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage' />
+      <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage' />
       <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
         <span className='text' style={{color: (user.difference > 0 ? '#05ff37' : user.difference < 0 ? '#ff1f3a' : '#8205ff')}}>{user.name}</span>
         <div className='subHeader subtext'>
