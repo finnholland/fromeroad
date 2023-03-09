@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { CommentType, Poster, PostType, ProfileType } from '../../types'
+import { CommentType, Poster, PostType } from '../../types'
 import './Post.css'
 import Axios from 'axios';
 import { useAppDispatch, useAppSelector } from '../hooks/Actions';

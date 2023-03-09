@@ -26,7 +26,7 @@ services:
   #     - ./sql/${ENV}/backups:/docker-entrypoint-initdb.d
   nodejs_api:
     container_name: ${ENV}_fromeroad_api
-    image: fromeroadapi
+    image: ${ENV}-fromeroad-api
     restart: always
     build:
       args:
@@ -36,14 +36,16 @@ services:
         - S3_KEY=${S3_KEY}
         - S3_SECRET=${S3_SECRET}
         - JWT_SECRET=${JWT_SECRET}
+        - RDS_DB=${RDS_DB}
+        - RDS_PASSWORD=${RDS_PASSWORD}
       context: api
       dockerfile: ./Dockerfile
     environment:
       ENV: ${ENV}
     networks:
       - docker_default
-    volumes:
-      - ./${ENV}_api_data:/usr/src/app/data
+    # volumes:
+    #   - ./${ENV}_api_data:/usr/src/app/data
 # Names our volume
 
 volumes:
