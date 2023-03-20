@@ -23,7 +23,7 @@ export const TrendingUser: React.FC<Props> = ({ user }) => {
   return (
     <div className='trendingUser'>
       <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage' />
-      <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
+      <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1, width: 0 }}>
         <span className='text' style={{color: (user.difference > 0 ? '#05ff37' : user.difference < 0 ? '#ff1f3a' : '#8205ff')}}>{user.name}</span>
         <div className='subHeader subtext'>
           <span>trend points: {convertTrendPoints(user.trendPoints)}</span> 

@@ -19,7 +19,6 @@ interface Props {
 export const Profile: React.FC<Props> = (props: Props) => {
   const selector = useAppSelector(state => state)
   const dispatch = useAppDispatch();
-  
 
   const [userState, setUserState] = useState<User>(selector.user);
   const [editing, setEditing] = useState(false);
@@ -30,6 +29,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
   const [addSvgHover, setAddSvgHover] = useState(-2);
   const [interestLoading, setInterestLoading] = useState(true);
+  const [showScroll, setShowScroll] = useState(false);
 
   const [closeProfileView, setCloseProfileView] = useState(false);
   
@@ -38,6 +38,14 @@ export const Profile: React.FC<Props> = (props: Props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const scrollRef = React.createRef<HTMLInputElement>();
+  React.useLayoutEffect(() => {
+    if (scrollRef.current) {
+      setShowScroll(scrollRef.current.clientHeight < scrollRef.current.scrollHeight);
+    }
+
+  }, [scrollRef]);
+  
   const interestItems = interestList.map((i) => {
     return (
       <div key={i.interestID} className='interestDiv' onMouseEnter={() => setRemoveSvgHover(i.interestID)}
@@ -199,7 +207,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
         <div className='titleDiv'>
           <hr className='line' />
           <SvgRemoveButton style={{marginLeft: 15}} onMouseEnter={() => setCloseProfileView(true)} onMouseLeave={() => setCloseProfileView(false)}
-            onClick={() => { dispatch(setProfile(profileInitialState)); setCloseProfileView(false) }} height={24} strokeWidth={1} stroke={closeProfileView ? '#ffb405' : '#8205ff'} />
+            onClick={() => { dispatch(setProfile(profileInitialState)); setCloseProfileView(false); setAddSvgHover(-2) }} height={24} strokeWidth={1} stroke={closeProfileView ? '#ffb405' : '#8205ff'} />
         </div>
         <div>
           <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
@@ -235,8 +243,9 @@ export const Profile: React.FC<Props> = (props: Props) => {
             <p className='sectionHeader'>interests</p>
             <hr className='sectionHeaderLine' style={{marginTop: 0}}/>          
           </div>
-          <div style={{ display: 'flex', flex: 1, padding: 10, flexDirection: 'column' }}>
+          <div ref={scrollRef} id='interestList' className='interestScrollable' style={{paddingRight: (showScroll ? 10 : 18)}}>
             {profileInterests}
+            {interestLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
           </div>
         </div>
       </div>
@@ -304,7 +313,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
             <SvgAddButton fill={addSvgHover === -1 ? '#ffb405' : '#DECCF0'} stroke={addSvgHover === -1 ? '#ffb405' : '#c182ff'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
               onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
           </div>
-          <div id='interestList' className='interestScrollable'>
+          <div ref={scrollRef} id='interestList' className='interestScrollable' style={{paddingRight: (showScroll ? 10 : 18)}}>
             {interestSearchResults.length === 0 && interest === '' ? interestItems :
               (
                 <div>

@@ -43,7 +43,7 @@ export const Comment: React.FC<Props> = (props: Props) => {
       <div className='comment' style={{marginBottom: (props.lastCommentID === props.comment.commentID ? 0 : '1.5rem')}}>
         <div style={{display: 'flex', width: '100%'}}>
           <img src={S3_BUCKET + props.comment.profileImageUrl} alt='profile' className='profileImage' />
-          <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
+          <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1, overflow: 'hidden' }}>
             <div style={{flexDirection: 'row', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
               <span className='text' style={{ color: '#ffb405' }}>{props.comment.name}</span>
               <div style={{justifyContent: 'end', display: 'flex', fontSize: 11}}>
@@ -64,7 +64,7 @@ export const Comment: React.FC<Props> = (props: Props) => {
       <div className='comment' style={{marginBottom: (props.lastCommentID === props.comment.commentID ? 0 : '1.5rem')}}>
         <div style={{display: 'flex', width: '100%'}}>
           <img src={S3_BUCKET + props.comment.profileImageUrl} alt='profile' className='profileImage' />
-          <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
+          <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1, overflow: 'hidden' }}>
             <span className='text' style={{ color: '#ffb405' }}>{props.comment.name}</span>
             <div className='subHeader subtext'>
               <span>{props.comment.company}</span> <span>{getMessageAge(new Date(props.comment.createdAt * 1000))}</span>

@@ -48,12 +48,24 @@
   display: flex;
   cursor: pointer;
   padding-right: 1rem;
+  width: 75%;
+}
+
+.headerDetails {
+  flex-direction: column; 
+  display: flex; 
+  justify-content: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .headerTextName {
   color: #8205ff;
   font-size: 1rem;
   font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .headerTextCompany {
@@ -83,9 +95,10 @@
 .postFooter {
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  height: 3rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .upvoteButton {
@@ -122,24 +135,23 @@
   border-radius: 15px;
   padding-left: 15px;
   padding-right: 15px;
+  margin-top: .5rem;
 }
 
 .submitButton {
-  height: 32px;
-  border-radius: 15px;
+  height: 60px;
+  border-radius: 10px;
   background-color: #3fffb9;
   border: 0;
   padding-left: 15px;
   padding-right: 15px;
+  margin-left: 15px;
   font-weight: 500;
   color: white;
 }
 
 .commentSection {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-top: 1.5rem;
 }
 
 .commentInput::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */

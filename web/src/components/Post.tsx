@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { CommentType, Poster, PostType } from '../../types'
 import './Post.css'
 import Axios from 'axios';
 import { useAppDispatch, useAppSelector } from '../hooks/Actions';
-import SvgAddButton from '../assets/svg/SvgAddButton';
 import { Comment } from './Comment';
-import { convertTrendPoints, getMessageAge } from '../hooks/helpers';
+import { convertTrendPoints, getMessageAge, useAutosizeTextArea } from '../hooks/helpers';
 import { API, DEFAULT_PROFILE_IMAGE, S3_BUCKET } from '../constants';
 import Highlighter from "react-highlight-words";
 import { getUserProfile } from '../hooks/api/users';
-import Heart from '../assets/svg/Heart';
+import Heart from '../assets/svg/post/Heart';
+import CommentIcon from '../assets/svg/post/Comments';
 
 interface Props {
   post: PostType,
@@ -25,7 +25,7 @@ export const Post: React.FC<Props> = (props: Props) => {
   const [comment, setComment] = useState('')
   const [editingComment, setEditingComment] = useState(-1)
   const [editing, setEditing] = useState(-1)
-  const [showAll, setShowAll] = useState(false)
+  const [showComments, setShowComments] = useState(false)
   const [imageUrl, setImageUrl] = useState(props.poster.profileImageUrl)
   const [errored, setErrored] = useState(false)
   const [loading, setLoading] = useState(true);
@@ -37,6 +37,21 @@ export const Post: React.FC<Props> = (props: Props) => {
     getSearchWords();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  useAutosizeTextArea(textAreaRef.current, comment);
+  const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = evt.target?.value;
+    setComment(val);
+  };
+
+  const commentEnterSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+   
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      postComment()
+    }
+  }
 
   const getSearchWords = () => {
     const words = props.post.body.split(/([^\s]*?;)/g).filter((word) => word.includes(';') && word.length !== 1 )
@@ -70,7 +85,6 @@ export const Post: React.FC<Props> = (props: Props) => {
     }).then(res => {
       setComment('')
       getComments()
-      setShowAll(true)
     })
   }
 
@@ -109,7 +123,7 @@ export const Post: React.FC<Props> = (props: Props) => {
   }
 
   const commentItems = comments.map((i) => {
-    if (comments.findIndex(c => c.commentID === i.commentID) <= 1 || showAll) {
+    if (comments.findIndex(c => c.commentID === i.commentID) <= 1 || showComments) {
       return (
         <Comment key={i.commentID} comment={i} lastCommentID={comments[comments.length - 1].commentID} setComments={setComments} comments={comments} editComment={editComment} setEditing={setEditing} editing={editing} />
       )
@@ -129,7 +143,7 @@ export const Post: React.FC<Props> = (props: Props) => {
         <div id='header' className='postHeader'>
           <div className='user' onMouseOver={() => setProfileHover(true)} onMouseLeave={() => setProfileHover(false)} onClick={() => getUserProfile(dispatch, selector.user.userID, props.poster.userID )}>
             <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage' />
-            <div style={{flexDirection: 'column', display: 'flex', justifyContent: 'center'}}>
+            <div className='headerDetails'>
               <span style={{textDecoration: profileHover ? 'underline' : 'none'}} className='headerTextName'>{props.poster.name}</span>
               <span className='headerTextCompany'>{props.poster.company}</span>
             </div>
@@ -146,28 +160,35 @@ export const Post: React.FC<Props> = (props: Props) => {
           />
           <img src={S3_BUCKET + props.post.postImageUrl} alt='postImage' className='postImage'/>
         </div>
-        <div hidden={comments.length <= 0} className='commentSection'>
-          {loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
-          {commentItems}
-          {comments.length > 2 ? (
-            <div style={{display: 'flex', justifyContent: 'center', marginTop: 15}}>
-              <span style={{fontSize: 12}}>{showAll ? 'Showing all comments' : `${comments.length - 2} comment${comments.length - 2 === 1 ? '' : 's'} hidden`}</span>
-              <span style={{ fontSize: 13, cursor: 'pointer', userSelect: 'none', marginLeft: 20, color: '#8205ff' }} onClick={() => setShowAll(!showAll)}>{showAll ? 'hide' : 'show'}</span>
+        <div id='footer' className='postFooter'>
+          <div style={{width: '50%', alignItems: 'center', display: 'flex', justifyContent: 'space-between', flexDirection: 'row', userSelect: 'none', textAlign: 'start'}}>
+            <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}} onClick={() => upvotePost()}>
+              <Heart stroke={'#8205FF'} fill={props.post.voted || selector.user.userID === props.poster.userID ? '#EEBEFF' : '#fff'} strokeWidth={1.1} height={30} />
+              <span style={{flex: 1, paddingLeft: 10, color: '#8205FF'}}>{convertTrendPoints(trendPoints)}</span>
             </div>
-          ) : (null)}
-        </div>
-        <div id='footer' className='postFooter' style={{ marginTop: (comments.length <= 0 ? '1rem' : 0) }}>
-          {selector.user.userID === props.poster.userID ? (null) : (
-          <div className='upvoteButtonPill' onClick={() => upvotePost()}>
-            <span style={{flex: 1, paddingLeft: 20}}>{convertTrendPoints(trendPoints)}</span>
-            <div className='upvoteButton'>
-              <SvgAddButton height={30} fontVariant={props.post.voted ? 'hidden' : 'visible'} stroke={'#3fffb9'}/>
+            <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}} onClick={() => setShowComments(!showComments)}>
+              <CommentIcon fill={'#00FFA3'} height={30} />
+              <span style={{flex: 1, paddingLeft: 10, color: '#00FFA3'}}>{comments.length}</span>
             </div>
           </div>
-          )}
-          <input type={'text'} color='#3fffb9' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something'
-           style={{marginLeft: (selector.user.userID === props.poster.userID ? 0 : '15px')}}/>
-          <button className='submitButton' style={{backgroundColor: (comment.trim() === '' ? '#d9fff1' : '#3fffb9')}} disabled={comment.trim() === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
+        </div>
+
+        {showComments ? (
+          <div style={{display: 'flex', alignItems: 'center'}}>
+            <textarea className='postBodyInput' style={{flex: 1}} maxLength={157} placeholder='hello world - 🌒' onKeyDown={commentEnterSubmit} onChange={handleChange} value={comment} rows={2}
+              ref={textAreaRef} />
+            <button className='submitButton' style={{ backgroundColor: (comment.trim() === '' ? '#d9fff1' : '#3fffb9') }} disabled={comment.trim() === ''} onClick={() => postComment()}>
+              post
+            </button>
+          </div>
+        ) : (null)}
+        
+        <div hidden={!showComments} className='commentSection'>
+          {loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
+          {commentItems}
+          <div style={{display: (comments.length === 0 ? 'none' : 'flex'), justifyContent: 'center', marginTop: 15}}>
+            <span style={{ fontSize: 13, cursor: 'pointer', userSelect: 'none', marginLeft: 20, color: '#8205ff' }} onClick={() => setShowComments(!showComments)}>hide comments</span>
+          </div>
         </div>
       </div>
     )
@@ -178,8 +199,8 @@ export const Post: React.FC<Props> = (props: Props) => {
         <div id='header' className='postHeader'>
           <div className='user' onMouseOver={() => setProfileHover(true)} onMouseLeave={() => setProfileHover(false)} onClick={() => getUserProfile(dispatch, selector.user.userID, props.poster.userID )}>
             <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage' />
-            <div style={{flexDirection: 'column', display: 'flex', justifyContent: 'center'}}>
-              <span style={{textDecoration: profileHover ? 'underline' : 'none'}} className='headerTextName'>{props.poster.name}</span>
+            <div className='headerDetails'>
+              <span style={{ textDecoration: profileHover ? 'underline' : 'none' }} className='headerTextName'>{props.poster.name}</span>
               <span className='headerTextCompany'>{props.poster.company}</span>
             </div>
           </div>
@@ -194,26 +215,36 @@ export const Post: React.FC<Props> = (props: Props) => {
             className='bodyText'
           />
         </div>
-        <div hidden={comments.length <= 0} className='commentSection'>
+
+        <div id='footer' className='postFooter'>
+          <div style={{width: '50%', alignItems: 'center', display: 'flex', justifyContent: 'space-between', flexDirection: 'row', userSelect: 'none', textAlign: 'start'}}>
+            <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}} onClick={() => upvotePost()}>
+              <Heart stroke={'#8205FF'} fill={props.post.voted || selector.user.userID === props.poster.userID ? '#EEBEFF' : '#fff'} strokeWidth={1.1} height={30} />
+              <span style={{flex: 1, paddingLeft: 10, color: '#8205FF'}}>{convertTrendPoints(trendPoints)}</span>
+            </div>
+            <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}} onClick={() => setShowComments(!showComments)}>
+              <CommentIcon fill={'#00FFA3'} height={30} />
+              <span style={{flex: 1, paddingLeft: 10, color: '#00FFA3'}}>{comments.length}</span>
+            </div>
+          </div>
+        </div>
+
+        {showComments ? (
+          <div style={{display: 'flex', alignItems: 'center'}}>
+            <textarea className='postBodyInput' style={{flex: 1, fontSize: '1rem'}} maxLength={157} placeholder='hello world - 🌒' onKeyDown={commentEnterSubmit} onChange={handleChange} value={comment} rows={2}
+              ref={textAreaRef} />
+            <button className='submitButton' style={{ backgroundColor: (comment.trim() === '' ? '#d9fff1' : '#3fffb9') }} disabled={comment.trim() === ''} onClick={() => postComment()}>
+              post
+            </button>
+          </div>
+        ) : (null)}
+        
+        <div hidden={!showComments} className={comments.length > 0 ? 'commentSection' : ''}>
           {loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
           {commentItems}
-          {comments.length > 2 ? (
-            <div style={{display: 'flex', justifyContent: 'center', marginTop: 15}}>
-              <span style={{fontSize: 12}}>{showAll ? 'Showing all comments' : `${comments.length - 2} comment${comments.length - 2 === 1 ? '' : 's'} hidden`}</span>
-              <span style={{ fontSize: 13, cursor: 'pointer', userSelect: 'none', marginLeft: 20, color: '#8205ff' }} onClick={() => setShowAll(!showAll)}>{showAll ? 'hide' : 'show'}</span>
-            </div>
-          ) : (null)}
-        </div>
-        <div id='footer' className='postFooter' style={{ marginTop: (comments.length <= 0 ? '1rem' : 0) }}>
-          {selector.user.userID === props.poster.userID ? (null) : (
-            <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer', userSelect: 'none', textAlign: 'start'}} onClick={() => upvotePost()}>
-              <Heart stroke={'#00FFA3'} fill={props.post.voted ? '#CCFFED' : '#fff'} strokeWidth={1} height={30} />
-              <span style={{flex: 1, paddingLeft: 10, color: '#00FFA3'}}>{convertTrendPoints(trendPoints)}</span>
-            </div>
-          )}
-          <input type={'text'} color='#3fffb9' className='commentInput' value={comment} onChange={(e) => setComment(e.target.value)} placeholder='comment something'
-           style={{marginLeft: (selector.user.userID === props.poster.userID ? 0 : '15px')}}/>
-          <button className='submitButton' style={{backgroundColor: (comment.trim() === '' ? '#d9fff1' : '#3fffb9')}} disabled={comment.trim() === ''} onClick={() => postComment()}>{editingComment === -1 ? 'comment' : 'update' }</button>
+          <div style={{display: (comments.length === 0 ? 'none' : 'flex'), justifyContent: 'center', marginTop: 15}}>
+            <span style={{ fontSize: 13, cursor: 'pointer', userSelect: 'none', marginLeft: 20, color: '#8205ff' }} onClick={() => setShowComments(!showComments)}>hide comments</span>
+          </div>
         </div>
       </div>
     )

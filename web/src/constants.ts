@@ -9,13 +9,14 @@ const API_URLS = {
 const S3_URLS = {
   env: process.env.REACT_APP_S3_URL,
   prod: 'https://fromeroad-prod.s3.ap-southeast-2.amazonaws.com',
-  dev: 'https://fromeroad-dev.s3.ap-southeast-2.amazonaws.com'
+  dev: 'https://fromeroad-dev.s3.ap-southeast-2.amazonaws.com',
+  local: API_URLS.local
 }
 
 
 // reset to env each commit
 const API = API_URLS.env; 
-const S3_BUCKET = S3_URLS.env
+const S3_BUCKET = API
 
 
 const HOUR = 60000 * 60;

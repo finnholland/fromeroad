@@ -7,28 +7,17 @@ var db = require('..');
 const cors = require('cors');
 app.use(cors());
 const multer = require('multer');
-const multerS3 = require('multer-s3');
-const { S3Client } = require('@aws-sdk/client-s3');
 const fs = require('fs')
 
-const s3 = new S3Client({
-  region: "ap-southeast-2",
-  credentials: {
-    accessKeyId: process.env.S3_KEY,
-    secretAccessKey: process.env.S3_SECRET
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const path = `./data/user/${req.params.userID}/images/posts/`
+    fs.mkdirSync(path, { recursive: true })
+    cb(null, path)
   },
-});
-
-const storage = multerS3({
-  s3: s3,
-  bucket: 'fromeroad-' + process.env.ENV,
-  acl: 'public-read',
-  // contentType: 'image/png',
-  metadata: function (req, file, cb) {
-    cb(null, {fieldName: file.fieldname});
-  },
-  key: function (req, file, cb) {
-    cb(null, `user/${req.params.userID}/posts/${file.originalname.replace(' ', '_')}`)
+  filename: function (req, file, cb) {
+    const ext = file.mimetype.split('/')[1]
+    cb(null, file.originalname.replace(' ', '_'))
   }
 })
 
@@ -55,7 +44,7 @@ app.post('/create/:userID', ejwt({ secret: process.env.JWT_SECRET, algorithms: [
       }
     })
   } else {
-    const imgsrc = req.file.location.replace(/^.*?com/, '')
+    const imgsrc = `/data/user/${req.params.userID}/images/posts/${req.file.filename.replace(' ', '_')}`
     db.query('insert into posts (body, postImageUrl, createdAt, userID) values (?, ?, now(), ?)', [body, imgsrc, userID], (err, result, fields) => {
       if (err) {
         console.log('error occurred: '+ err)
@@ -71,7 +60,6 @@ app.post('/create/:userID', ejwt({ secret: process.env.JWT_SECRET, algorithms: [
 
 app.get('/get', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   if (req.auth.userID !== req.query.userID.toString()) {
-    console.log('get')
     return res.sendStatus(401)
   }
   const userID = req.query.userID
@@ -98,7 +86,7 @@ app.get('/comments/get/:postID', ejwt({ secret: process.env.JWT_SECRET, algorith
   const postID = req.params.postID
   db.query(`select pc.*, name, company, profileImageUrl, UNIX_TIMESTAMP(pc.createdAt) AS createdAt from postcomments as pc 
             left join users as u on u.userID = pc.userID where postID = ?
-            order by pc.createdAt asc`, [postID],
+            order by pc.createdAt desc`, [postID],
     (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)

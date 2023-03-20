@@ -7,28 +7,17 @@ var db = require('..');
 const cors = require('cors');
 app.use(cors());
 const multer = require('multer');
-const multerS3 = require('multer-s3');
-const { S3Client } = require('@aws-sdk/client-s3');
 const fs = require('fs')
 
-const s3 = new S3Client({
-  region: "ap-southeast-2",
-  credentials: {
-    accessKeyId: process.env.S3_KEY,
-    secretAccessKey: process.env.S3_SECRET
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const path = `./data/user/${req.params.userID}/images/profile`
+    fs.mkdirSync(path, { recursive: true })
+    cb(null, path)
   },
-});
-
-const storage = multerS3({
-  s3: s3,
-  bucket: 'fromeroad-' + process.env.ENV,
-  acl: 'public-read',
-  // contentType: 'image/png',
-  metadata: function (req, file, cb) {
-    cb(null, {fieldName: file.fieldname});
-  },
-  key: function (req, file, cb) {
-    cb(null, `user/${req.params.userID}/profile/${file.originalname.replace(' ', '_')}`)
+  filename: function (req, file, cb) {
+    const ext = file.mimetype.split('/')[1]
+    cb(null, file.originalname.replace(' ', '_'))
   }
 })
 
@@ -44,7 +33,7 @@ app.post('/profileImage/:userID', ejwt({ secret: process.env.JWT_SECRET, algorit
     console.log("No file upload");
     res.sendStatus(403)
   } else {
-    const imgsrc = req.file.location.replace(/^.*?com/, '')
+    const imgsrc = `/data/user/${req.params.userID}/images/profile/${req.file.filename.replace(' ', '_')}`
     db.query('update users set profileImageUrl = ? where userID = ?', [imgsrc, req.body.userID], (err, result, fields) => {
       if (err) {
         console.log('error occurred: '+ err)
