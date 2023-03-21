@@ -28,6 +28,12 @@
   flex: 1
 }
 
+.commentHeader {
+  display: flex;
+  width: 100%;
+  cursor: pointer;
+}
+
 .comment .text {
   font-size: 16px;
   color: #ffb405;

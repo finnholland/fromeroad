@@ -127,7 +127,10 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
   const commentItems = comments.map((i) => {
     if (comments.findIndex(c => c.commentID === i.commentID) <= 1 || showAll) {
       return (
-        <MobileComment key={i.commentID} comment={i} lastCommentID={comments[comments.length - 1].commentID} getComments={getComments} editComment={editComment} setEditing={setEditing} editing={editing} />
+        <MobileComment key={i.commentID} comment={i} lastCommentID={comments[comments.length - 1].commentID}
+          getComments={getComments} editComment={editComment} setEditing={setEditing} editing={editing}
+          setCurrentRoute={props.setCurrentRoute}
+        />
       )
     } else return (null)
   });
