@@ -80,11 +80,13 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
   return (
     <div className='post'>
       <div id='header' className='postHeader'>
-        <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage'/>
-        <div className='posterDetails'>
-          <span className='headerTextName'>{selector.user.name}</span>
-          <span className='headerTextCompany'>{selector.user.company}</span>
-        </div>
+          <div className='user' style={{width: '100%'}}>
+            <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage' />
+            <div className='headerDetails'>
+              <span className='headerTextName'>{selector.user.name}</span>
+              <span className='headerTextCompany'>{selector.user.company}</span>
+            </div>
+          </div>
 
       </div>
       <textarea className='postBodyInput' maxLength={157} placeholder='hello moon - 🌏' onChange={handleChange} value={postContent.body} rows={2}
