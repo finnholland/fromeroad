@@ -17,7 +17,7 @@ app.use(cors());
 // get user by ID
 app.get('/profile', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   const profileID = req.query.profileID
-  db.query(`select name, email, trendPoints, company, profileImageUrl from users where userID = ?`, [profileID], (err, result, fields) => {
+  db.query(`select name, email, trendPoints, company, project, phone, profileImageUrl from users where userID = ?`, [profileID], (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)
     } else {

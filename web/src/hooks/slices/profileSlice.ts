@@ -24,6 +24,8 @@ export const userProfile = createSlice({
       state.company = action.payload.company
       state.profileImageUrl = action.payload.profileImageUrl
       state.trendPoints = action.payload.trendPoints
+      state.phone = action.payload.phone
+      state.project = action.payload.project
     },
     setProfileInterests: (state, action: PayloadAction<Interest[]>) => {
       state.interests = action.payload

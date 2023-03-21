@@ -1,0 +1,17 @@
+.mobileSuggestions .interestDiv {
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  flex: 1;
+  color: #c182ff;
+  cursor: pointer;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.subPageContainer .nameInput {
+  background-color: #fff;
+}
+.subPageContainer .detailInput {
+  background-color: #fff;
+}

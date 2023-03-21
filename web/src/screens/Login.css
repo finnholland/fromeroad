@@ -25,7 +25,6 @@
   flex-direction: row;
   display: flex;
   padding-bottom: 2rem;
-  overflow: hidden;
 }
 
 .inputDiv {

@@ -131,6 +131,7 @@
 .details {
   padding: 10px;
   padding-top: 0;
+  text-align: left; display: flex; flex-direction: column
 }
 
 .detailInput::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -201,7 +202,7 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 /* width */
-.interestScrollable::-webkit-scrollbar {
+.profile .interestScrollable::-webkit-scrollbar {
   width: 10px;
 }
 
