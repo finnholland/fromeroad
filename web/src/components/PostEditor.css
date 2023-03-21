@@ -9,7 +9,6 @@
 }
 
 .post .postHeader {
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 
