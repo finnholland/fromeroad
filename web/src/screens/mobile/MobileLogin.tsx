@@ -100,10 +100,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
   const onSubmit = (e: any) => {
     setErrorHighlights([]);
     e.preventDefault();
-    if (email !== '' && !email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
-      setErrorMessage({ type: 'global', message: 'invalid email format' })
-      setErrorHighlights(['email'])
-    } else if (name === '' && email === '' && company === '' && password === '' && confirmPassword === '') {
+    if (name === '' && email === '' && company === '' && password === '' && confirmPassword === '') {
       setErrorMessage({ type: 'global', message: 'form must be filled!' });
       setErrorHighlights(['email','password','name','company','confirmPassword']);
     } else if (e.nativeEvent.submitter.name === 'login' || (email !== '' && password !== '' && name === '' && company === '' && confirmPassword === '')) {
