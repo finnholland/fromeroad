@@ -15,6 +15,7 @@ app.get('/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (r
                   where TIMESTAMPDIFF(day, posts.createdAt, NOW()) < 7  group by userID
               ) recentPosts
               on u.userID = recentPosts.userID
+              where tt.trendPoints > 0
               limit 10`, (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)
