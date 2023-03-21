@@ -7,11 +7,16 @@ import { API, EIGHT_MEGABYTES } from '../../constants';
 import { useAppSelector, useAppDispatch } from '../../hooks/Actions';
 import { updateUserDetails } from '../../hooks/api/users';
 import { convertTrendPoints } from '../../hooks/helpers';
+import { setProfile, profileInitialState } from '../../hooks/slices/profileSlice';
 import { setInterests } from '../../hooks/slices/userSlice';
 import '../Profile/Profile.css'
 import './MobileProfile.css'
 
-export const MobileInterests = () => {
+interface Props {
+  setCurrentRoute: any
+}
+
+export const MobileInterests: React.FC<Props> = (props: Props) => {
   const selector = useAppSelector(state => state);
   const dispatch = useAppDispatch();
 
@@ -38,6 +43,24 @@ export const MobileInterests = () => {
         <SvgRemoveButton height={20} stroke='#c182ff' />
       </div>
     )
+  });
+
+  const profileInterests = selector.profile.interests.map((i) => {
+    if (selector.user.interests.some(ui => ui.interestID === i.interestID)) {
+      return (
+        <div key={i.interestID} className='interestDiv'>
+          <span className='interestTitle'>{i.name}</span>
+        </div>
+      )
+    } else {
+      return (
+        <div key={i.interestID} className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestID)}
+            onMouseLeave={() => setAddSvgHover(-1)} onClick={() => addInterestHelper(i)}>
+          <span className='interestTitle'>{i.name}</span>
+          <SvgAddButton height={20} strokeWidth={2} stroke={addSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
+        </div>
+      )
+    }
   });
 
   const interestSearchResults = interestSearch.map((i) => {
@@ -159,82 +182,135 @@ export const MobileInterests = () => {
     updateUserDetails(dispatch, userState, selector.user.userID, setUserState);
     setEditing(false);
   }
-
-  return (
-    <div className='profileMobile subPageContainer'>
-      <div id='profile' style={{ flex: 1 }}>
-        <div>
-          <div style={{ flexDirection: 'row', display: 'flex' }}>
-            <div>
-              <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(${API}${profileImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
-                <div className='profileImageOverlay'>
-                  <span style={{alignItems: 'center', display:'flex', marginBottom: 5, color: '#fff'}}>change</span>
-                </div>
-              </div>
-            </div>
+  if (selector.profile.email !== '') {
+    return (
+      <div className='profileMobile subPageContainer'>
+        <div id='profile' style={{ flex: 1 }}>
+          <div className='titleDiv'>
+            <hr className='line' />
+            <SvgRemoveButton style={{marginLeft: 15}} 
+              onClick={() => { dispatch(setProfile(profileInitialState)); props.setCurrentRoute('feed') }} height={24} strokeWidth={1} stroke={'#8205ff'} />
+          </div>
+          <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
+            <img src={API + selector.profile.profileImageUrl} alt='profile' className='profileImage' />
             <div className='detailsDiv'>
-              <input type={'text'} disabled={!editing} className='name nameInput' style={{ textDecorationLine: (editing) ? 'underline' : 'none' }}
-                onChange={(e) => setUserState((prevState) => ({ ...prevState, name: e.target.value }))} value={userState.name} />
-              <p className='company'>{selector.user.company}</p>
+              <p className='name'>{selector.profile.name}</p>
+              <p className='company'>{selector.profile.company}</p>
             </div>
           </div>
+
           <div className='sectionDiv'>
             <p className='sectionHeader'>details</p>
             <hr className='sectionHeaderLine' style={{ marginTop: 0 }} />
-            {editing ? (<div style={{flexDirection: 'row', display: 'flex', alignItems: 'center'}}>
-              <p className='sectionHeader' style={{color: '#3fffb9', userSelect: 'none'}} onClick={() => finishEditingDetails()}>save</p>
-              <hr className='sectionHeaderLine' style={{ marginTop: 0, width: 10 }} />
-            </div>) : (null)}
-            <p className='sectionHeader' style={{color: (editing ? 'red' : '#FFB405'), userSelect: 'none'}} onClick={() => setEditing(!editing)}>{editing ? 'cancel' : 'edit'}</p>
           </div>
           <div className='details'>
             <div>
-              <p className='detailHeader' style={{marginTop: 0}}>email</p>
-              <p className='detailBody'>{selector.user.email}</p>
+              <p className='detailHeader' style={{ marginTop: 0 }}>email</p>
+              <p className='detailBody'>{selector.profile.email}</p>
             </div>
             <div>
               <p className='detailHeader'>project</p>
-              <input type={'text'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.project} 
-              style={{ textDecorationLine: (editing) ? 'underline' : 'none' }} onChange={(e) => setUserState((prevState) => ({ ...prevState, project: e.target.value }))}/>
+              <input type={'text'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.project}
+                style={{ textDecorationLine: (editing) ? 'underline' : 'none' }} onChange={(e) => setUserState((prevState) => ({ ...prevState, project: e.target.value }))} />
             </div>
             <div>
               <p className='detailHeader'>phone</p>
               <input type={'tel'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.phone}
-              style={{ textDecorationLine: (editing) ? 'underline' : 'none' }} onChange={(e) => setUserState((prevState) => ({ ...prevState, phone: e.target.value }))}
+                style={{ textDecorationLine: (editing) ? 'underline' : 'none' }} onChange={(e) => setUserState((prevState) => ({ ...prevState, phone: e.target.value }))}
               />
             </div>
             <div>
               <p className='detailHeader'>trend points</p>
-              <p className='detailBody'>{convertTrendPoints(selector.user.trendPoints)}</p>
+              <p className='detailBody'>{convertTrendPoints(selector.profile.trendPoints)}</p>
             </div>
           </div>
           <div className='sectionDiv'>
             <p className='sectionHeader'>interests</p>
-            <hr className='sectionHeaderLine' style={{marginTop: 0}}/>          
-          </div>
-          <div className='addInterestDiv'>
-            <input type={'text'} placeholder='add interests' className='interestInput' value={interest} onChange={(e) => changeInterestSearch(e.target.value)}/>
-            <SvgAddButton fill={addSvgHover === -1 ? '#ffb405' : '#DECCF0'} stroke={addSvgHover === -1 ? '#ffb405' : '#c182ff'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
-              onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
+            <hr className='sectionHeaderLine' style={{ marginTop: 0 }} />
           </div>
           <div id='interestList' className='interestScrollable'>
-            {interestSearchResults.length === 0 && interest === '' ? interestItems :
-              (
-                <div className='mobileSuggestions'>
-                  <div style={{ justifyContent: 'space-between', display: 'flex', marginBottom: '1rem' }}>
-                    <span style={{ fontSize: 13 }}>{ interestSearchResults.length === 0 ? 'no results' : 'results:'}</span>
-                    <span style={{ fontSize: 13, color: 'red', cursor: 'pointer' }} onClick={() => changeInterestSearch('')}>clear</span>
-                  </div>
-                  {interestSearchResults}
-                </div>
-              )
-            }
-            {interestLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
+            {interestLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : profileInterests}
           </div>
-          <hr className='subline'/>
         </div>
       </div>
-      <input ref={ref} type={'file'} accept="image/png, image/jpeg" name="file" onChange={uploadImage} hidden/>
-    </div>
-  )
+    )
+  } else {
+    return (
+      <div className='profileMobile subPageContainer'>
+        <div id='profile' style={{ flex: 1 }}>
+          <div>
+            <div style={{ flexDirection: 'row', display: 'flex' }}>
+              <div>
+                <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)} style={{ backgroundImage: `url(${API}${profileImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
+                  <div className='profileImageOverlay'>
+                    <span style={{ alignItems: 'center', display: 'flex', marginBottom: 5, color: '#fff' }}>change</span>
+                  </div>
+                </div>
+              </div>
+              <div className='detailsDiv'>
+                <input type={'text'} disabled={!editing} className='name nameInput' style={{ textDecorationLine: (editing) ? 'underline' : 'none' }}
+                  onChange={(e) => setUserState((prevState) => ({ ...prevState, name: e.target.value }))} value={userState.name} />
+                <p className='company'>{selector.user.company}</p>
+              </div>
+            </div>
+            <div className='sectionDiv'>
+              <p className='sectionHeader'>details</p>
+              <hr className='sectionHeaderLine' style={{ marginTop: 0 }} />
+              {editing ? (<div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center' }}>
+                <p className='sectionHeader' style={{ color: '#3fffb9', userSelect: 'none' }} onClick={() => finishEditingDetails()}>save</p>
+                <hr className='sectionHeaderLine' style={{ marginTop: 0, width: 10 }} />
+              </div>) : (null)}
+              <p className='sectionHeader' style={{ color: (editing ? 'red' : '#FFB405'), userSelect: 'none' }} onClick={() => setEditing(!editing)}>{editing ? 'cancel' : 'edit'}</p>
+            </div>
+            <div className='details'>
+              <div>
+                <p className='detailHeader' style={{ marginTop: 0 }}>email</p>
+                <p className='detailBody'>{selector.user.email}</p>
+              </div>
+              <div>
+                <p className='detailHeader'>project</p>
+                <input type={'text'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.project}
+                  style={{ textDecorationLine: (editing) ? 'underline' : 'none' }} onChange={(e) => setUserState((prevState) => ({ ...prevState, project: e.target.value }))} />
+              </div>
+              <div>
+                <p className='detailHeader'>phone</p>
+                <input type={'tel'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.phone}
+                  style={{ textDecorationLine: (editing) ? 'underline' : 'none' }} onChange={(e) => setUserState((prevState) => ({ ...prevState, phone: e.target.value }))}
+                />
+              </div>
+              <div>
+                <p className='detailHeader'>trend points</p>
+                <p className='detailBody'>{convertTrendPoints(selector.user.trendPoints)}</p>
+              </div>
+            </div>
+            <div className='sectionDiv'>
+              <p className='sectionHeader'>interests</p>
+              <hr className='sectionHeaderLine' style={{ marginTop: 0 }} />
+            </div>
+            <div className='addInterestDiv'>
+              <input type={'text'} placeholder='add interests' className='interestInput' value={interest} onChange={(e) => changeInterestSearch(e.target.value)} />
+              <SvgAddButton fill={addSvgHover === -1 ? '#ffb405' : '#DECCF0'} stroke={addSvgHover === -1 ? '#ffb405' : '#c182ff'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
+                onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
+            </div>
+            <div id='interestList' className='interestScrollable'>
+              {interestSearchResults.length === 0 && interest === '' ? interestItems :
+                (
+                  <div className='mobileSuggestions'>
+                    <div style={{ justifyContent: 'space-between', display: 'flex', marginBottom: '1rem' }}>
+                      <span style={{ fontSize: 13 }}>{interestSearchResults.length === 0 ? 'no results' : 'results:'}</span>
+                      <span style={{ fontSize: 13, color: 'red', cursor: 'pointer' }} onClick={() => changeInterestSearch('')}>clear</span>
+                    </div>
+                    {interestSearchResults}
+                  </div>
+                )
+              }
+              {interestLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
+            </div>
+            <hr className='subline' />
+          </div>
+        </div>
+        <input ref={ref} type={'file'} accept="image/png, image/jpeg" name="file" onChange={uploadImage} hidden />
+      </div>
+    )
+  }
 }

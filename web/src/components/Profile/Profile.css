@@ -7,6 +7,14 @@
   right: 0;
 }
 
+.titleDiv {
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
 .interestScrollable {
   display: flex; 
   flex: 1; 

@@ -166,3 +166,14 @@
 .commentInput::-ms-input-placeholder { /* Microsoft Edge */
   color: #3fffb9;
 }
+
+.commentEditor {
+  display: flex;
+  align-items: center
+}
+
+.commentEditor .postBodyInput {
+   flex: 1;
+   height: 35px;
+   font-size: 1rem;
+}
