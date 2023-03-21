@@ -11,7 +11,7 @@ where userID >= 0;
 call sp_updatetopten;
 
 USE mysql;
-CREATE USER 'nam'@'%' IDENTIFIED BY 'password';
+CREATE USER 'name'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON *.* TO 'name'@'%';
 FLUSH PRIVILEGES;
 

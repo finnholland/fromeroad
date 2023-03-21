@@ -45,7 +45,7 @@ services:
       context: api
       dockerfile: ./Dockerfile
     environment:
-      NODE_ENV: ${ENV}
+      ENV: ${ENV}
     depends_on:
       - mysql_db
     networks:
