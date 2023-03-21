@@ -7,3 +7,23 @@
   font-size: .875rem;
   border: 0;
 }
+
+.post .postHeader {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.posterDetails {
+  flex-direction: column;
+  display: flex;
+  align-items: start;
+  flex: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.post .headerTextName {
+  white-space: nowrap;
+  max-width: 100%;
+}

@@ -81,7 +81,7 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
     <div className='post'>
       <div id='header' className='postHeader'>
         <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage'/>
-        <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
+        <div className='posterDetails'>
           <span className='headerTextName'>{selector.user.name}</span>
           <span className='headerTextCompany'>{selector.user.company}</span>
         </div>
