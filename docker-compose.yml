@@ -1,44 +1,57 @@
 version: '3.3'
 services:
   mysql_db:
-    container_name: ${env}_fromeroad_mysql
+    container_name: ${ENV}_fromeroad_mysql
     image: mysql:8.0.32
     restart: always
     environment:
       MYSQL_DATABASE: 'fromeroad'
       # So you don't have to use root, but you can if you like
-      MYSQL_USER: 'fromeroadadmin'
+      MYSQL_USER: 'admin'
       # You can use whatever password you like
-      MYSQL_PASSWORD: 'Sp3ndin*minEcraft+gBo0ted2-WisTfuL8'
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       # Password for root access
-      MYSQL_ROOT_PASSWORD: 'Sp3ndin*minEcraft+gBo0ted2-WisTfuL8'
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
     networks:
       - docker_default
     ports:
       # <Port exposed> : < MySQL Port running inside container>
-      - ${port}
+      - ${PORT}
     expose:
       # Opens port 3306 on the container
-      - ${exposed_port}
+      - ${EXPOSED_PORT}
       # Where our data will be persisted
     volumes:
-      - ./${env}_db_data:/var/lib/mysql
-      - ./sql/${env}/backups:/docker-entrypoint-initdb.d
+      - ./${ENV}_db_data:/var/lib/mysql
+      - ./sql/${ENV}/backups:/docker-entrypoint-initdb.d
   nodejs_api:
-    container_name: ${env}_fromeroad_api
+    container_name: ${ENV}_fromeroad_api
     image: fromeroadapi
     restart: always
     build:
+      args:
+        - SES_KEY=${SES_KEY}
+        - SES_SECRET=${SES_SECRET}
+        - S3_KEY=${S3_KEY}
+        - S3_SECRET=${S3_SECRET}
+        - RDS_DB=${RDS_DB}
+        - RDS_PASSWORD=${RDS_PASSWORD}
+        - JWT_SECRET=${JWT_SECRET}
+        - ENV=${ENV}
+        - PORT=${PORT}
+        - EXPOSED_PORT=${EXPOSED_PORT}
+        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       context: api
       dockerfile: ./Dockerfile
     environment:
-      NODE_ENV: ${env}
+      ENV: ${ENV}
     depends_on:
       - mysql_db
     networks:
       - docker_default
     volumes:
-      - ./${env}_api_data:/usr/src/app/data
+      - ./${ENV}_api_data:/usr/src/app/data
 # Names our volume
 
 volumes:

@@ -11,7 +11,7 @@ app.get('/:token', (req, res) => {
   const token = req.params.token;
 
   // Verifying the JWT token 
-  jwt.verify(token, process.env.SECRET, function (err, decoded) {
+  jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
       if (err) {
         console.log(err);
         res.send("Email verification failed, possibly the link is invalid or expired");

@@ -5,11 +5,23 @@ const API_URLS = {
   prod: 'https://api.fromeroad.com',
   local: 'http://localhost'
 }
-const API = API_URLS.env; // reset to env each commit
+
+const S3_URLS = {
+  env: process.env.REACT_APP_S3_URL,
+  prod: 'https://fromeroad-prod.s3.ap-southeast-2.amazonaws.com',
+  dev: 'https://fromeroad-dev.s3.ap-southeast-2.amazonaws.com',
+  local: API_URLS.local
+}
+
+
+// reset to env each commit
+const API = API_URLS.env; 
+const S3_BUCKET = API
+
 
 const HOUR = 60000 * 60;
 const EIGHT_MEGABYTES = 1048576 * 8; // 1mb * 8 in bytes
-const DEFAULT_PROFILE_IMAGE = '/data/default/default_profile_image.jpg';
+const DEFAULT_PROFILE_IMAGE = S3_BUCKET+'/default/default_profile_image.jpg';
 const JWT_TOKEN = `Bearer ${localStorage.getItem('token')}`
 
 export {API}
@@ -17,3 +29,4 @@ export {EIGHT_MEGABYTES}
 export {HOUR}
 export {DEFAULT_PROFILE_IMAGE}
 export {JWT_TOKEN}
+export {S3_BUCKET}

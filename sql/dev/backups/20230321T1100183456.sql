@@ -2,7 +2,7 @@
 --
 -- Host: 127.0.0.1    Database: fromeroad
 -- ------------------------------------------------------
--- Server version	8.0.31
+-- Server version	8.0.32
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,32 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `comments`
+--
+
+DROP TABLE IF EXISTS `comments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `comments` (
+  `commentID` int NOT NULL AUTO_INCREMENT,
+  `postID` int NOT NULL,
+  `userID` int NOT NULL,
+  `body` varchar(255) NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`commentID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `comments`
+--
+
+LOCK TABLES `comments` WRITE;
+/*!40000 ALTER TABLE `comments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `comments` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `interests`
@@ -41,33 +67,6 @@ INSERT INTO `interests` VALUES (6,'angular'),(9,'AWS'),(11,'azure'),(16,'blockch
 UNLOCK TABLES;
 
 --
--- Table structure for table `postcomments`
---
-
-DROP TABLE IF EXISTS `postcomments`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `postcomments` (
-  `commentID` int NOT NULL AUTO_INCREMENT,
-  `postID` int NOT NULL,
-  `userID` int NOT NULL,
-  `body` varchar(255) NOT NULL,
-  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`commentID`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `postcomments`
---
-
-LOCK TABLES `postcomments` WRITE;
-/*!40000 ALTER TABLE `postcomments` DISABLE KEYS */;
-INSERT INTO `postcomments` VALUES (16,6,1,'hey billy boy','2023-03-03 15:00:31'),(17,8,1,'ah yes i speak latin','2023-03-03 15:00:57'),(18,8,1,'2nd comment!','2023-03-03 15:01:31'),(19,8,1,'3rd comment','2023-03-03 16:43:12');
-/*!40000 ALTER TABLE `postcomments` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `posts`
 --
 
@@ -83,7 +82,7 @@ CREATE TABLE `posts` (
   `trendPoints` int NOT NULL DEFAULT '0',
   `visible` tinyint NOT NULL DEFAULT '1',
   PRIMARY KEY (`postID`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -92,7 +91,6 @@ CREATE TABLE `posts` (
 
 LOCK TABLES `posts` WRITE;
 /*!40000 ALTER TABLE `posts` DISABLE KEYS */;
-INSERT INTO `posts` VALUES (1,'new post!',NULL,'2023-02-27 19:39:46',1,0,1),(2,'small posts are small',NULL,'2023-03-01 11:10:57',2,0,1),(5,'hi im david bowie',NULL,'2023-03-02 19:39:03',8,0,1),(6,'bil','/data/user/1/images/posts/Billy_Russo.jpg','2023-03-02 20:04:48',1,0,1),(7,'nms','/data/user/1/images/posts/nms.jpg','2023-03-03 14:07:32',1,0,1),(8,'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin purus felis, maximus vitae suscipit sit amet, sollicitudin a nisl. Integer nunc libero, porta',NULL,'2023-03-03 14:16:41',1,0,1);
 /*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -117,7 +115,6 @@ CREATE TABLE `postvotes` (
 
 LOCK TABLES `postvotes` WRITE;
 /*!40000 ALTER TABLE `postvotes` DISABLE KEYS */;
-INSERT INTO `postvotes` VALUES (1,1,0),(2,1,0),(3,1,0),(4,1,0),(5,1,0),(6,1,0),(7,1,0),(8,1,0);
 /*!40000 ALTER TABLE `postvotes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -253,7 +250,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'finn holland','finn.holland@chamonix.com.au',9399,'chamonix','National Pharmacies','0451107339','/data/user/1/images/profile/carmen.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',1),(2,'Alan Turing','alan.turing@chamonix.com.au',6331,'chamonix',NULL,NULL,'/data/user/2/images/profile/mort.png','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(3,'Ada Lovelace','ada.lovelace@chamonix.com.au',3458,'chamonix',NULL,NULL,'/data/user/3/images/profile/bearded.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(4,'Marie Curie','marie.curie@chamonix.com.au',8296,'chamonix',NULL,NULL,'/data/user/4/images/profile/eggman.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(5,'Yuan Shuai','yuan.shuai@chamonix.com.au',1108,'chamonix',NULL,NULL,'/data/user/5/images/profile/dog.PNG','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(6,'Nikola Tesla','nikola.tesla@chamonix.com.au',651,'chamonix',NULL,NULL,'/data/user/6/images/profile/frog.png','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(7,'Du Lei','du.lei@chamonix.com.au',9932,'chamonix',NULL,NULL,'/data/user/7/images/profile/cat.PNG','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(8,'David Bowie','david.bowie@chamonix.com.au',7706,'chamonix',NULL,NULL,'/data/user/8/images/profile/Duk.png','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(9,'Mike Pound','mike.pound@chamonix.com.au',8736,'chamonix',NULL,NULL,'/data/user/9/images/profile/Dutch.png','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(10,'Eduardo Saverin','eduardo.saverin@chamonix.com.au',560,'chamonix',NULL,NULL,'/data/user/10/images/profile/quigon.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(11,'Elon Musk','elon.musk@chamonix.com.au',6595,'chamonix',NULL,NULL,'/data/user/11/images/profile/elon.PNG','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(12,'Mark Zuckerberg','markzuckerberg@facebook.com',1297,'facebook',NULL,NULL,'/data/user/12/images/profile/zucc2.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0);
+INSERT INTO `users` VALUES (1,'finn holland','finn.holland@chamonix.com.au',9399,'chamonix','National Pharmacies','0451107339','/data/user/1/images/profile/aws.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',1),(2,'Alan Turing','alan.turing@chamonix.com.au',6331,'chamonix',NULL,NULL,'/data/default/default_profile_image.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(3,'Ada Lovelace','ada.lovelace@chamonix.com.au',3458,'chamonix',NULL,NULL,'/data/default/default_profile_image.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(4,'Marie Curie','marie.curie@chamonix.com.au',8296,'chamonix',NULL,NULL,'/data/default/default_profile_image.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(5,'Yuan Shuai','yuan.shuai@chamonix.com.au',1108,'chamonix',NULL,NULL,'/data/default/default_profile_image.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(6,'Nikola Tesla','nikola.tesla@chamonix.com.au',651,'chamonix',NULL,NULL,'/data/default/default_profile_image.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(7,'Du Lei','du.lei@chamonix.com.au',9932,'chamonix',NULL,NULL,'/data/default/default_profile_image.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(8,'David Bowie','david.bowie@chamonix.com.au',7706,'chamonix',NULL,NULL,'/data/default/default_profile_image.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(9,'Mike Pound','mike.pound@chamonix.com.au',8736,'chamonix',NULL,NULL,'/data/default/default_profile_image.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(10,'Eduardo Saverin','eduardo.saverin@chamonix.com.au',560,'chamonix',NULL,NULL,'/data/default/default_profile_image.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(11,'Elon Musk','elon.musk@chamonix.com.au',6595,'chamonix',NULL,NULL,'/data/default/default_profile_image.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0),(12,'Mark Zuckerberg','markzuckerberg@facebook.com',1297,'facebook',NULL,NULL,'/data/default/default_profile_image.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6',0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -273,7 +270,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE*/ /*!50117 DEFINER=`admin`@`%`*/ /*!50106 EVENT `updatetopten` ON SCHEDULE EVERY 1 HOUR STARTS '2023-01-11 10:00:00' ON COMPLETION PRESERVE ENABLE DO call sp_updatetopten */ ;;
+/*!50106 CREATE*/ /*!50117 DEFINER=`root`@`localhost`*/ /*!50106 EVENT `updatetopten` ON SCHEDULE EVERY 1 HOUR STARTS '2023-01-11 10:00:00' ON COMPLETION PRESERVE ENABLE DO call sp_updatetopten */ ;;
 /*!50003 SET time_zone             = @saved_time_zone */ ;;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;;
@@ -295,7 +292,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `sp_updatetopten`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_updatetopten`()
 BEGIN
 	-- start of the hour get topten
 	delete from topten where pos >= 0; ALTER TABLE topten AUTO_INCREMENT = 1;
@@ -329,7 +326,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `sp_weeklyreset`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_weeklyreset`()
 BEGIN
 	UPDATE users
 	SET trendPoints = 0
@@ -354,4 +351,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-03 17:24:18
+-- Dump completed on 2023-03-21 11:00:18

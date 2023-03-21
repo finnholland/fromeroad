@@ -75,14 +75,6 @@
   margin-top: 2rem;
 }
 
-.titleDiv {
-  flex-direction: row;
-  display: flex;
-  align-items: center;
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
-}
-
 .sectionTitle {
   font-size: 20px; 
   color: #8205ff;

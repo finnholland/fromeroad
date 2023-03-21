@@ -43,7 +43,7 @@ const Login: React.FC<Props> = (props: Props) => {
     } else {
       Axios.post(`${API}/user/signup`, {
         name: name,
-        email: email,
+        email: email.trim(),
         company: company,
         password: password
       }).then(res => {
@@ -69,7 +69,7 @@ const Login: React.FC<Props> = (props: Props) => {
 
   const login = () => {
     Axios.post(`${API}/user/login`, {
-      email: email,
+      email: email.trim(),
       password: password
     }).then(res => {
       if (res.status !== 200) {
@@ -100,14 +100,11 @@ const Login: React.FC<Props> = (props: Props) => {
 
   const onSubmit = (e: any) => {
     setErrorHighlights([])
-    console.log(e.nativeEvent.submitter.name)
     e.preventDefault()
-    if (email !== '' && !email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
-      setErrorMessage({ type: 'global', message: 'invalid email format' })
-      setErrorHighlights(['email'])
-    } else if (name === '' && email === '' && company === '' && password === '' && confirmPassword === '') {
-      setErrorMessage({type: 'global', message: 'form must be filled!'});
-    } else if (e.nativeEvent.submitter.name === 'login') {
+    if (name === '' && email === '' && company === '' && password === '' && confirmPassword === '') {
+      setErrorMessage({ type: 'global', message: 'form must be filled!' });
+      setErrorHighlights(['email','password','name','company','confirmPassword']);
+    } else if (e.nativeEvent.submitter.name === 'login' || (email !== '' && password !== '' && name === '' && company === '' && confirmPassword === '')) {
       login();
     } else {
       signUp();
