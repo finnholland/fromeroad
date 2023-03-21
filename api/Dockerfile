@@ -7,6 +7,7 @@ ARG S3_SECRET
 ARG RDS_DB
 ARG RDS_PASSWORD
 ARG JWT_SECRET
+ARG MYSQL_PASSWORD
 
 ENV ENV=${ENV}
 ENV SES_KEY=${SES_KEY}
@@ -16,11 +17,14 @@ ENV S3_SECRET=${S3_SECRET}
 ENV RDS_DB=${RDS_DB}
 ENV RDS_PASSWORD=${RDS_PASSWORD}
 ENV JWT_SECRET=${JWT_SECRET}
+ENV MYSQL_PASSWORD=${MYSQL_PASSWORD}
 
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 RUN npm install --production --silent && mv node_modules ../
 COPY . .
 RUN chown -R node /usr/src/app/data
+EXPOSE 80
+EXPOSE 443
 USER node
 CMD ["npm", "start"]

@@ -2,12 +2,12 @@ const mysql = require('mysql2');
 require('dotenv').config();
 
 const db = mysql.createPool({
-    // host: process.env.NODE_ENV+"_fromeroad_mysql",
-    host: "localhost",
+    host: process.env.NODE_ENV+"_fromeroad_mysql",
+    // host: "localhost",
     port: 3306,
     user: "admin",
     // password: process.env.RDS_PASSWORD,
-    password: "Sp3ndin*minEcraft+gBo0ted2-WisTfuL8",
+    password: process.env.MYSQL_PASSWORD,
     database: "fromeroad",
     multipleStatements: true
 });
