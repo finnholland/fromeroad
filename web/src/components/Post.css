@@ -139,7 +139,7 @@
 }
 
 .submitButton {
-  height: 60px;
+  height: 51px;
   border-radius: 10px;
   background-color: #3fffb9;
   border: 0;
@@ -165,4 +165,10 @@
 
 .commentInput::-ms-input-placeholder { /* Microsoft Edge */
   color: #3fffb9;
+}
+
+.post .postBodyInput {
+  flex: 1;
+  font-size: 1rem;
+  height: 35px;
 }

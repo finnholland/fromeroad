@@ -175,7 +175,7 @@ export const Post: React.FC<Props> = (props: Props) => {
 
         {showComments ? (
           <div style={{display: 'flex', alignItems: 'center'}}>
-            <textarea className='postBodyInput' style={{flex: 1}} maxLength={157} placeholder='hello world - 🌒' onKeyDown={commentEnterSubmit} onChange={handleChange} value={comment} rows={2}
+            <textarea className='postBodyInput' style={{flex: 1, height: 35}} maxLength={157} placeholder='hello world - 🌒' onKeyDown={commentEnterSubmit} onChange={handleChange} value={comment} rows={2}
               ref={textAreaRef} />
             <button className='submitButton' style={{ backgroundColor: (comment.trim() === '' ? '#d9fff1' : '#3fffb9') }} disabled={comment.trim() === ''} onClick={() => postComment()}>
               post
@@ -231,7 +231,7 @@ export const Post: React.FC<Props> = (props: Props) => {
 
         {showComments ? (
           <div style={{display: 'flex', alignItems: 'center'}}>
-            <textarea className='postBodyInput' style={{flex: 1, fontSize: '1rem'}} maxLength={157} placeholder='hello world - 🌒' onKeyDown={commentEnterSubmit} onChange={handleChange} value={comment} rows={2}
+            <textarea className='postBodyInput' style={{flex: 1, height: 35, fontSize: '1rem'}} maxLength={157} placeholder='hello world - 🌒' onKeyDown={commentEnterSubmit} onChange={handleChange} value={comment} rows={2}
               ref={textAreaRef} />
             <button className='submitButton' style={{ backgroundColor: (comment.trim() === '' ? '#d9fff1' : '#3fffb9') }} disabled={comment.trim() === ''} onClick={() => postComment()}>
               post
