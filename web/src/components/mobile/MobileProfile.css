@@ -1,0 +1,23 @@
+.mobileSuggestions {
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  flex: 1;
+  color: #c182ff;
+  cursor: pointer;
+}
+
+.subPageContainer .nameInput {
+  background-color: #fff;
+}
+.subPageContainer .detailInput {
+  background-color: #fff;
+}
+
+.subPageContainer .titleDiv {
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  margin-bottom: .5rem;
+  margin-top: 0;
+}

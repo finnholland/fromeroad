@@ -4,14 +4,14 @@ const jwt = require('jsonwebtoken');
 let aws = require("@aws-sdk/client-ses");
 
 function sendEmail(userID, email, name) {
-  const subdomain = process.env.NODE_ENV === 'prod' ? '' : 'dev.'
+  const subdomain = process.env.ENV === 'prod' ? '' : 'dev.'
 
   const ses = new aws.SES({
     apiVersion: "2010-12-01",
     region: "ap-southeast-2",
     credentials: {
-      accessKeyId: 'AKIAVTABPBBLB2V4QLGQ',
-      secretAccessKey: '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'
+      accessKeyId: process.env.SES_KEY,
+      secretAccessKey: process.env.SES_SECRET
     },
   });
 
@@ -23,7 +23,7 @@ function sendEmail(userID, email, name) {
   const token = jwt.sign({
     userID: userID,
     name: name
-  }, process.env.SECRET, { expiresIn: '10m' }
+  }, process.env.JWT_SECRET, { expiresIn: '10m' }
   );
 
   const mailConfigurations = {
@@ -49,7 +49,7 @@ function sendEmail(userID, email, name) {
           </html>`,
      text: `Hi ${name}, thanks for signing up to frome_road. You will need to verify your email before using the site.
 
-     https://192.168.1.100:9443/verify/${token}`,
+     https://${subdomain}api.fromeroad.com/verify/${token}`,
   };
 
   transporter.sendMail(mailConfigurations, function (error, info) {

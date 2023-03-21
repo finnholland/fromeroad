@@ -25,7 +25,7 @@ const upload = multer({
   storage: storage
 })
 
-app.post('/create/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), upload.single('file'), (req, res) => {
+app.post('/create/:userID', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), upload.single('file'), (req, res) => {
   if (req.auth.userID !== req.body.userID.toString()) {
     return res.sendStatus(401)
   }
@@ -58,7 +58,7 @@ app.post('/create/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS2
   }
 });
 
-app.get('/get', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.get('/get', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   if (req.auth.userID !== req.query.userID.toString()) {
     return res.sendStatus(401)
   }
@@ -82,11 +82,11 @@ app.get('/get', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (re
   })
 })
 
-app.get('/comments/get/:postID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.get('/comments/get/:postID', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   const postID = req.params.postID
-  db.query(`select pc.*, name, company, profileImageUrl, UNIX_TIMESTAMP(pc.createdAt) AS createdAt from postcomments as pc 
+  db.query(`select pc.*, name, company, profileImageUrl, UNIX_TIMESTAMP(pc.createdAt) AS createdAt from comments as pc 
             left join users as u on u.userID = pc.userID where postID = ?
-            order by pc.createdAt asc`, [postID],
+            order by pc.createdAt desc`, [postID],
     (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)
@@ -97,12 +97,12 @@ app.get('/comments/get/:postID', ejwt({ secret: process.env.SECRET, algorithms: 
   })
 })
 
-app.delete('/comments/delete/:userID/:commentID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.delete('/comments/delete/:userID/:commentID', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   if (req.auth.userID !== req.params.userID) {
     return res.sendStatus(401)
   }
   const commentID = req.params.commentID
-  db.query(`delete from postcomments where commentID = ?`, [commentID],
+  db.query(`delete from comments where commentID = ?`, [commentID],
     (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)
@@ -113,14 +113,14 @@ app.delete('/comments/delete/:userID/:commentID', ejwt({ secret: process.env.SEC
   })
 })
 
-app.post('/comments/post/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.post('/comments/post/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   if (req.auth.userID !== req.body.userID.toString()) {
     return res.sendStatus(401)
   }
   const postID = req.body.postID
   const userID = req.body.userID
   const body = req.body.body
-  db.query(`insert into postcomments (postID, userID, body) values (?, ?, ?)`, [postID, userID, body],
+  db.query(`insert into comments (postID, userID, body) values (?, ?, ?)`, [postID, userID, body],
     (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)
@@ -131,7 +131,7 @@ app.post('/comments/post/', ejwt({ secret: process.env.SECRET, algorithms: ["HS2
   })
 })
 
-app.post('/comments/update/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.post('/comments/update/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   if (req.auth.userID !== req.body.userID.toString()) {
     return res.sendStatus(401)
   }
@@ -139,7 +139,7 @@ app.post('/comments/update/', ejwt({ secret: process.env.SECRET, algorithms: ["H
   const userID = req.body.userID
   const commentID = req.body.commentID
   const body = req.body.body
-  db.query(`update postcomments set body = ? where commentID = ? and postID = ? and userID = ?`, [body, commentID, postID, userID],
+  db.query(`update comments set body = ? where commentID = ? and postID = ? and userID = ?`, [body, commentID, postID, userID],
     (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)
@@ -150,7 +150,7 @@ app.post('/comments/update/', ejwt({ secret: process.env.SECRET, algorithms: ["H
   })
 })
 
-app.post('/upvote/:postID/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.post('/upvote/:postID/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   if (req.auth.userID !== req.body.userID.toString() || req.body.userID === req.body.posterID) {
     return res.sendStatus(401)
   }

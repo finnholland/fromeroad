@@ -15,9 +15,9 @@ app.use(cors());
 // ROUTES RELATING TO USER ~~~~ api/user/{route}
 
 // get user by ID
-app.get('/profile', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.get('/profile', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   const profileID = req.query.profileID
-  db.query(`select name, email, trendPoints, company, profileImageUrl from users where userID = ?`, [profileID], (err, result, fields) => {
+  db.query(`select name, email, trendPoints, company, project, phone, profileImageUrl from users where userID = ?`, [profileID], (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)
     } else {
@@ -25,7 +25,7 @@ app.get('/profile', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }),
     }
   })
 })
-app.get('/profile/interests/:profileID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.get('/profile/interests/:profileID', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   const profileID = req.params.profileID
   db.query(`SELECT interests.interestID, name FROM interests JOIN userinterests ON interests.interestID = userinterests.interestID WHERE userinterests.userID = ?`, [profileID], (err, result, fields) => {
     if (err) {
@@ -37,7 +37,7 @@ app.get('/profile/interests/:profileID', ejwt({ secret: process.env.SECRET, algo
 })
 
 // get user from token
-app.get('/autoLogin', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.get('/autoLogin', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   db.query('select * from users where userID = ?', [req.auth.userID], (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)
@@ -67,7 +67,7 @@ app.post('/login', async (req, res) => {
           return err
         }
         if (valid) {
-          const encryptToken = jwt.sign({ userID: result[0].userID.toString() }, process.env.SECRET, { algorithm: 'HS256' });
+          const encryptToken = jwt.sign({ userID: result[0].userID.toString() }, process.env.JWT_SECRET, { algorithm: 'HS256' });
           return res.status(200).send({
             message: "logged in successfully",
             user: result[0],
@@ -119,7 +119,7 @@ app.post('/signup', async (req, res, next) => {
           const encryptToken = jwt.sign({
             userID: userID.toString(),
             name: user.name
-          }, process.env.SECRET, { algorithm: 'HS256' });
+          }, process.env.JWT_SECRET, { algorithm: 'HS256' });
           sendEmail(userID, user.email, user.name)
           return res.status(201).send({
               user: user,
@@ -132,7 +132,7 @@ app.post('/signup', async (req, res, next) => {
   })
 })
 
-app.post('/updateuser', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res, next) => { 
+app.post('/updateuser', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res, next) => { 
   if (req.auth.userID !== req.body.userID.toString()) {
     return res.sendStatus(401)
   }
@@ -152,7 +152,7 @@ app.post('/updateuser', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"]
 })
 
 // add interest
-app.post('/interests/addInterests/', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.post('/interests/addInterests/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   if (req.auth.userID !== req.body.userID.toString()) {
     return res.sendStatus(401)
   }
@@ -192,7 +192,7 @@ app.post('/interests/addInterests/', ejwt({ secret: process.env.SECRET, algorith
 })
 
 // get interest
-app.get('/interests/getInterests/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.get('/interests/getInterests/:userID', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   if (req.auth.userID !== req.params.userID) {
     return res.sendStatus(401)
   }
@@ -207,7 +207,7 @@ app.get('/interests/getInterests/:userID', ejwt({ secret: process.env.SECRET, al
 })
 
 // remove interest
-app.delete('/interests/removeInterests', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.delete('/interests/removeInterests', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   if (req.auth.userID !== req.body.userID.toString()) {
     return res.sendStatus(401)
   }
@@ -223,7 +223,7 @@ app.delete('/interests/removeInterests', ejwt({ secret: process.env.SECRET, algo
 })
 
 // get interest
-app.get('/interests/searchInterests/:searchQuery', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.get('/interests/searchInterests/:searchQuery', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   const searchQuery = req.params.searchQuery;
   
   db.query('SELECT * FROM interests WHERE name like ? order by LOCATE(?, name)', ['%'+searchQuery+'%', searchQuery], (err, result, fields) => {

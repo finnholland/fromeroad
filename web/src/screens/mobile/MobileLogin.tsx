@@ -13,6 +13,12 @@ interface Props {
   setVerified: any
 }
 
+const unknownErrors = ['Some moof milker put a compressor on the ignition line.',
+  'I got a bad feeling about this.',
+  'Laugh it up, Fuzzball',
+  'INCONCEIVABLE!!!',
+  'These aren\'t the droids you\'re looking for.', 'What a piece of junk.']
+
 const MobileLogin: React.FC<Props> = (props: Props) => {
   
   const [name, setName] = useState('')
@@ -20,59 +26,87 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
   const [company, setCompany] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [errorMessage, setErrorMessage] = useState({ type: '', message: '' })
+  const [errorHighlights, setErrorHighlights] = useState<string[]>([])
   
   const dispatch = useAppDispatch()
 
   const signUp = async () => {
-    if (!email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
-      alert('invalid email format')
+    if (name === '' || company === '' || confirmPassword === '') {
+      setErrorMessage({ type: 'signup', message: 'signup needs purple starred fields' });
+      setErrorHighlights(['email', 'password', 'confirmPassword', 'name', 'company'])
     }
-    else if (password !== confirmPassword || password === '' || !password) {
-      alert('passowrds no matchy');
-    }
-    else if (name === '' || email === '' || company === '') {
-      alert('form must be filled!');
+    else if (password !== confirmPassword) {
+      setErrorMessage({ type: 'signup', message: 'passwords do not match' });
+      setErrorHighlights(['password', 'confirmPassword'])
     } else {
       Axios.post(`${API}/user/signup`, {
         name: name,
-        email: email,
+        email: email.trim(),
         company: company,
         password: password
       }).then(res => {
+        localStorage.setItem('token', res.data.token)
         dispatch(setUser(res.data.user));
         props.setAuthenticated(true)
       }).catch(err => {
-        alert(err)
+        if (err.response?.data?.message) {
+          setErrorMessage({ type: 'signup', message: err.response?.data?.message })
+          if(err.response.status === 409) {
+            setErrorHighlights(['email'])
+          }
+        } else {
+          if (err.code === 'ERR_NETWORK') {
+            setErrorMessage({type: 'global', message: 'network error, please try again later'})
+          } else {
+            setErrorMessage({type: 'global', message: unknownErrors[Math.floor(Math.random()*unknownErrors.length)]})
+          }
+        }
       })
     }
   }
 
   const login = () => {
-    if (!email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
-      alert('invalid email format')
-    } else {
-      Axios.post(`${API}/user/login`, {
-        email: email,
-        password: password
-      }).then(res => {
-        if (res.status !== 200) {
-          alert('incorrect email or password')
-        } else {
-          localStorage.setItem('token', res.data.token)
+    Axios.post(`${API}/user/login`, {
+      email: email.trim(),
+      password: password
+    }).then(res => {
+      if (res.status !== 200) {
+        alert(res.data)
+        console.log(res.data)
+      } else {
+        localStorage.setItem('token', res.data.token)
+      }
+      dispatch(setUser(res.data.user));
+      props.setVerified(res.data.user.verified)
+      props.setAuthenticated(true)
+    }).catch(err => {
+      console.log(err.response?.data?.message)
+      if (err.response?.data?.message) {
+        setErrorMessage({ type: 'login', message: err.response?.data?.message })
+        if (err.response.status === 401) {
+          setErrorHighlights(['email', 'password'])
         }
-        dispatch(setUser(res.data.user));
-        props.setVerified(res.data.user.verified)
-        props.setAuthenticated(true)
-      })
-    }
+      } else {
+        if (err.code === 'ERR_NETWORK') {
+          setErrorMessage({type: 'global', message: 'network error, please try again later'})
+        } else {
+          setErrorMessage({type: 'global', message: unknownErrors[Math.floor(Math.random()*unknownErrors.length)]})
+        }
+      }
+    })
   }
 
   const onSubmit = (e: any) => {
+    setErrorHighlights([]);
     e.preventDefault();
-    if (confirmPassword !== '') {
-      signUp()
+    if (name === '' && email === '' && company === '' && password === '' && confirmPassword === '') {
+      setErrorMessage({ type: 'global', message: 'form must be filled!' });
+      setErrorHighlights(['email','password','name','company','confirmPassword']);
+    } else if (e.nativeEvent.submitter.name === 'login' || (email !== '' && password !== '' && name === '' && company === '' && confirmPassword === '')) {
+      login();
     } else {
-      login()
+      signUp();
     }
   }
 
@@ -84,48 +118,49 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
         <span style={{color: '#5900B2', fontSize: 18, marginTop: 15}}>Welcome to frome_road</span>
       </div>
       <div className='body'>
-        <form style={{width: '100%'}} onSubmit={onSubmit}>
-            <div className='inputDiv'>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>name</span> <span style={{color: '#8205ff'}}>*</span>
-              </div>
-              <input className='input' value={name} onChange={(e) => setName(e.target.value)}/>
+        <form style={{ width: '100%' }} onSubmit={onSubmit}>
+          <div className='inputDiv'>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <span className='label'>email</span> <span style={{ color: '#8205ff' }}>*</span><span style={{ color: '#FFB405' }}>*</span>
             </div>
-            <div className='inputDiv'>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>email</span> <span style={{color: '#8205ff'}}>*</span><span style={{color: '#FFB405'}}>*</span>
-              </div>
-              <input type={'email'} className='input' value={email} onChange={(e) => setEmail(e.target.value)}/>
+            <input type={'text'} className='input' style={{borderColor: (errorHighlights.includes('email') ? '#ff0000' : '#8205ff')}} value={email} onChange={(e) => setEmail(e.target.value)}/>
+          </div>
+          <div className='inputDiv'>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <span className='label'>password</span> <span style={{color: '#8205ff'}}>*</span><span style={{color: '#FFB405'}}>*</span>
             </div>
-            <div className='inputDiv'>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>company</span> <span style={{color: '#8205ff'}}>*</span> 
-              </div>
-              <input className='input' value={company} onChange={(e) => setCompany(e.target.value)} />
+              <input type={'password'} className='input' style={{borderColor: (errorHighlights.includes('password') ? '#ff0000' : '#8205ff')}} value={password} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+          <div className='inputDiv'>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <span className='label'>name</span> <span style={{color: '#8205ff'}}>*</span>
             </div>
-            <div className='inputDiv'>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>password</span> <span style={{color: '#8205ff'}}>*</span><span style={{color: '#FFB405'}}>*</span>
-              </div>
-                <input type={'password'} className='input' value={password} onChange={(e) => setPassword(e.target.value)} />
+            <input className='input' style={{borderColor: (errorHighlights.includes('name') ? '#ff0000' : '#8205ff')}} value={name} onChange={(e) => setName(e.target.value)}/>
+          </div>
+          <div className='inputDiv'>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <span className='label'>company</span> <span style={{color: '#8205ff'}}>*</span> 
             </div>
-            <div className='inputDiv'>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>confirm password</span> <span style={{color: '#8205ff'}}>*</span>
-              </div>
-              <input type={'password'} className='input' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+            <input className='input' style={{borderColor: (errorHighlights.includes('company') ? '#ff0000' : '#8205ff')}} value={company} onChange={(e) => setCompany(e.target.value)} />
+          </div>
+          <div className='inputDiv'>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <span className='label'>confirm password</span> <span style={{color: '#8205ff'}}>*</span>
             </div>
-            <div className='buttonDiv'>
-              <button className='button'>
-                sign up
-                <span style={{color: '#8205ff', marginLeft: 5}}>*</span><span style={{color: '#FFB405'}}>*</span>
-              </button>
-              <button type='submit' className='button'>
-                login
-                <span style={{color: '#FFB405', marginLeft: 5}}>*</span>
-              </button>
-            </div>
-          </form>
+            <input type={'password'} className='input' style={{borderColor: (errorHighlights.includes('confirmPassword') ? '#ff0000' : '#8205ff')}} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+          </div>
+          <p style={{fontSize: 14, width: '100%', textAlign: 'center', color: 'red'}}>{errorMessage.message}</p>
+          <div className='buttonDiv'>
+            <button type='submit' className='button' name='signup'>
+              sign up
+              <span style={{color: '#8205ff', marginLeft: 5}}>*</span><span style={{color: '#FFB405'}}>*</span>
+            </button>
+            <button type='submit' className='button' name='login'>
+              login
+              <span style={{color: '#FFB405', marginLeft: 5}}>*</span>
+            </button>
+          </div>
+        </form>
         <div>
           <div className='aboutDiv'>
             <div className='titleDiv'>

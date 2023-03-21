@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import React, { useRef, useState } from 'react'
 import SvgUploadImage from '../assets/svg/SvgUploadImage';
-import { API, DEFAULT_PROFILE_IMAGE, EIGHT_MEGABYTES } from '../constants';
+import { API, DEFAULT_PROFILE_IMAGE, EIGHT_MEGABYTES, S3_BUCKET } from '../constants';
 import { useAppSelector } from '../hooks/Actions';
 import { useAutosizeTextArea } from '../hooks/helpers';
 import './PostEditor.css'
@@ -53,7 +53,6 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
       } else {
         const fd = new FormData();
         fd.append('file', e.target.files[0])
-        fd.append('userID', selector.user.userID.toString())
         setPostContent(prevState => ({ ...prevState, formData: fd }));
         setPostImage(URL.createObjectURL(e.target.files[0]))
       }
@@ -81,8 +80,8 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
   return (
     <div className='post'>
       <div id='header' className='postHeader'>
-        <img src={API + imageUrl} onError={onError} alt='profile' className='profileImage'/>
-        <div style={{ flexDirection: 'column', display: 'flex', alignItems: 'start', flex: 1 }}>
+        <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage'/>
+        <div className='posterDetails'>
           <span className='headerTextName'>{selector.user.name}</span>
           <span className='headerTextCompany'>{selector.user.company}</span>
         </div>

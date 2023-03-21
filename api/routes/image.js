@@ -25,7 +25,7 @@ const upload = multer({
   storage: storage
 })
 
-app.post('/profileImage/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), upload.single('file'), (req, res) => {
+app.post('/profileImage/:userID', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), upload.single('file'), (req, res) => {
   if (req.auth.userID !== req.body.userID || req.body.userID !== req.params.userID) {
     return res.sendStatus(401)
   }
@@ -44,7 +44,7 @@ app.post('/profileImage/:userID', ejwt({ secret: process.env.SECRET, algorithms:
   }
 });
 
-app.get('/profileImage/:userID', ejwt({ secret: process.env.SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.get('/profileImage/:userID', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   if (req.auth.userID !== req.params.userID) {
     return res.sendStatus(401)
   }

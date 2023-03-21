@@ -36,6 +36,9 @@ export const useAutosizeTextArea = (textAreaRef: HTMLTextAreaElement | null,  va
 };
 
 export const convertTrendPoints = (points: number): string => {
+  if (points < 0 || points === undefined) {
+    return '0'
+  }
   let pointString = points.toString()
   if (points > 1000) {
     pointString = `${Math.round(points/1000 * 10) / 10}k`

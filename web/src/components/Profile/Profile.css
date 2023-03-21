@@ -7,21 +7,28 @@
   right: 0;
 }
 
+.titleDiv {
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
 .interestScrollable {
-  overflow: hidden;
   display: flex; 
   flex: 1; 
   padding: 10px;
   padding-top: 0;
   flex-direction: column;
   max-height: 32vh;
-  scrollbar-color: #ddd #eee;
+  scrollbar-color: #fff #fff;
   scrollbar-width: thin;
-  padding-right: 10px;
+  overflow-y: auto;
 }
 
 .interestScrollable:hover {
-  overflow-y: auto;
+  scrollbar-color: #ddd #eee;
 }
 
 .profile .profileImage {
@@ -102,6 +109,8 @@
   color: #8205ff;
   margin: 0;
   margin-bottom: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .detailsDiv {
@@ -111,6 +120,9 @@
   flex: 1;
   flex-direction: column;
   justify-content: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .detailInput {
@@ -127,6 +139,7 @@
 .details {
   padding: 10px;
   padding-top: 0;
+  text-align: left; display: flex; flex-direction: column
 }
 
 .detailInput::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -190,6 +203,7 @@
   border: none; 
   border-bottom: 2px solid #c182ff;
   color: white;
+  min-width: 2rem;
 }
 
 
@@ -197,18 +211,26 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 /* width */
-.interestScrollable::-webkit-scrollbar {
+.profile .interestScrollable::-webkit-scrollbar {
   width: 10px;
 }
 
 /* Track */
-.interestScrollable::-webkit-scrollbar-track {
+.interestScrollable:hover::-webkit-scrollbar-track {
   border-radius: 10px;
   background: #ddd;
+}
+.interestScrollable::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: #fff;
 }
  
 /* Handle */
 .interestScrollable::-webkit-scrollbar-thumb {
+  background: #fff; 
+  border-radius: 10px;
+}
+.interestScrollable:hover::-webkit-scrollbar-thumb {
   background: #eee; 
   border-radius: 10px;
 }
