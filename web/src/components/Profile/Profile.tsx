@@ -258,8 +258,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
           <hr className='line' />
           <LogoutIcon onClick={() => props.logout()} height={24} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} stroke={'#8205ff'} strokeWidth={2} />
         </div>
-        <div>
-          {/* edit here */}
+        <div className='profileDesktop'>
           <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
             <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)}
               style={{ backgroundImage: `url(${S3_BUCKET}${profileImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>

@@ -7,6 +7,14 @@
   right: 0;
 }
 
+.titleDiv {
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
 .interestScrollable {
   display: flex; 
   flex: 1; 
@@ -131,6 +139,7 @@
 .details {
   padding: 10px;
   padding-top: 0;
+  text-align: left; display: flex; flex-direction: column
 }
 
 .detailInput::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -201,7 +210,7 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 /* width */
-.interestScrollable::-webkit-scrollbar {
+.profile .interestScrollable::-webkit-scrollbar {
   width: 10px;
 }
 

@@ -167,8 +167,13 @@
   color: #3fffb9;
 }
 
-.post .postBodyInput {
-  flex: 1;
-  font-size: 1rem;
-  height: 35px;
+.commentEditor {
+  display: flex;
+  align-items: center
+}
+
+.commentEditor .postBodyInput {
+   flex: 1;
+   height: 35px;
+   font-size: 1rem;
 }

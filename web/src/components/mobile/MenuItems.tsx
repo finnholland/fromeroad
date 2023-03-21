@@ -39,9 +39,9 @@ export const MenuItems: React.FC<Props> = (props: Props) => {
           <p className={props.currentRoute === 'activity' ? 'activeTitle' : 'sectionTitle'}>activity</p>
           <hr className={props.currentRoute === 'activity' ? 'activeLine' : 'line'} />
         </div>
-        <div className='titleDiv' style={{marginBottom: '3rem'}} onClick={() => changeRoute('interests')}>
-          <p className={props.currentRoute === 'interests' ? 'activeTitle' : 'sectionTitle'}>profile</p>
-          <hr className={props.currentRoute === 'interests' ? 'activeLine' : 'line'}/>
+        <div className='titleDiv' style={{marginBottom: '3rem'}} onClick={() => changeRoute('profile')}>
+          <p className={props.currentRoute === 'profile' ? 'activeTitle' : 'sectionTitle'}>profile</p>
+          <hr className={props.currentRoute === 'profile' ? 'activeLine' : 'line'}/>
         </div>
         <div className='titleDiv' style={{marginBottom: '3rem'}} onClick={() => changeRoute('trends')}>
           <p className={props.currentRoute === 'trends' ? 'activeTitle' : 'sectionTitle'}>trends</p>

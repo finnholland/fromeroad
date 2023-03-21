@@ -22,7 +22,7 @@ export const RecentPoster: React.FC<Props> = ({ user }) => {
   return (
     <div className='recentPoster'>
       <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage' />
-      <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1 }}>
+      <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1, width: 0, textOverflow: 'ellipsis', overflow: 'hidden' }}>
         <span className='text'>{user.name}</span>
         <div className='subHeader subtext'>
           <span>{user.company}</span> <span>{user.postCount} {user.postCount === 1 ? 'post' : 'posts'}</span> 
