@@ -26,7 +26,7 @@ services:
       - ./sql/${ENV}/backups:/docker-entrypoint-initdb.d
   nodejs_api:
     container_name: ${ENV}_fromeroad_api
-    image: fromeroadapi
+    image: ${ENV}_fromeroad_api_image
     restart: always
     build:
       args:
