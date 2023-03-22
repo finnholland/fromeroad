@@ -169,7 +169,7 @@ const Home: React.FC<Props> = (props: Props) => {
               {trendingUserItem}
             </div>
           </div>
-          <div style={{width: '25vw'}}/>
+          <div style={{width: '20vw'}}/>
           <div id='feed' className='feed'>
             <div className='titleDiv'>
               <p className='sectionTitle'>feed</p>
