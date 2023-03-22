@@ -144,7 +144,6 @@ const Home: React.FC<Props> = (props: Props) => {
   const getTrendingUsers = () => {
     setTrendingUsers([])
     setTrendingLoading(true)
-    console.log('Logs every hour ' + moment().format('HH:mm:ss'));
     Axios.get(`${API}/trends/`, {
       headers:
         { Authorization: `Bearer ${localStorage.getItem('token')}` }

@@ -28,7 +28,6 @@ export const ErrorPage: React.FC<Props> = (props: Props) => {
       setStatusMessage({ code: 200, message: res.data.message })
     }).catch(err => {
       setStatusMessage({ code: 500, message: 'failed to resend email, please try again later' })
-      console.log(err)
     })
   }
 
