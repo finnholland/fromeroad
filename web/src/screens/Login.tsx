@@ -77,7 +77,6 @@ const Login: React.FC<Props> = (props: Props) => {
       props.setVerified(res.data.user.verified)
       props.setAuthenticated(true)
     }).catch(err => {
-      console.log(err.response?.data?.message)
       if (err.response?.data?.message) {
         setErrorMessage({ type: 'login', message: err.response?.data?.message })
         if (err.response.status === 401) {

@@ -12,7 +12,6 @@ export const updateUserDetails = (dispatch: any, userState: User, userID: number
     phone: userState.phone,
   }
 
-  console.log(params)
   Axios.post(`${API}/user/updateuser`, params, {
     headers: {
       Authorization: JWT_TOKEN
@@ -38,7 +37,6 @@ export const getUserProfile = (dispatch: any, userID: number, profileID: number)
     }
   }).then(res => {
     dispatch(setProfile(res.data[0]))
-    console.log(res.data[0])
   }).catch(err => {
     return err
   });
@@ -49,7 +47,6 @@ export const getUserProfile = (dispatch: any, userID: number, profileID: number)
   }
 }).then(res => {
     dispatch(setProfileInterests(res.data))
-    console.log(res.data)
   }).catch(err => {
     return err
   });
