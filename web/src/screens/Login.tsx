@@ -108,7 +108,7 @@ const Login: React.FC<Props> = (props: Props) => {
 
   return (
     <div className="app">
-      <Header type='desktop' showGithub={false} />
+      <Header showGithub={false} />
       <div className='welcome'>
         <Allen height={150} className='purple'/>
         <span style={{color: '#5900B2', fontSize: 18, marginTop: 15}}>Welcome to frome_road</span>

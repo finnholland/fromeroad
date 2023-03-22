@@ -156,7 +156,7 @@ const Home: React.FC<Props> = (props: Props) => {
 
   return (
     <div className="app">
-      <Header type='desktop' showGithub={true} />
+      <Header showGithub={true} />
       <div className='home'>
         <div id='body' style={{ flexDirection: 'row', display: 'flex', paddingTop: 20, justifyContent: 'space-between'}}>
           <div id='topten' className='topTenList'>

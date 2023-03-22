@@ -4,6 +4,7 @@ import { useAppSelector } from "./hooks/Actions";
 import Axios from "axios";
 import { API } from "./constants";
 import { Header } from "./components/Header";
+import { isMobile } from "react-device-detect";
 
 interface Props {
   errorMessage: string,
@@ -34,8 +35,8 @@ export const ErrorPage: React.FC<Props> = (props: Props) => {
   if (props.errorMessage && props.errorMessage !== '' && props.errorMessage.toLowerCase().includes('verify')) {
     return (
       <div className="app">
-        <Header type='desktop' showGithub={false} />
-        <div id="error-page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Header showGithub={false} error={true} />
+        <div id="error-page" style={{padding: 20, paddingTop: isMobile ? 100 : 0, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div>
             <h1>Oops!</h1>
             <p>{props.errorMessage}</p>

@@ -107,7 +107,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
 
   return (
     <div className="mobile">
-      <Header type='mobile' showGithub={false} />
+      <Header showGithub={false} />
       <div style={{justifyContent: 'space-between', flexDirection: 'column', display: 'flex', marginTop: '2rem', marginBottom: '2rem'}}>
         <Allen height={100} className='purple'/>
         <span style={{color: '#5900B2', fontSize: 18, marginTop: 15}}>Welcome to frome_road</span>
