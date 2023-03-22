@@ -127,7 +127,7 @@ const MobileHome: React.FC<Props> = (props: Props) => {
   return (
     <div className="mobile" id='mobile'>
       <div style={{position: 'fixed', display: 'flex', width: '100%'}}>
-        <Header type={'mobile'} showGithub={true} />
+        <Header showGithub={true} />
       </div>
       
       <Menu pageWrapId='home' outerContainerId='mobile'

@@ -6,9 +6,10 @@ import { useAppDispatch, useAppSelector } from '../hooks/Actions';
 import '../App.css'
 import { setIsOpen } from '../hooks/slices/sidebarSlice';
 import GitHub from '../assets/svg/github';
+import { isMobile } from 'react-device-detect';
 interface Props {
-  type: string
   showGithub: boolean
+  error?: boolean
 }
 
 
@@ -16,7 +17,7 @@ export const Header: React.FC<Props> = (props: Props) => {
   const dispatch = useAppDispatch();
   const selector = useAppSelector(state => state);
 
-  if (props.type === 'desktop') {
+  if (!isMobile) {
     return (
       <div>
         <header className="header">
@@ -44,19 +45,28 @@ export const Header: React.FC<Props> = (props: Props) => {
 
     )
   } else {
-    return (
-      <header className="header">
-        <button className='hamburger' onClick={() => dispatch(setIsOpen(!selector.sidebar.isOpen))} >
-          <Hamburger height={20} width={20} stroke='#fff' strokeWidth={1.5}/>
-        </button>
-        <div className='titleContainer'>
+    if (props.error) {
+      return (
+        <header className="header">
           <p className='title'>frome_road</p>
-        </div>
-        <div className='hamburger'>
-          <Hamburger height={20} width={20} strokeWidth={1.5}/>
-        </div>
-      </header>
-    )
+        </header>
+      )
+    } else {
+      return (
+        <header className="header">
+          <button className='hamburger' onClick={() => dispatch(setIsOpen(!selector.sidebar.isOpen))} >
+            <Hamburger height={20} width={20} stroke='#fff' strokeWidth={1.5}/>
+          </button>
+          <div className='titleContainer'>
+            <p className='title'>frome_road</p>
+          </div>
+          <div className='hamburger'>
+            <Hamburger height={20} width={20} strokeWidth={1.5}/>
+          </div>
+        </header>
+      )
+    }
+
   }
 
 }
