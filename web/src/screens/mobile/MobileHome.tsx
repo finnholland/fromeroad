@@ -26,6 +26,7 @@ const MobileHome: React.FC<Props> = (props: Props) => {
 
   const [creatingPost, setCreatingPost] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [initalLoad, setInitialLoad] = useState(true);
 
   const [posts, setPosts] = useState<PostItem[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -39,6 +40,7 @@ const MobileHome: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     getPosts();
+    window.scrollTo(0, 0);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -52,38 +54,40 @@ const MobileHome: React.FC<Props> = (props: Props) => {
       },
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => {
-      updatePosts(res.data, 'top')
+      updatePosts(res.data)
+      setInitialLoad(false)
       setLoading(false)
     })
   }
 
   const refreshPosts = (sign: string) => {
-    setLoading(true);
-    const direction = sign === '>' ? 'top' : 'bottom';
-    let postID = 0
-    if (sign === '>' && posts.length > 0) {
-      postID = posts[0].post.postID
-    } else if (sign === '<' && posts.length > 0) {
-      postID = posts[posts.length - 1].post.postID
-    }
-
-    Axios.get(`${API}/post/get`, {
-      params: {
-        userID: selector.user.userID,
-        sign: sign,
-        condition: postID
-      },
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).then(res => {
-      updatePosts(res.data, direction)
-      setLoading(false)
-      if (res.data.length <= 0) {
-        setHasMore(false)
+    if (!initalLoad) {
+      setLoading(true);
+      let postID = 0
+      if (sign === '>' && posts.length > 0) {
+        postID = posts[0].post.postID
+      } else if (sign === '<' && posts.length > 0) {
+        postID = posts[posts.length - 1].post.postID
       }
-    })
+
+      Axios.get(`${API}/post/get`, {
+        params: {
+          userID: selector.user.userID,
+          sign: sign,
+          condition: postID
+        },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      }).then(res => {
+        updatePosts(res.data)
+        setLoading(false)
+        if (res.data.length <= 0) {
+          setHasMore(false)
+        }
+      })
+    }
   }
 
-  const updatePosts = (data: any, direction: string) => {
+  const updatePosts = (data: any) => {
     const tempPosts: PostItem[] = []
     data.forEach((p: any) => {
       if (posts.findIndex(fp => fp.post.postID === p.postID) === -1) {
@@ -107,13 +111,7 @@ const MobileHome: React.FC<Props> = (props: Props) => {
         tempPosts.push(post);
       }
     });
-    if (direction === 'top') {
-      setPosts([...tempPosts, ...posts])
-    }
-    else {
-      setPosts([...posts, ...tempPosts])
-    }
-    
+    setPosts([...posts, ...tempPosts])
   }
 
 
@@ -161,6 +159,7 @@ const MobileHome: React.FC<Props> = (props: Props) => {
                   dataLength={posts.length}
                   next={() => refreshPosts('<')}
                   hasMore={hasMore}
+                  endMessage={<p style={{textAlign: 'center', color: '#820bff '}}>no more posts :(</p>}
                   loader={loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
                   style={{overflow: 'visible'}}>
                   {postItem}

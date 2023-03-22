@@ -92,3 +92,19 @@
   resize: none;
   height: 44px;
 }
+
+.errorMessage {
+  font-size: 14px;
+  color: red;
+  width: 100%;
+  text-align: center;
+  margin-top: 1rem
+}
+
+.successMessage {
+  font-size: 14px;
+  color: green;
+  width: 100%;
+  text-align: center;
+  margin-top: 1rem
+}

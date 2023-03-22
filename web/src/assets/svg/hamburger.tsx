@@ -7,7 +7,7 @@ export const Hamburger: React.FC<React.SVGProps<SVGSVGElement>> = (props: any) =
     xmlSpace="preserve"
     {...props}
   >
-    <path d="M1 1H17M17 8H1M17 15H1" stroke-linecap="round" style={{fill: props.fill, stroke: props.stroke, strokeWidth: props.strokeWidth,}} />
+    <path d="M1 1H17M17 8H1M17 15H1" strokeLinecap="round" style={{fill: props.fill, stroke: props.stroke, strokeWidth: props.strokeWidth,}} />
 
   </svg>
 );

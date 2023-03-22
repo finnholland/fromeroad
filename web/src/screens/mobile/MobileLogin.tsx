@@ -71,12 +71,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
       email: email.trim(),
       password: password
     }).then(res => {
-      if (res.status !== 200) {
-        alert(res.data)
-        console.log(res.data)
-      } else {
-        localStorage.setItem('token', res.data.token)
-      }
+      localStorage.setItem('token', res.data.token)
       dispatch(setUser(res.data.user));
       props.setVerified(res.data.user.verified)
       props.setAuthenticated(true)
@@ -123,7 +118,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
             <div style={{ display: 'flex', flexDirection: 'row' }}>
               <span className='label'>email</span> <span style={{ color: '#8205ff' }}>*</span><span style={{ color: '#FFB405' }}>*</span>
             </div>
-            <input type={'text'} className='input' style={{borderColor: (errorHighlights.includes('email') ? '#ff0000' : '#8205ff')}} value={email} onChange={(e) => setEmail(e.target.value)}/>
+            <input type={'email'} className='input' style={{borderColor: (errorHighlights.includes('email') ? '#ff0000' : '#8205ff')}} value={email} onChange={(e) => setEmail(e.target.value)}/>
           </div>
           <div className='inputDiv'>
             <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -151,11 +146,11 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
           </div>
           <p style={{fontSize: 14, width: '100%', textAlign: 'center', color: 'red'}}>{errorMessage.message}</p>
           <div className='buttonDiv'>
-            <button type='submit' className='button' name='signup'>
+            <button type='submit' className='button' name='signup' style={{marginRight: 10}}>
               sign up
               <span style={{color: '#8205ff', marginLeft: 5}}>*</span><span style={{color: '#FFB405'}}>*</span>
             </button>
-            <button type='submit' className='button' name='login'>
+            <button type='submit' className='button' name='login' style={{marginLeft: 10}}>
               login
               <span style={{color: '#FFB405', marginLeft: 5}}>*</span>
             </button>

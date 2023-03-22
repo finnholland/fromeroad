@@ -190,6 +190,7 @@ const Home: React.FC<Props> = (props: Props) => {
               dataLength={posts.length}
               next={() => refreshPosts('<')}
               hasMore={hasMore}
+              endMessage={<p style={{textAlign: 'center', color: '#820bff '}}>no more posts :(</p>}
               loader={loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
               style={{overflow: 'visible'}}>
               {postItem}

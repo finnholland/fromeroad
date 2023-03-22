@@ -21,9 +21,9 @@ function sendEmail(userID, email, name) {
   });
 
   const token = jwt.sign({
-    userID: userID,
-    name: name
-  }, process.env.JWT_SECRET, { expiresIn: '10m' }
+      userID: userID,
+      name: name
+    }, process.env.JWT_SECRET, { expiresIn: '10m' }
   );
 
   const mailConfigurations = {
@@ -53,10 +53,11 @@ function sendEmail(userID, email, name) {
   };
 
   transporter.sendMail(mailConfigurations, function (error, info) {
-    if (error) throw Error(error);
+    if (error) return { message: error, code: 500 };
     console.log('Email Sent Successfully');
     console.log(info);
   });
+  return { message: 'success!', code: 200 }
 }
 
 module.exports = sendEmail

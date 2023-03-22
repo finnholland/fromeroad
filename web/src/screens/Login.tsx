@@ -72,12 +72,7 @@ const Login: React.FC<Props> = (props: Props) => {
       email: email.trim(),
       password: password
     }).then(res => {
-      if (res.status !== 200) {
-        alert(res.data)
-        console.log(res.data)
-      } else {
-        localStorage.setItem('token', res.data.token)
-      }
+      localStorage.setItem('token', res.data.token)
       dispatch(setUser(res.data.user));
       props.setVerified(res.data.user.verified)
       props.setAuthenticated(true)
