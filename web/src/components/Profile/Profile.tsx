@@ -30,6 +30,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
   const [addSvgHover, setAddSvgHover] = useState(-2);
   const [interestLoading, setInterestLoading] = useState(true);
   const [showScroll, setShowScroll] = useState(false);
+  const [addInterestError, setAddInterestError] = useState('')
 
   const [closeProfileView, setCloseProfileView] = useState(false);
   
@@ -116,17 +117,13 @@ export const Profile: React.FC<Props> = (props: Props) => {
       headers:
         { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
-      if (res.status !== 409) {
-        getInterests(selector.user.userID)
-        setRemoveSvgHover(-1);
-        let removalArray: Interest[] = interestSearch
-        removalArray = removalArray.filter(i => i.name !== interest)
-        setInterestSearch(removalArray)
-      } else {
-        alert('interest already exists')
-      }
+      getInterests(selector.user.userID)
+      setRemoveSvgHover(-1);
+      let removalArray: Interest[] = interestSearch
+      removalArray = removalArray.filter(i => i.name !== interest)
+      setInterestSearch(removalArray)
     }).catch(err => {
-      alert('error: ' + err.response.status + ' - interest already added')
+      setAddInterestError('interest already added')
     })
   }
 
@@ -160,6 +157,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
         setInterestSearch(tempArr)
       })
     }
+    setAddInterestError('')
   }
 
   const ref = useRef<HTMLInputElement>(null);
@@ -325,6 +323,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
               )
             }
             {interestLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
+            <span className='errorMessage'>{addInterestError}</span>
           </div>
       </div>
       <input ref={ref} type={'file'} accept="image/png, image/jpeg" name="file" onChange={uploadImage} hidden/>

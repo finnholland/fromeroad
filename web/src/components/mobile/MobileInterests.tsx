@@ -35,6 +35,7 @@ export const MobileInterests: React.FC<Props> = (props: Props) => {
   const [interestSearch, setInterestSearch] = useState<Interest[]>([]);
   const [addSvgHover, setAddSvgHover] = useState(-2);
   const [interestLoading, setInterestLoading] = useState(true);
+  const [addInterestError, setAddInterestError] = useState('')
 
   const interestItems = interestList.map((i) => {
     return (
@@ -86,13 +87,10 @@ export const MobileInterests: React.FC<Props> = (props: Props) => {
       headers:
         { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
-      if (res.status !== 409) {
         getInterests(selector.user.userID)
-      } else {
-        alert('interest already exists')
-      }
+        setAddInterestError('interest already exists')
     }).catch(err => {
-      alert('error: ' + err.response.status + ' - interest already added')
+      setAddInterestError('interest already added')
     })
   }
 
@@ -126,6 +124,7 @@ export const MobileInterests: React.FC<Props> = (props: Props) => {
         setInterestSearch(tempArr)
       })
     }
+    setAddInterestError('')
   }
 
   const addInterestHelper = (interest: Interest) => {
@@ -306,6 +305,7 @@ export const MobileInterests: React.FC<Props> = (props: Props) => {
               }
               {interestLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
             </div>
+            <span className='errorMessage'>{addInterestError}</span>
             <hr className='subline' />
           </div>
         </div>

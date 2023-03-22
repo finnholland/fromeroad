@@ -34,7 +34,8 @@ app.put('/reverify', (req, res) => {
   const userID = req.body.userID
   const name = req.body.name
   const email = req.body.email
-  sendEmail(userID, email, name)
+  const statusCode = sendEmail(userID, email, name)
+  return res.send(statusCode)
 })
 
 module.exports = app
