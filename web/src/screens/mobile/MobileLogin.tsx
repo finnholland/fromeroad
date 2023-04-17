@@ -175,7 +175,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
               <hr className='line' />
             </div>
               <p className='aboutText' style={{marginTop: 0}}>I originally created this project as a way to get into full-stack devving.</p>
-              <p className='aboutText'>The project stack is ReactJS, NodeJS, and MySQL, hosted on AWS Amplify with a dedicated server.</p>
+              <p className='aboutText'>The project stack is ReactJS, NodeJS, and MySQL, hosted on AWS Amplify with a dedicated server on Docker.</p>
               <p className='aboutText'>I honestly have no idea if it'll work or how many bugs there'll be so please don't hesitate to report them.</p>
               <p className='aboutText'>You can access the repo once logged in and verified :)</p>
           </div>
