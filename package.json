@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "web": "cd web && npm start",
     "api": "cd api && npm start",
-    "docker": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command docker rm $(docker stop $(docker ps -aqf \"name=^.*_fromeroad_api$\")) && docker rmi fromeroadapi && docker compose --env-file .dev.env up -d && docker compose --env-file .env up -d",
+    "dockerprod": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command docker rm $(docker stop $(docker ps -aqf \"name=^prod_fromeroad_api$\")) && docker rmi prod_fromeroad_api_image && docker compose --env-file .env up -d",
+    "dockerdev": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command docker rm $(docker stop $(docker ps -aqf \"name=^dev_fromeroad_api$\")) && docker rmi dev_fromeroad_api_image && docker compose --env-file .dev.env up -d",
+    "dockerall": "npm run dockerprod && npm run dockerdev",
     "crypto": "node -e console.log(require('crypto').randomBytes(64).toString('hex'))"
   }
 }

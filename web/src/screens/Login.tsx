@@ -72,17 +72,11 @@ const Login: React.FC<Props> = (props: Props) => {
       email: email.trim(),
       password: password
     }).then(res => {
-      if (res.status !== 200) {
-        alert(res.data)
-        console.log(res.data)
-      } else {
-        localStorage.setItem('token', res.data.token)
-      }
+      localStorage.setItem('token', res.data.token)
       dispatch(setUser(res.data.user));
       props.setVerified(res.data.user.verified)
       props.setAuthenticated(true)
     }).catch(err => {
-      console.log(err.response?.data?.message)
       if (err.response?.data?.message) {
         setErrorMessage({ type: 'login', message: err.response?.data?.message })
         if (err.response.status === 401) {
@@ -100,8 +94,11 @@ const Login: React.FC<Props> = (props: Props) => {
 
   const onSubmit = (e: any) => {
     setErrorHighlights([])
-    e.preventDefault()
-    if (name === '' && email === '' && company === '' && password === '' && confirmPassword === '') {
+    e.preventDefault();
+    if (email !== '' && !email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
+      setErrorMessage({ type: 'global', message: 'invalid email format' });
+      setErrorHighlights(['email']);
+    } else if (name === '' && email === '' && company === '' && password === '' && confirmPassword === '') {
       setErrorMessage({ type: 'global', message: 'form must be filled!' });
       setErrorHighlights(['email','password','name','company','confirmPassword']);
     } else if (e.nativeEvent.submitter.name === 'login' || (email !== '' && password !== '' && name === '' && company === '' && confirmPassword === '')) {
@@ -113,7 +110,7 @@ const Login: React.FC<Props> = (props: Props) => {
 
   return (
     <div className="app">
-      <Header type='desktop' showGithub={false} />
+      <Header showGithub={false} />
       <div className='welcome'>
         <Allen height={150} className='purple'/>
         <span style={{color: '#5900B2', fontSize: 18, marginTop: 15}}>Welcome to frome_road</span>

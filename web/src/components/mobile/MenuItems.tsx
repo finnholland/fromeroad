@@ -53,7 +53,7 @@ export const MenuItems: React.FC<Props> = (props: Props) => {
         <div className='menuButton logoutButton' onClick={() => props.logout()}>
           logout
         </div>
-        <div className='menuButton deleteButton' onClick={() => alert('sdsa')}>
+        <div className='menuButton deleteButton' onClick={() => alert('not implemented yet :(')}>
           delete account
         </div>
       </div>

@@ -16,7 +16,7 @@ services:
       - docker_default
     ports:
       # <Port exposed> : < MySQL Port running inside container>
-      - ${PORT}
+      - ${MYSQL_PORT}
     expose:
       # Opens port 3306 on the container
       - ${EXPOSED_PORT}
@@ -26,7 +26,7 @@ services:
       - ./sql/${ENV}/backups:/docker-entrypoint-initdb.d
   nodejs_api:
     container_name: ${ENV}_fromeroad_api
-    image: fromeroadapi
+    image: ${ENV}_fromeroad_api_image
     restart: always
     build:
       args:
@@ -38,9 +38,6 @@ services:
         - RDS_PASSWORD=${RDS_PASSWORD}
         - JWT_SECRET=${JWT_SECRET}
         - ENV=${ENV}
-        - PORT=${PORT}
-        - EXPOSED_PORT=${EXPOSED_PORT}
-        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       context: api
       dockerfile: ./Dockerfile

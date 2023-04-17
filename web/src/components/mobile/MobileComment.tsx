@@ -49,7 +49,7 @@ export const MobileComment: React.FC<Props> = (props: Props) => {
             <div style={{flexDirection: 'row', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
               <span className='text' style={{ color: '#ffb405', width: '65%' }}>{props.comment.name}</span>
               <div style={{justifyContent: 'end', display: 'flex', fontSize: 11}}>
-                <span style={{ marginRight: 15, cursor: 'pointer', userSelect: 'none' }} onClick={() => editHandler()}>{props.editing === props.comment.commentID ? 'cancel' : 'edit'}</span>
+                <span style={{ marginRight: 15, cursor: 'pointer', userSelect: 'none', marginLeft: 10 }} onClick={() => editHandler()}>{props.editing === props.comment.commentID ? 'cancel' : 'edit'}</span>
                 <span style={{cursor: 'pointer', userSelect: 'none'}} onClick={() => deleteComment()}>delete</span>
               </div>
             </div>

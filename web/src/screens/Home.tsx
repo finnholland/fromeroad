@@ -144,7 +144,6 @@ const Home: React.FC<Props> = (props: Props) => {
   const getTrendingUsers = () => {
     setTrendingUsers([])
     setTrendingLoading(true)
-    console.log('Logs every hour ' + moment().format('HH:mm:ss'));
     Axios.get(`${API}/trends/`, {
       headers:
         { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -156,7 +155,7 @@ const Home: React.FC<Props> = (props: Props) => {
 
   return (
     <div className="app">
-      <Header type='desktop' showGithub={true} />
+      <Header showGithub={true} />
       <div className='home'>
         <div id='body' style={{ flexDirection: 'row', display: 'flex', paddingTop: 20, justifyContent: 'space-between'}}>
           <div id='topten' className='topTenList'>
@@ -169,7 +168,7 @@ const Home: React.FC<Props> = (props: Props) => {
               {trendingUserItem}
             </div>
           </div>
-          <div style={{width: '25vw'}}/>
+          <div style={{width: '20vw'}}/>
           <div id='feed' className='feed'>
             <div className='titleDiv'>
               <p className='sectionTitle'>feed</p>
@@ -190,6 +189,7 @@ const Home: React.FC<Props> = (props: Props) => {
               dataLength={posts.length}
               next={() => refreshPosts('<')}
               hasMore={hasMore}
+              endMessage={<p style={{textAlign: 'center', color: '#820bff '}}>no more posts :(</p>}
               loader={loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
               style={{overflow: 'visible'}}>
               {postItem}

@@ -108,24 +108,23 @@ app.post('/signup', async (req, res, next) => {
         db.query('insert into users (name, email, company, password) values (?,?,?,?)', [user.name, user.email, user.company, user.password], (err, result, fields) => {
           if (err) throw (err)
           userID = result.insertId
-        })
-      
-        db.query('SELECT * FROM users WHERE email = ?', user.email, (err,result) => {
-          if (err) {
-            return res.status(400).send({
+          db.query('SELECT * FROM users WHERE email = ?', user.email, (err,result) => {
+            if (err) {
+              return res.status(400).send({
                 msg:err
-            })
-          }
-          const encryptToken = jwt.sign({
-            userID: userID.toString(),
-            name: user.name
-          }, process.env.JWT_SECRET, { algorithm: 'HS256' });
-          sendEmail(userID, user.email, user.name)
-          return res.status(201).send({
-              user: user,
-              msg: "successfully registered",
-              token: encryptToken
-            })
+              })
+            }
+            const encryptToken = jwt.sign({
+              userID: userID.toString(),
+              name: user.name
+            }, process.env.JWT_SECRET, { algorithm: 'HS256' });
+            sendEmail(userID, user.email, user.name)
+            return res.status(201).send({
+                user: user,
+                msg: "successfully registered",
+                token: encryptToken
+              })
+          })
         })
       })
     }
