@@ -242,7 +242,7 @@ const Login: React.FC<Props> = (props: Props) => {
           <div style={{ flex: 1 }}>
             <div className='inputDiv'>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>email</span> <span style={{ color: '#8205ff' }}>*</span>
+                <span className='label'>email *</span>
               </div>
               <input type={'text'} className='input' style={{ borderColor: (errorHighlights.includes('email') ? '#ff0000' : '#8205ff') }} value={email} onChange={(e) => updateEmail(e.target.value)} />
             </div>
@@ -250,16 +250,16 @@ const Login: React.FC<Props> = (props: Props) => {
               <span className='label'>code *</span>
               <span className='label' onClick={() => findUserByEmail()} style={{ cursor: 'pointer' }}>get code</span>
             </div>
-            <ReactCodeInput type='number' fields={6} name={'resetCode'} inputMode='numeric' inputStyle={codeStyle} className='rci' onChange={(e) => updateCode(e, email)} />
+            <ReactCodeInput type='number' fields={6} name={'resetCode'} inputMode='numeric' style={{alignItems: 'center'}} autoFocus={false} inputStyle={codeStyle} className='rci' onChange={(e) => updateCode(e, email)} />
             <div className='inputDiv'>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>password</span> <span style={{ color: '#8205ff' }}>*</span>
+                <span className='label'>password *</span>
               </div>
               <input type={'password'} className='input' style={{ borderColor: (errorHighlights.includes('password') ? '#ff0000' : '#8205ff') }} value={password} onChange={(e) => onPasswordChange(e.target.value, confirmPassword)} />
             </div>
             <div className='inputDiv'>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>confirm password</span> <span style={{ color: '#8205ff' }}>*</span>
+                <span className='label'>confirm password *</span>
               </div>
               <input type={'password'} className='input' style={{ borderColor: (errorHighlights.includes('confirmPassword') ? '#ff0000' : '#8205ff') }} value={confirmPassword} onChange={(e) => onPasswordChange(password, e.target.value)} />
             </div>
@@ -336,7 +336,7 @@ const Login: React.FC<Props> = (props: Props) => {
               <div className='inputDiv'>
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                   <span>
-                    <span className='label'>password</span> <span style={{ color: '#8205ff' }}>*</span><span style={{ color: '#FFB405' }}>*</span>
+                    <span className='label'>password</span><span style={{ color: '#8205ff' }}>*</span><span style={{ color: '#FFB405' }}>*</span>
                   </span>
                   <span className='label' style={{ cursor: 'pointer' }} onClick={() => toggleLoginOrReset()}>forgot</span>
                 </div>
@@ -344,19 +344,19 @@ const Login: React.FC<Props> = (props: Props) => {
               </div>
               <div className='inputDiv'>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <span className='label'>name</span> <span style={{ color: '#8205ff' }}>*</span>
+                  <span className='label'>name</span><span style={{ color: '#8205ff' }}>*</span>
                 </div>
                 <input className='input' style={{ borderColor: (errorHighlights.includes('name') ? '#ff0000' : '#8205ff') }} value={name} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className='inputDiv'>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <span className='label'>company</span> <span style={{ color: '#8205ff' }}>*</span>
+                  <span className='label'>company</span><span style={{ color: '#8205ff' }}>*</span>
                 </div>
                 <input className='input' style={{ borderColor: (errorHighlights.includes('company') ? '#ff0000' : '#8205ff') }} value={company} onChange={(e) => setCompany(e.target.value)} />
               </div>
               <div className='inputDiv'>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <span className='label'>confirm password</span> <span style={{ color: '#8205ff' }}>*</span>
+                  <span className='label'>confirm password</span><span style={{ color: '#8205ff' }}>*</span>
                 </div>
                 <input type={'password'} className='input' style={{ borderColor: (errorHighlights.includes('confirmPassword') ? '#ff0000' : '#8205ff') }} value={confirmPassword} onChange={(e) => onPasswordChange(password, e.target.value)} />
               </div>
