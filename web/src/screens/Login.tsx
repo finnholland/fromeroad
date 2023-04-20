@@ -8,7 +8,7 @@ import { setUser } from '../hooks/slices/userSlice';
 import { Header } from '../components/Header';
 import Allen from '../assets/logo/Allen';
 import ReactCodeInput from 'react-code-input';
-import { changePassword, findUserByEmail, updateCode, validateCode, validatePasswords } from '../hooks/login/loginFunctions';
+import { changePassword, findUserByEmail, updateCode, validatePasswords } from '../hooks/login/loginFunctions';
 import AboutDiv from '../components/Login/About';
 
 interface Props {

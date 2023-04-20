@@ -127,7 +127,7 @@ interface ValidatePasswordsProps {
   setErrorHighlights: Dispatch<SetStateAction<string[]>>
 }
 export const validatePasswords = (props: ValidatePasswordsProps) => {
-  if (props.password !== props.confirmPassword && props.confirmPassword != '') {
+  if (props.password !== props.confirmPassword && props.confirmPassword !== '') {
     props.setErrorMessage({ type: 'signup', message: 'passwords do not match' });
     props.setErrorHighlights(['password', 'confirmPassword']);
     return false
