@@ -8,6 +8,8 @@ import { setUser } from '../hooks/slices/userSlice';
 import { Header } from '../components/Header';
 import Allen from '../assets/logo/Allen';
 import ReactCodeInput from 'react-code-input';
+import { changePassword, findUserByEmail, updateCode, validateCode, validatePasswords } from '../hooks/login/loginFunctions';
+import AboutDiv from '../components/Login/About';
 
 interface Props {
   setAuthenticated: any
@@ -33,6 +35,7 @@ const Login: React.FC<Props> = (props: Props) => {
   const [resetting, setResetting] = useState(false);
   const [validCode, setValidCode] = useState("#8205ff");
   const [showSuccessPage, setShowSuccessPage] = useState(false);
+  const [codeSentMessage, setCodeSentMessage] = useState('get code');
   
   
   const dispatch = useAppDispatch()
@@ -41,7 +44,7 @@ const Login: React.FC<Props> = (props: Props) => {
     if (name === '' || company === '' || confirmPassword === '') {
       setErrorMessage({ type: 'signup', message: 'signup needs purple starred fields' });
       setErrorHighlights(['email', 'password', 'confirmPassword', 'name', 'company'])
-    } else if (validatePasswords(password, confirmPassword)) {
+    } else if (validatePasswords({ password, confirmPassword, setErrorHighlights, setErrorMessage })) {
       Axios.post(`${API}/user/signup`, {
         name: name,
         email: email.trim(),
@@ -112,98 +115,13 @@ const Login: React.FC<Props> = (props: Props) => {
   const onPasswordChange = (password: string, confirmPassword: string) => {
     setPassword(password);
     setConfirmPassword(confirmPassword);
-    validatePasswords(password, confirmPassword);
-  }
-
-  const validatePasswords = (password: string, confirmPassword: string) => {
-    if (password !== confirmPassword && confirmPassword != '') {
-      setErrorMessage({ type: 'signup', message: 'passwords do not match' });
-      setErrorHighlights(['password', 'confirmPassword']);
-      return false
-    } else {
-      setErrorMessage({ type: '', message: '' });
-      setErrorHighlights([]);
-      return true
-    }
-  }
-
-  const findUserByEmail = () => {
-    if (email === '') {
-      setErrorMessage({ type: 'global', message: 'enter a valid email to generate a code' });
-      setErrorHighlights(['email']);
-    } else {
-      Axios.get(`${API}/user/email`, {
-        params: {
-          email: email.trim()
-        }
-      }).then(res => {
-        generateCode();
-      }).catch(err => {
-        setErrorMessage({ type: 'global', message: err.response?.data?.message });
-        setErrorHighlights(['email']);
-      })
-    }
-  }
-
-  const generateCode = () => {
-    Axios.post(`${API}/user/generateresetcode`, {
-      email: email.trim()
-    }).catch(err => {
-      alert(err)
-    })
-  }
-
-  const validateCode = (code: string, email: string) => {
-    Axios.get(`${API}/user/validateresetcode`, {
-      params: {
-        email: email.trim(),
-        resetCode: code
-      },
-    }).then(res => {
-      setValidCode("#0f0");
-      setErrorMessage({ type: '', message: '' });
-      setErrorHighlights([]);
-    }).catch(err => {
-      if (err.response.status === 409) {
-        setValidCode("#f00");
-        setErrorMessage({ type: 'global', message: 'code is invalid or expired' });
-      }
-    })
-  }
-
-  const updateCode = (value: string, email: string) => {
-    setCode(value);
-    if (email === '' && value.length === 6) {
-      setErrorMessage({ type: 'global', message: 'code checking requires an email' });
-      setErrorHighlights(['email']);
-      setValidCode("#f00");
-    } else if (value.length === 6 && email.includes('@')) {
-      validateCode(value, email);
-    } else {
-      setErrorMessage({ type: '', message: '' });
-      setErrorHighlights([]);
-      setValidCode("#8205ff")
-    }
+    validatePasswords({ password, confirmPassword, setErrorHighlights, setErrorMessage });
   }
 
   const updateEmail = (value: string) => {
-    setEmail(value);
-    updateCode(code, value);
-  }
-
-  const changePassword = () => {
-    const canResetPassword = password === confirmPassword && email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/) && validCode === "#0f0"
-    if (canResetPassword) {
-      Axios.post(`${API}/user/resetpassword`, {
-        password: password,
-        email: email
-      }).then(res => {
-        setShowSuccessPage(true);
-        toggleLoginOrReset();
-      }).catch(err => {
-
-      })
-    }
+    setEmail(value.trim().toLowerCase());
+    updateCode({ code, email, setCode, setValidCode, setErrorMessage,  setErrorHighlights });
+    setCodeSentMessage('get code');
   }
 
   const toggleLoginOrReset = () => {
@@ -248,9 +166,9 @@ const Login: React.FC<Props> = (props: Props) => {
             </div>
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
               <span className='label'>code *</span>
-              <span className='label' onClick={() => findUserByEmail()} style={{ cursor: 'pointer' }}>get code</span>
+              <span className='label' onClick={() => findUserByEmail({ email, codeSentMessage, setCodeSentMessage, setErrorMessage, setErrorHighlights })} style={{ cursor: 'pointer' }}>{codeSentMessage}</span>
             </div>
-            <ReactCodeInput type='number' fields={6} name={'resetCode'} inputMode='numeric' style={{alignItems: 'center'}} autoFocus={false} inputStyle={codeStyle} className='rci' onChange={(e) => updateCode(e, email)} />
+            <ReactCodeInput type='number' fields={6} name={'resetCode'} inputMode='numeric' style={{alignItems: 'center'}} autoFocus={false} inputStyle={codeStyle} className='rci' onChange={(e) => updateCode({ code: e, email, setCode, setValidCode, setErrorMessage,  setErrorHighlights })} />
             <div className='inputDiv'>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <span className='label'>password *</span>
@@ -270,9 +188,8 @@ const Login: React.FC<Props> = (props: Props) => {
                 </button>
               </div>
               <div style={{ width: '50%' }}>
-                <button className='button' onClick={() => changePassword()}>
-                  change password
-                  <span style={{ color: '#FFB405', marginLeft: 5 }}>*</span>
+                <button className='button' onClick={() => changePassword({password, confirmPassword, email, validCode, setShowSuccessPage, toggleLoginOrReset})}>
+                  change password *
                 </button>
                 <p style={{ fontSize: 13, textAlign: 'end', color: 'red', marginTop: 5 }}>{errorMessage.type === 'signup' ? errorMessage.message : ''}</p>
               </div>
@@ -329,14 +246,14 @@ const Login: React.FC<Props> = (props: Props) => {
 
               <div className='inputDiv'>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <span className='label'>email</span> <span style={{ color: '#8205ff' }}>*</span><span style={{ color: '#FFB405' }}>*</span>
+                  <span className='label'>email *</span><span style={{ color: '#FFB405' }}>*</span>
                 </div>
                 <input type={'text'} className='input' style={{ borderColor: (errorHighlights.includes('email') ? '#ff0000' : '#8205ff') }} value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
               <div className='inputDiv'>
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                   <span>
-                    <span className='label'>password</span><span style={{ color: '#8205ff' }}>*</span><span style={{ color: '#FFB405' }}>*</span>
+                    <span className='label'>password *</span><span style={{ color: '#FFB405' }}>*</span>
                   </span>
                   <span className='label' style={{ cursor: 'pointer' }} onClick={() => toggleLoginOrReset()}>forgot</span>
                 </div>
@@ -344,19 +261,19 @@ const Login: React.FC<Props> = (props: Props) => {
               </div>
               <div className='inputDiv'>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <span className='label'>name</span><span style={{ color: '#8205ff' }}>*</span>
+                  <span className='label'>name *</span>
                 </div>
                 <input className='input' style={{ borderColor: (errorHighlights.includes('name') ? '#ff0000' : '#8205ff') }} value={name} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className='inputDiv'>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <span className='label'>company</span><span style={{ color: '#8205ff' }}>*</span>
+                  <span className='label'>company *</span>
                 </div>
                 <input className='input' style={{ borderColor: (errorHighlights.includes('company') ? '#ff0000' : '#8205ff') }} value={company} onChange={(e) => setCompany(e.target.value)} />
               </div>
               <div className='inputDiv'>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <span className='label'>confirm password</span><span style={{ color: '#8205ff' }}>*</span>
+                  <span className='label'>confirm password *</span>
                 </div>
                 <input type={'password'} className='input' style={{ borderColor: (errorHighlights.includes('confirmPassword') ? '#ff0000' : '#8205ff') }} value={confirmPassword} onChange={(e) => onPasswordChange(password, e.target.value)} />
               </div>
@@ -387,31 +304,5 @@ const Login: React.FC<Props> = (props: Props) => {
     )
   }
 }
-
-const AboutDiv = () => {
-  return (
-    <div className='aboutDiv'>
-      <div className='titleDiv'>
-        <p className='sectionTitle'>about</p>
-        <hr className='line' />
-      </div>
-      <span className='aboutText'>
-        frome_road is a space for all employees of Lot Fourteen to discuss anything from tech to the weather.
-      </span>
-      <span className='aboutText'>
-        The site is currently only available to employees of Chamonix.
-      </span>
-      <div className='titleDiv' style={{marginTop: '2rem'}}>
-        <p className='sectionTitle'>creator</p>
-        <hr className='line' />
-      </div>
-      <p className='aboutText' style={{marginTop: 0}}>I originally created this project as a way to get into full-stack devving.</p>
-      <p className='aboutText'>The project stack is ReactJS, NodeJS, and MySQL, hosted on AWS Amplify with a dedicated server on Docker.</p>
-      <p className='aboutText'>I honestly have no idea if it'll work or how many bugs there'll be so please don't hesitate to report them.</p>
-      <p className='aboutText'>You can access the repo once logged in and verified :)</p>
-    </div>
-  );
-}
-
 
 export default Login
