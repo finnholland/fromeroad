@@ -7,6 +7,9 @@ import { useAppDispatch } from '../hooks/Actions';
 import { setUser } from '../hooks/slices/userSlice';
 import { Header } from '../components/Header';
 import Allen from '../assets/logo/Allen';
+import ReactCodeInput from 'react-code-input';
+import { changePassword, findUserByEmail, updateCode, validatePasswords } from '../hooks/login/loginFunctions';
+import AboutDiv from '../components/Login/About';
 
 interface Props {
   setAuthenticated: any
@@ -26,8 +29,13 @@ const Login: React.FC<Props> = (props: Props) => {
   const [company, setCompany] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [code, setCode] = useState('')
   const [errorMessage, setErrorMessage] = useState({ type: '', message: '' })
   const [errorHighlights, setErrorHighlights] = useState<string[]>([])
+  const [resetting, setResetting] = useState(false);
+  const [validCode, setValidCode] = useState("#8205ff");
+  const [showSuccessPage, setShowSuccessPage] = useState(false);
+  const [codeSentMessage, setCodeSentMessage] = useState('get code');
   
   
   const dispatch = useAppDispatch()
@@ -36,11 +44,7 @@ const Login: React.FC<Props> = (props: Props) => {
     if (name === '' || company === '' || confirmPassword === '') {
       setErrorMessage({ type: 'signup', message: 'signup needs purple starred fields' });
       setErrorHighlights(['email', 'password', 'confirmPassword', 'name', 'company'])
-    }
-    else if (password !== confirmPassword) {
-      setErrorMessage({ type: 'signup', message: 'passwords do not match' });
-      setErrorHighlights(['password', 'confirmPassword'])
-    } else {
+    } else if (validatePasswords({ password, confirmPassword, setErrorHighlights, setErrorMessage })) {
       Axios.post(`${API}/user/signup`, {
         name: name,
         email: email.trim(),
@@ -53,14 +57,14 @@ const Login: React.FC<Props> = (props: Props) => {
       }).catch(err => {
         if (err.response?.data?.message) {
           setErrorMessage({ type: 'signup', message: err.response?.data?.message })
-          if(err.response.status === 409) {
+          if (err.response.status === 409) {
             setErrorHighlights(['email'])
           }
         } else {
           if (err.code === 'ERR_NETWORK') {
-            setErrorMessage({type: 'global', message: 'network error, please try again later'})
+            setErrorMessage({ type: 'global', message: 'network error, please try again later' })
           } else {
-            setErrorMessage({type: 'global', message: unknownErrors[Math.floor(Math.random()*unknownErrors.length)]})
+            setErrorMessage({ type: 'global', message: unknownErrors[Math.floor(Math.random() * unknownErrors.length)] })
           }
         }
       })
@@ -84,9 +88,9 @@ const Login: React.FC<Props> = (props: Props) => {
         }
       } else {
         if (err.code === 'ERR_NETWORK') {
-          setErrorMessage({type: 'global', message: 'network error, please try again later'})
+          setErrorMessage({ type: 'global', message: 'network error, please try again later' })
         } else {
-          setErrorMessage({type: 'global', message: unknownErrors[Math.floor(Math.random()*unknownErrors.length)]})
+          setErrorMessage({ type: 'global', message: unknownErrors[Math.floor(Math.random() * unknownErrors.length)] })
         }
       }
     })
@@ -100,7 +104,7 @@ const Login: React.FC<Props> = (props: Props) => {
       setErrorHighlights(['email']);
     } else if (name === '' && email === '' && company === '' && password === '' && confirmPassword === '') {
       setErrorMessage({ type: 'global', message: 'form must be filled!' });
-      setErrorHighlights(['email','password','name','company','confirmPassword']);
+      setErrorHighlights(['email', 'password', 'name', 'company', 'confirmPassword']);
     } else if (e.nativeEvent.submitter.name === 'login' || (email !== '' && password !== '' && name === '' && company === '' && confirmPassword === '')) {
       login();
     } else {
@@ -108,95 +112,197 @@ const Login: React.FC<Props> = (props: Props) => {
     }
   }
 
-  return (
-    <div className="app">
-      <Header showGithub={false} />
-      <div className='welcome'>
-        <Allen height={150} className='purple'/>
-        <span style={{color: '#5900B2', fontSize: 18, marginTop: 15}}>Welcome to frome_road</span>
-      </div>
-      <div className='body'>
-        <div style={{flex: 1}}>
+  const onPasswordChange = (password: string, confirmPassword: string) => {
+    setPassword(password);
+    setConfirmPassword(confirmPassword);
+    validatePasswords({ password, confirmPassword, setErrorHighlights, setErrorMessage });
+  }
 
+  const updateEmail = (value: string) => {
+    setEmail(value.trim().toLowerCase());
+    updateCode({ code, email, setCode, setValidCode, setErrorMessage,  setErrorHighlights });
+    setCodeSentMessage('get code');
+  }
+
+  const toggleLoginOrReset = () => {
+    setResetting(!resetting);
+    setErrorMessage({ type: '', message: '' });
+    setErrorHighlights([]);
+    setPassword('');
+    setConfirmPassword('');
+    setEmail('');
+    setValidCode("#8205ff")
+    setCode('')
+  }
+
+  const codeStyle = {
+    fontFamily: "monospace",
+    borderRadius: "6px",
+    border: `2px solid ${validCode}`,
+    width: "46px",
+    height: "46px",
+    fontSize: "32px",
+    color: "black",
+    backgroundColor: "#f8f1ff",
+    textAlign: "center" as "center"
+  }
+
+  if (resetting) {
+    return (
+      <div className="app">
+        <Header showGithub={false} />
+        <div className='welcome'>
+          <Allen height={150} className='purple' />
+          <span style={{ color: '#5900B2', fontSize: 18, marginTop: 15 }}>Welcome to frome_road</span>
         </div>
-        <div style={{flex: 1}}>
-          <form style={{width: '100%'}} onSubmit={onSubmit}>
-
+        <div className='body'>
+          <div style={{ flex: 1 }} />
+          <div style={{ flex: 1 }}>
             <div className='inputDiv'>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>email</span> <span style={{ color: '#8205ff' }}>*</span><span style={{ color: '#FFB405' }}>*</span>
+                <span className='label'>email *</span>
               </div>
-              <input type={'text'} className='input' style={{borderColor: (errorHighlights.includes('email') ? '#ff0000' : '#8205ff')}} value={email} onChange={(e) => setEmail(e.target.value)}/>
+              <input type={'text'} className='input' style={{ borderColor: (errorHighlights.includes('email') ? '#ff0000' : '#8205ff') }} value={email} onChange={(e) => updateEmail(e.target.value)} />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+              <span className='label'>code *</span>
+              <span className='label' onClick={() => findUserByEmail({ email, codeSentMessage, setCodeSentMessage, setErrorMessage, setErrorHighlights })} style={{ cursor: 'pointer' }}>{codeSentMessage}</span>
+            </div>
+            <ReactCodeInput type='number' fields={6} name={'resetCode'} inputMode='numeric' style={{alignItems: 'center'}} autoFocus={false} inputStyle={codeStyle} className='rci' onChange={(e) => updateCode({ code: e, email, setCode, setValidCode, setErrorMessage,  setErrorHighlights })} />
+            <div className='inputDiv'>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <span className='label'>password *</span>
+              </div>
+              <input type={'password'} className='input' style={{ borderColor: (errorHighlights.includes('password') ? '#ff0000' : '#8205ff') }} value={password} onChange={(e) => onPasswordChange(e.target.value, confirmPassword)} />
             </div>
             <div className='inputDiv'>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>password</span> <span style={{color: '#8205ff'}}>*</span><span style={{color: '#FFB405'}}>*</span>
+                <span className='label'>confirm password *</span>
               </div>
-                <input type={'password'} className='input' style={{borderColor: (errorHighlights.includes('password') ? '#ff0000' : '#8205ff')}} value={password} onChange={(e) => setPassword(e.target.value)} />
-            </div>
-            <div className='inputDiv'>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>name</span> <span style={{color: '#8205ff'}}>*</span>
-              </div>
-              <input className='input' style={{borderColor: (errorHighlights.includes('name') ? '#ff0000' : '#8205ff')}} value={name} onChange={(e) => setName(e.target.value)}/>
-            </div>
-            <div className='inputDiv'>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>company</span> <span style={{color: '#8205ff'}}>*</span> 
-              </div>
-              <input className='input' style={{borderColor: (errorHighlights.includes('company') ? '#ff0000' : '#8205ff')}} value={company} onChange={(e) => setCompany(e.target.value)} />
-            </div>
-            <div className='inputDiv'>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>confirm password</span> <span style={{color: '#8205ff'}}>*</span>
-              </div>
-              <input type={'password'} className='input' style={{borderColor: (errorHighlights.includes('confirmPassword') ? '#ff0000' : '#8205ff')}} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+              <input type={'password'} className='input' style={{ borderColor: (errorHighlights.includes('confirmPassword') ? '#ff0000' : '#8205ff') }} value={confirmPassword} onChange={(e) => onPasswordChange(password, e.target.value)} />
             </div>
             <div className='buttonDiv'>
-              <div style={{width: '40%'}}>
-                <button type='submit' className='button' name='signup'>
-                  sign up
-                  <span style={{color: '#8205ff', marginLeft: 5}}>*</span><span style={{color: '#FFB405'}}>*</span>
+              <div style={{ width: '30%' }}>
+                <button className='button' onClick={() => toggleLoginOrReset()}>
+                  back
                 </button>
-                <p style={{fontSize: 13, color: 'red', marginTop: 5}}>{errorMessage.type === 'signup' ? errorMessage.message : ''}</p>
               </div>
-              <div style={{ width: '40%' }}>
-                <button type='submit' className='button' name='login'>
-                  login
-                  <span style={{color: '#FFB405', marginLeft: 5}}>*</span>
+              <div style={{ width: '50%' }}>
+                <button className='button' onClick={() => changePassword({password, confirmPassword, email, validCode, setShowSuccessPage, toggleLoginOrReset})}>
+                  change password *
                 </button>
-                <p style={{fontSize: 13, textAlign: 'end', color: 'red', marginTop: 5}}>{errorMessage.type === 'login' ? errorMessage.message : ''}</p>
+                <p style={{ fontSize: 13, textAlign: 'end', color: 'red', marginTop: 5 }}>{errorMessage.type === 'signup' ? errorMessage.message : ''}</p>
               </div>
             </div>
-          </form>
-          <p style={{fontSize: 14, width: '100%', textAlign: 'center', marginTop: '2rem', color: 'red'}}>{errorMessage.type === 'global' ? errorMessage.message : ''}</p>
-        </div>
-        <div style={{ flex: 1 }}>
-          <div className='aboutDiv'>
-            <div className='titleDiv'>
-              <p className='sectionTitle'>about</p>
-              <hr className='line' />
-            </div>
-            <span className='aboutText'>
-              frome_road is a space for all employees of Lot Fourteen to discuss anything from tech to the weather.
-            </span>
-            <span className='aboutText'>
-              The site is currently only available to employees of Chamonix.
-            </span>
-            <div className='titleDiv' style={{marginTop: '2rem'}}>
-              <p className='sectionTitle'>creator</p>
-              <hr className='line' />
-            </div>
-              <p className='aboutText' style={{marginTop: 0}}>I originally created this project as a way to get into full-stack devving.</p>
-              <p className='aboutText'>The project stack is ReactJS, NodeJS, and MySQL, hosted on AWS Amplify with a dedicated server on Docker.</p>
-              <p className='aboutText'>I honestly have no idea if it'll work or how many bugs there'll be so please don't hesitate to report them.</p>
-              <p className='aboutText'>You can access the repo once logged in and verified :)</p>
-              
+            <p style={{ fontSize: 14, width: '100%', textAlign: 'center', marginTop: '2rem', color: 'red' }}>{errorMessage.type === 'global' ? errorMessage.message : ''}</p>
+          </div>
+          
+          <div style={{ flex: 1 }}>
+            <AboutDiv />
           </div>
         </div>
-      </div>      
-    </div>
-  )
+      </div>
+    )
+  } else if (showSuccessPage) {
+    return (
+      <div className="app">
+        <Header showGithub={false} />
+        <div className='welcome'>
+          <Allen height={150} className='purple' />
+          <span style={{ color: '#5900B2', fontSize: 18, marginTop: 15 }}>Welcome to frome_road</span>
+        </div>
+        <div className='body'>
+          <div style={{ flex: 1 }} />
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', flexDirection: 'column', paddingTop: '1.25rem' }}>
+            
+            <span style={{ fontSize: 20, color: '#5900B2' }}>Success!</span>
+            <span>your password has been updated</span>
+            <div className='buttonDiv'>
+              <div style={{ flex: 1 }}>
+                <button className='button' onClick={() => setShowSuccessPage(false)}>
+                  login
+                </button>
+              </div>
+            </div>
+          </div>
+          <div style={{ flex: 1 }}>
+            <AboutDiv />
+          </div>
+        </div>
+      </div>
+    )
+  } else {
+    return (
+      <div className="app">
+        <Header showGithub={false} />
+        <div className='welcome'>
+          <Allen height={150} className='purple' />
+          <span style={{ color: '#5900B2', fontSize: 18, marginTop: 15 }}>Welcome to frome_road</span>
+        </div>
+        <div className='body'>
+          <div style={{ flex: 1 }} />
+          <div style={{ flex: 1 }}>
+            <form style={{ width: '100%' }} onSubmit={onSubmit}>
+
+              <div className='inputDiv'>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <span className='label'>email *</span><span style={{ color: '#FFB405' }}>*</span>
+                </div>
+                <input type={'text'} className='input' style={{ borderColor: (errorHighlights.includes('email') ? '#ff0000' : '#8205ff') }} value={email} onChange={(e) => setEmail(e.target.value)} />
+              </div>
+              <div className='inputDiv'>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <span>
+                    <span className='label'>password *</span><span style={{ color: '#FFB405' }}>*</span>
+                  </span>
+                  <span className='label' style={{ cursor: 'pointer' }} onClick={() => toggleLoginOrReset()}>forgot</span>
+                </div>
+                <input type={'password'} className='input' style={{ borderColor: (errorHighlights.includes('password') ? '#ff0000' : '#8205ff') }} value={password} onChange={(e) => onPasswordChange(e.target.value, confirmPassword)} />
+              </div>
+              <div className='inputDiv'>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <span className='label'>name *</span>
+                </div>
+                <input className='input' style={{ borderColor: (errorHighlights.includes('name') ? '#ff0000' : '#8205ff') }} value={name} onChange={(e) => setName(e.target.value)} />
+              </div>
+              <div className='inputDiv'>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <span className='label'>company *</span>
+                </div>
+                <input className='input' style={{ borderColor: (errorHighlights.includes('company') ? '#ff0000' : '#8205ff') }} value={company} onChange={(e) => setCompany(e.target.value)} />
+              </div>
+              <div className='inputDiv'>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <span className='label'>confirm password *</span>
+                </div>
+                <input type={'password'} className='input' style={{ borderColor: (errorHighlights.includes('confirmPassword') ? '#ff0000' : '#8205ff') }} value={confirmPassword} onChange={(e) => onPasswordChange(password, e.target.value)} />
+              </div>
+              <div className='buttonDiv'>
+                <div style={{ width: '40%' }}>
+                  <button type='submit' className='button' name='signup'>
+                    sign up
+                    <span style={{ color: '#8205ff', marginLeft: 5 }}>*</span><span style={{ color: '#FFB405' }}>*</span>
+                  </button>
+                  <p style={{ fontSize: 13, color: 'red', marginTop: 5 }}>{errorMessage.type === 'signup' ? errorMessage.message : ''}</p>
+                </div>
+                <div style={{ width: '40%' }}>
+                  <button type='submit' className='button' name='login'>
+                    login
+                    <span style={{ color: '#FFB405', marginLeft: 5 }}>*</span>
+                  </button>
+                  <p style={{ fontSize: 13, textAlign: 'end', color: 'red', marginTop: 5 }}>{errorMessage.type === 'login' ? errorMessage.message : ''}</p>
+                </div>
+              </div>
+            </form>
+            <p style={{ fontSize: 14, width: '100%', textAlign: 'center', marginTop: '2rem', color: 'red' }}>{errorMessage.type === 'global' ? errorMessage.message : ''}</p>
+          </div>
+          <div style={{ flex: 1 }}>
+            <AboutDiv />
+          </div>
+        </div>
+      </div>
+    )
+  }
 }
 
 export default Login

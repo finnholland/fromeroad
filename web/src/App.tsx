@@ -72,7 +72,7 @@ function App() {
     );
   } else {
     return (
-      <div className='hamsterPage'>
+      <div className='allenPage'>
         <Allen height={200} width={200} className='purple'/>
       </div>
       

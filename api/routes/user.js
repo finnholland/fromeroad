@@ -9,6 +9,7 @@ const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
 const salt = 10
 const sendEmail = require('../helpers/sendEmail');
+const sendResetCodeEmail = require('../helpers/sendResetCodeEmail');
 app.use(cors());
 
 
@@ -33,6 +34,69 @@ app.get('/profile/interests/:profileID', ejwt({ secret: process.env.JWT_SECRET, 
     } else {
       res.send(result)
     }
+  })
+})
+
+// get user by email
+app.get('/email', (req, res) => {
+  const email = req.query.email
+  db.query(`select email from users where email = ?`, [email], (err, result, fields) => {
+    if (err) {
+      console.log('error occurred: '+ err)
+    } else if (result.length === 0) {
+      return res.status(409).send({
+        message: 'invalid email'
+      });
+    } else {
+      return res.send(result);
+    }
+  })
+})
+
+app.post('/generateresetcode', (req, res) => {
+  const email = req.body.email
+  const resetCode = Math.floor(100000 + Math.random() * 900000);
+  console.log(resetCode, email)
+  db.query(`insert into resetcodes (code, email, createdAt) values (?, ?, now())`, [resetCode, email], (err, result, fields) => {
+    if (err) {
+      console.log('error occurred: '+ err)
+    } else {
+      sendResetCodeEmail(email, resetCode)
+      return res.send(200);
+    }
+  })
+})
+
+app.get('/validateresetcode', (req, res) => {
+  const email = req.query.email
+  const resetCode = req.query.resetCode
+  console.log(resetCode, email);
+  db.query(`select * from resetcodes where email = ? and code = ? and createdAt > DATE_SUB(NOW(),INTERVAL 30 MINUTE)`, [email, resetCode], (err, result, fields) => {
+    console.log(result)
+    if (err) {
+      console.log('error occurred: '+ err)
+    } else if (result.length === 0) {
+      return res.status(409).send({
+        message: 'invalid code'
+      });
+    } else {
+      return res.send(200);
+    }
+  })
+})
+
+app.post('/resetpassword', (req, res) => {
+  const email = req.body.email
+  const password = req.body.password
+
+  bcrypt.hash(password, 10).then((hash) => {
+    console.log(hash)
+    db.query(`update users set password = ? where email = ?`, [hash, email], (err, result, fields) => { 
+      if (err) throw (err)
+      else {
+        return res.sendStatus(200)
+      }
+    })
   })
 })
 
