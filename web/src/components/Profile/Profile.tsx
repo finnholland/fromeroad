@@ -4,7 +4,7 @@ import { Interest, User } from '../../../types';
 import LogoutIcon from '../../assets/svg/logoutIcon';
 import SvgRemoveButton from '../../assets/svg/removeButton';
 import SvgAddButton from '../../assets/svg/SvgAddButton';
-import { API, EIGHT_MEGABYTES, S3_BUCKET } from '../../constants';
+import { API, DEFAULT_PROFILE_IMAGE, EIGHT_MEGABYTES, S3_BUCKET } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../hooks/Actions';
 import { updateUserDetails } from '../../hooks/api/users';
 import { convertTrendPoints } from '../../hooks/helpers';
@@ -30,7 +30,8 @@ export const Profile: React.FC<Props> = (props: Props) => {
   const [addSvgHover, setAddSvgHover] = useState(-2);
   const [interestLoading, setInterestLoading] = useState(true);
   const [showScroll, setShowScroll] = useState(false);
-  const [addInterestError, setAddInterestError] = useState('')
+  const [addInterestError, setAddInterestError] = useState('');
+  const [errored, setErrored] = useState(false);
 
   const [closeProfileView, setCloseProfileView] = useState(false);
   
@@ -172,6 +173,13 @@ export const Profile: React.FC<Props> = (props: Props) => {
     setEditing(false);
   }
 
+  const onError = () => {
+    if (!errored) {
+      setErrored(true)
+      setProfileImageUrl(DEFAULT_PROFILE_IMAGE)
+    }
+  }
+
   const uploadImage = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       if (e.target.files[0].size >= EIGHT_MEGABYTES) {
@@ -209,7 +217,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
         </div>
         <div>
           <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
-            <img src={API + selector.profile.profileImageUrl} alt='profile' className='profileImage' />
+            <img src={API + selector.profile.profileImageUrl} onError={onError} alt='profile' className='profileImage' />
             <div className='detailsDiv'>
               <p className='name'>{selector.profile.name}</p>
               <p className='company'>{selector.profile.company}</p>
@@ -259,7 +267,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
         <div className='profileDesktop'>
           <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
             <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)}
-              style={{ backgroundImage: `url(${S3_BUCKET}${profileImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
+              style={{ background: `url(${S3_BUCKET}${profileImageUrl}), url(${S3_BUCKET}${DEFAULT_PROFILE_IMAGE})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
               <div className='profileImageOverlay'>
                 <span style={{alignItems: 'center', display:'flex', marginBottom: 5, color: '#fff'}}>change</span>
               </div>
