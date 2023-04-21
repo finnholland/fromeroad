@@ -21,7 +21,7 @@ const S3_BUCKET = API
 
 const HOUR = 60000 * 60;
 const EIGHT_MEGABYTES = 1048576 * 8; // 1mb * 8 in bytes
-const DEFAULT_PROFILE_IMAGE = S3_BUCKET+'/default/default_profile_image.jpg';
+const DEFAULT_PROFILE_IMAGE = '/data/default/default_profile_image.jpg';
 const JWT_TOKEN = `Bearer ${localStorage.getItem('token')}`
 
 export {API}
