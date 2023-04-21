@@ -186,6 +186,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
         alert('too large! 8mb or less plz')
         return;
       } else {
+        setProfileImageUrl(DEFAULT_PROFILE_IMAGE)
         const fd = new FormData();
         fd.append('file', e.target.files[0])
         fd.append('userID', selector.user.userID.toString())
@@ -267,7 +268,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
         <div className='profileDesktop'>
           <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
             <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)}
-              style={{ background: `url(${S3_BUCKET}${profileImageUrl}), url(${S3_BUCKET}${DEFAULT_PROFILE_IMAGE})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
+              style={{ backgroundImage: `url(${S3_BUCKET}${profileImageUrl}), url(${S3_BUCKET}${DEFAULT_PROFILE_IMAGE})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
               <div className='profileImageOverlay'>
                 <span style={{alignItems: 'center', display:'flex', marginBottom: 5, color: '#fff'}}>change</span>
               </div>
