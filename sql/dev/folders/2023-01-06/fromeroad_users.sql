@@ -40,7 +40,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'finn holland','finnholland@chamonix.com.au','0','chamonix','/images/1/carmen.jpg','$2b$10$0m8pXoxQPc5f9SCz.o.d..k4hrN8fd9A2KjBDOJj4JEPT8vVEHdLO'),(2,'finn holland','finn.holland@chamonix.com.au','0','chamonix','/images/user/2/boah.jpg','$2b$10$d/YpYeFK90/oJf7kSK7Y7uLSqbX4aTPfA/noJJMZt.C.CAMk6JoMW');
+INSERT INTO `users` VALUES (1,'finn holland','finnholland@chamonix.com.au','0','chamonix','/images/1/carmen.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6'),(2,'finn holland','finn.holland@chamonix.com.au','0','chamonix','/images/user/2/boah.jpg','$2b$10$C7QZ0iZGElOuOF0cGcIZ8eb55wcmZzWntJae7WgsuntT.174VPRR6');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
