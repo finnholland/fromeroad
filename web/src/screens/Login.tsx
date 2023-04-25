@@ -53,6 +53,7 @@ const Login: React.FC<Props> = (props: Props) => {
       }).then(res => {
         localStorage.setItem('token', res.data.token)
         dispatch(setUser(res.data.user));
+        props.setVerified(false);
         props.setAuthenticated(true)
       }).catch(err => {
         if (err.response?.data?.message) {
