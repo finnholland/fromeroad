@@ -3,10 +3,7 @@ import { PostItem, Poster, TrendingUserType } from '../../types';
 import './Home.css'
 import Axios from 'axios';
 import { useAppSelector } from '../hooks/Actions';
-import moment from 'moment';
-
 import { Post } from '../components/Post';
-
 import { TrendingUser } from '../components/TrendingUser';
 import SvgPlus from '../assets/svg/SvgPlus';
 import { PostEditor } from '../components/PostEditor';
@@ -15,6 +12,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { API } from '../constants';
 import { Header } from '../components/Header';
 import { Profile } from '../components/Profile/Profile';
+import * as DOMPurify from 'dompurify';
 
 const HOUR = 60000 * 60
 interface Props {
@@ -37,9 +35,45 @@ const Home: React.FC<Props> = (props: Props) => {
   const [loading, setLoading] = useState(true);
   const [trendingLoading, setTrendingLoading] = useState(true);
 
+    interface Link {
+    fullUrl: string,
+    domain: string
+  }
+
+  const renderLinksAndTags = (body: string) => {
+    let bodyLinks: Link[] = [];
+    body = body.replace(/([^\s]+:\/\/)/, '');
+
+    const matches = body.match(/((?:[a-z\d]+\.(?:(?!\ ).)*))((?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?/gm)
+    if (matches && matches.length > 0) {
+
+      matches.forEach(url => {
+        let tempUrl = url.split(/((?:[a-z\d]+\.(?:(?!\/).)*))((?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?/gm)
+        tempUrl = tempUrl.filter(function (e) { return e });
+        const tempLink: Link = {
+          fullUrl: tempUrl[0] + (tempUrl[1] ? tempUrl[1] : ''),
+          domain: tempUrl[0]
+        }
+        bodyLinks.push(tempLink);
+      });
+    }
+    console.log(bodyLinks)
+    bodyLinks?.forEach(url => {
+      if (body.includes(url.fullUrl)) {
+        body = body.replace(url.fullUrl, `<a href='//${url.fullUrl}' target='_blank' rel='noreferrer'>${url.domain}</a>`)
+      }
+    })
+    console.log(body)
+    // create a span with body, when the text is in the regex match group, close span and replace with anchor tag
+    return body;
+  }
+
   const postItem = posts.map((i) => {
+    console.log(i.post.body)
+    const body = renderLinksAndTags(i.post.body);
+    let clean = DOMPurify.sanitize(body, { USE_PROFILES: { html: true }, ADD_ATTR: ['target'] });
     return (
-      <Post key={i.post.postID} post={i.post} poster={i.poster} />
+      <Post key={i.post.postID} post={i.post} body={clean} poster={i.poster} />
     )
   });
 
@@ -153,6 +187,22 @@ const Home: React.FC<Props> = (props: Props) => {
     })
   }
 
+    const postwithlinks = [
+     { postID: 1, body: 'ftp://www.stackoverflow.com/questions/3850074/regex-until-but-not-including' },
+    { postID: 2, body: 'this is a link to regex101.com i love this site! www.stackoverflow.com/questions/3850074/regex-until-but-not-including awd www.bom.gov.au wadawda' },
+     { postID: 3, body: 'http://www.bom.gov.au/' }
+  ]
+
+  const renderLinks = postwithlinks.map((i) => {
+    const body = renderLinksAndTags(i.body);
+    let clean = DOMPurify.sanitize(body, { USE_PROFILES: { html: true } });
+    return (
+      <div style={{marginBottom: 40}}>
+        <span dangerouslySetInnerHTML={{__html: clean}} />
+      </div>
+    )
+  });
+
   return (
     <div className="app">
       <Header showGithub={true} />
@@ -194,6 +244,7 @@ const Home: React.FC<Props> = (props: Props) => {
               style={{overflow: 'visible'}}>
               {postItem}
             </InfiniteScroll>
+            {renderLinks}
           </div>
           <Profile logout={props.logout} />
           <div style={{width: '20vw'}}/>
