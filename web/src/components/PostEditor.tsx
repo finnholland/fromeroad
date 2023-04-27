@@ -5,6 +5,7 @@ import { API, DEFAULT_PROFILE_IMAGE, EIGHT_MEGABYTES, S3_BUCKET } from '../const
 import { useAppSelector } from '../hooks/Actions';
 import { useAutosizeTextArea } from '../hooks/helpers';
 import './PostEditor.css'
+import { Link, getDomain } from '../hooks/posts/postHelpers';
 
 interface Props {
   setCreatingPost: any,
@@ -26,6 +27,7 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
   const [errored, setErrored] = useState(false)
   const [imageHover, setImageHover] = useState(false);
   const [fileTooLarge, setFileTooLarge] = useState(false);
+  const [postLinks, setPostLinks] = useState<Link[]>([]);
 
   const ref = useRef<HTMLInputElement>(null);
 
@@ -40,6 +42,20 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
   const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = evt.target?.value;
     setPostContent(prevState => ({ ...prevState, body: val }));
+    if (postContent.body.length === 0) {
+      setPostLinks([]);
+    }
+  };
+
+  const handlePaste = (evt: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    evt.preventDefault();
+    const domain = getDomain(evt.clipboardData.getData('Text'))
+    
+    const tempBody = postContent.body + domain.domain;
+    if (!postLinks.find(link => link.fullUrl === domain.fullUrl)) {
+      setPostLinks(prevState => [...prevState, domain])
+    }
+    setPostContent(prevState => ({ ...prevState, body: tempBody }));
   };
 
   const uploadPostImage = (e: any) => {
@@ -63,7 +79,12 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
 
   const createPost = () => {
     postContent.formData.append('userID', selector.user.userID.toString())
-    postContent.formData.append('body', postContent.body)
+    let tempBody = postContent.body;
+    postLinks.forEach(link => {
+      console.log(link)
+      tempBody = tempBody.replace(link.domain, link.fullUrl);
+    });
+    postContent.formData.append('body', tempBody);
     props.setCreatingPost(false);
     Axios.post(`${API}/post/create/${selector.user.userID}`, postContent.formData, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } 
@@ -89,7 +110,7 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
           </div>
 
       </div>
-      <textarea className='postBodyInput' maxLength={157} placeholder='hello moon - 🌏' onChange={handleChange} value={postContent.body} rows={2}
+      <textarea className='postBodyInput' maxLength={157} placeholder='hello moon - 🌏' onChange={handleChange} onPaste={handlePaste} value={postContent.body} rows={2}
         ref={textAreaRef} />
       
       {postImage !== '' ? (<img src={postImage} alt='post' className='postImage'/>) : null}

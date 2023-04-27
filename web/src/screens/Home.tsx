@@ -3,10 +3,7 @@ import { PostItem, Poster, TrendingUserType } from '../../types';
 import './Home.css'
 import Axios from 'axios';
 import { useAppSelector } from '../hooks/Actions';
-import moment from 'moment';
-
 import { Post } from '../components/Post';
-
 import { TrendingUser } from '../components/TrendingUser';
 import SvgPlus from '../assets/svg/SvgPlus';
 import { PostEditor } from '../components/PostEditor';
@@ -15,6 +12,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { API } from '../constants';
 import { Header } from '../components/Header';
 import { Profile } from '../components/Profile/Profile';
+import * as DOMPurify from 'dompurify';
+import { renderLinksAndTags } from '../hooks/posts/postHelpers';
 
 const HOUR = 60000 * 60
 interface Props {
@@ -38,8 +37,10 @@ const Home: React.FC<Props> = (props: Props) => {
   const [trendingLoading, setTrendingLoading] = useState(true);
 
   const postItem = posts.map((i) => {
+    const body = renderLinksAndTags(i.post.body);
+    let clean = DOMPurify.sanitize(body, { USE_PROFILES: { html: true }, ALLOWED_TAGS: ['span', 'a'], ADD_ATTR: ['target', 'style'] });
     return (
-      <Post key={i.post.postID} post={i.post} poster={i.poster} />
+      <Post key={i.post.postID} post={i.post} body={clean} poster={i.poster} />
     )
   });
 
