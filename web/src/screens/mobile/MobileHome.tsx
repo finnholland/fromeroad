@@ -38,7 +38,7 @@ const MobileHome: React.FC<Props> = (props: Props) => {
     const body = renderLinksAndTags(i.post.body);
     let clean = DOMPurify.sanitize(body, { USE_PROFILES: { html: true }, ALLOWED_TAGS: ['span', 'a'], ADD_ATTR: ['target', 'style'] });
     return (
-      <MobilePost key={i.post.postID} post={i.post} poster={i.poster} body={i.post.body} setCurrentRoute={setCurrentRoute}/>
+      <MobilePost key={i.post.postID} post={i.post} poster={i.poster} body={clean} setCurrentRoute={setCurrentRoute}/>
     )
   });
 
