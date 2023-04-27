@@ -84,6 +84,8 @@
 .bodyText {
   color: #8205ff;
   font-size: 1.5rem;
+  width: 100%;
+  word-wrap: break-word;
 }
 
 .highlight {
@@ -176,4 +178,34 @@
    flex: 1;
    height: 35px;
    font-size: 1rem;
+}
+
+.bodyText a:link {
+  color: #00b2b2;
+  text-decoration: underline #00b2b2 1px;
+}
+
+.bodyText a:visited {
+  color: #00b2b2;
+}
+
+/* mouse over link */
+.bodyText a:hover {
+  color: #ffb405;
+  text-decoration: underline #ffb405 1px;
+}
+
+.bodyText a {
+
+}
+
+.bodyText p {
+  color: #ffb405;
+  margin: 0;
+}
+
+.bodyText p {
+  color: #ffb405;
+  margin: 0;
+  display: inline
 }

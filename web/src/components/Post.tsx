@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from '../hooks/Actions';
 import { Comment } from './Comment';
 import { convertTrendPoints, getMessageAge, useAutosizeTextArea } from '../hooks/helpers';
 import { API, DEFAULT_PROFILE_IMAGE, S3_BUCKET } from '../constants';
-import Highlighter from "react-highlight-words";
 import { getUserProfile } from '../hooks/api/users';
 import Heart from '../assets/svg/post/Heart';
 import CommentIcon from '../assets/svg/post/Comments';
@@ -152,7 +151,7 @@ export const Post: React.FC<Props> = (props: Props) => {
           <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
         </div>
         <div id='body' className='postBody'>
-           <span dangerouslySetInnerHTML={{__html: props.body}} />
+           <span dangerouslySetInnerHTML={{__html: props.body}} className='bodyText'/>
           <img src={S3_BUCKET + props.post.postImageUrl} alt='postImage' className='postImage'/>
         </div>
         <div id='footer' className='postFooter'>
