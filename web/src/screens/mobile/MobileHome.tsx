@@ -16,6 +16,8 @@ import { setIsOpen } from '../../hooks/slices/sidebarSlice';
 import { MobileActivity } from '../../components/mobile/MobileActivity';
 import { MobileInterests } from '../../components/mobile/MobileInterests';
 import { MobileTrending } from '../../components/mobile/MobileTrending';
+import { renderLinksAndTags } from '../../hooks/posts/postHelpers';
+import DOMPurify from 'dompurify';
 interface Props {
   logout: any
 }
@@ -33,8 +35,10 @@ const MobileHome: React.FC<Props> = (props: Props) => {
   const [currentRoute, setCurrentRoute] = useState('feed');
 
   const postItem = posts.map((i) => {
+    const body = renderLinksAndTags(i.post.body);
+    let clean = DOMPurify.sanitize(body, { USE_PROFILES: { html: true }, ALLOWED_TAGS: ['span', 'a'], ADD_ATTR: ['target', 'style'] });
     return (
-      <MobilePost key={i.post.postID} post={i.post} poster={i.poster} setCurrentRoute={setCurrentRoute}/>
+      <MobilePost key={i.post.postID} post={i.post} poster={i.poster} body={clean} setCurrentRoute={setCurrentRoute}/>
     )
   });
 

@@ -8,7 +8,6 @@ import SvgAddButton from '../../assets/svg/SvgAddButton';
 import { MobileComment } from './MobileComment';
 import { getMessageAge } from '../../hooks/helpers';
 import { API, DEFAULT_PROFILE_IMAGE, S3_BUCKET } from '../../constants';
-import Highlighter from "react-highlight-words";
 import CommentIcon from '../../assets/svg/post/Comments';
 import Heart from '../../assets/svg/post/Heart';
 import { getUserProfile } from '../../hooks/api/users';
@@ -17,6 +16,7 @@ interface Props {
   post: PostType,
   poster: Poster
   setCurrentRoute: any
+  body: string
 }
 
 export const MobilePost: React.FC<Props> = (props: Props) => {
@@ -156,13 +156,7 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
           <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
         </div>
         <div id='body' className='postBody'>
-          <Highlighter
-            textToHighlight={props.post.body}
-            searchWords={searchWords}
-            highlightClassName="highlight"
-            highlightStyle={undefined}
-            className='bodyText'
-          />
+          <span dangerouslySetInnerHTML={{__html: props.body}} className='bodyText'/>
           <img src={S3_BUCKET + props.post.postImageUrl} alt='postImage' className='postImage'/>
         </div>
                 <div id='footer' className='postFooter'>
@@ -210,13 +204,7 @@ export const MobilePost: React.FC<Props> = (props: Props) => {
           <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
         </div>
         <div id='body' className='postBody'>
-          <Highlighter
-            textToHighlight={props.post.body}
-            searchWords={searchWords}
-            highlightClassName="highlight"
-            highlightStyle={undefined}
-            className='bodyText'
-          />
+          <span dangerouslySetInnerHTML={{__html: props.body}} className='bodyText'/>
         </div>
         <div id='footer' className='postFooter'>
           <div style={{width: '50%', alignItems: 'center', display: 'flex', justifyContent: 'space-between', flexDirection: 'row', userSelect: 'none', textAlign: 'start'}}>
