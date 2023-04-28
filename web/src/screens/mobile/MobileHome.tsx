@@ -123,15 +123,11 @@ const MobileHome: React.FC<Props> = (props: Props) => {
   const handleCreatePostClick = () => {
     setCreatingPost(!creatingPost);
     window.scrollTo(0, 0);
+    setPlaceholder(PALCEHOLDERS[Math.floor(Math.random() * PALCEHOLDERS.length)]);
   }
 
   const toggleSidebar = () => {
     dispatch(setIsOpen(!selector.sidebar.isOpen))
-  }
-
-  const createPost = () => {
-    setCreatingPost(!creatingPost);
-    setPlaceholder(PALCEHOLDERS[Math.floor(Math.random() * PALCEHOLDERS.length)])
   }
 
   return (
