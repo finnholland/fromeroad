@@ -29,12 +29,10 @@ export const Post: React.FC<Props> = (props: Props) => {
   const [imageUrl, setImageUrl] = useState(props.poster.profileImageUrl)
   const [errored, setErrored] = useState(false)
   const [loading, setLoading] = useState(true);
-  const [searchWords, setSearchWords] = useState<string[]>([]);
   const [profileHover, setProfileHover] = useState(false);
 
   useEffect(() => {
     getComments();
-    getSearchWords();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -51,11 +49,6 @@ export const Post: React.FC<Props> = (props: Props) => {
       e.preventDefault()
       postComment()
     }
-  }
-
-  const getSearchWords = () => {
-    const words = props.post.body.split(/([^\s]*?;)/g).filter((word) => word.includes(';') && word.length !== 1 )
-    setSearchWords(words)
   }
 
   const upvotePost = () => {

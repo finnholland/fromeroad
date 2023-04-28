@@ -9,12 +9,11 @@ export const renderLinksAndTags = (body: string) => {
   body = body.replace(/([^\s]+:\/\/)/, '');
 
   const tags = body.match(/[^\s]+;/gm);
-  const matches = body.match(/((?:[a-z\d]+\.(?:(?!\ ).)*))/gm)
+  const matches = body.match(/((?:[a-z\d]+\.(?:(?! ).)*))/gm)
   if (matches && matches.length > 0) {
 
     matches.forEach(url => {
-      let tempUrl = url.split(/((?:[a-z\d]+\.(?:(?!\/).)*))((?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?/gm)
-     
+      let tempUrl = url.split(/((?:[a-z\d]+\.(?:(?!\/).)*))((?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()[\]{};:'".,<>?«»“”‘’]))?/gm)
       tempUrl = tempUrl.filter(function (e) { return e });
       const tempLink: Link = {
         fullUrl: tempUrl[0] + (tempUrl[1] ? tempUrl[1] : ''),
@@ -40,11 +39,10 @@ export const getDomain = (body: string) => {
   let bodyLinks: Link = {fullUrl: '', domain: ''};
   body = body.replace(/([^\s]+:\/\/)/, '');
 
-  const matches = body.match(/((?:[a-z\d]+\.(?:(?!\ ).)*))((?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?/gm)
+  const matches = body.match(/((?:[a-z\d]+\.(?:(?! ).)*))((?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()[\]{};:'".,<>?«»“”‘’]))?/gm)
   if (matches && matches.length > 0) {
-
     matches.forEach(url => {
-      let tempUrl = url.split(/((?:[a-z\d]+\.(?:(?!\/).)*))((?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))?/gm)
+      let tempUrl = url.split(/((?:[a-z\d]+\.(?:(?!\/).)*))((?:[^\s()<>]+|\((?:[^\s()<>]+|(?:\([^\s()<>]+\)))?\))+(?:\((?:[^\s()<>]+|(?:\(?:[^\s()<>]+\)))?\)|[^\s`!()[\]{};:'".,<>?«»“”‘’]))?/gm)
       tempUrl = tempUrl.filter(function (e) { return e });
       const tempLink: Link = {
         fullUrl: tempUrl[0] + (tempUrl[1] ? tempUrl[1] : ''),
