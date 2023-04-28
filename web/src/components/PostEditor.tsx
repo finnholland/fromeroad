@@ -9,7 +9,8 @@ import { Link, getDomain } from '../hooks/posts/postHelpers';
 
 interface Props {
   setCreatingPost: any,
-  refreshPosts: any
+  refreshPosts: any,
+  placeholder: string
 }
 
 interface PostContent {
@@ -124,7 +125,7 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
           </div>
 
       </div>
-      <textarea className='postBodyInput' maxLength={157} placeholder='hello moon - 🌏' onChange={handleChange} onPaste={handlePaste} value={postContent.body} rows={2}
+      <textarea className='postBodyInput' maxLength={157} placeholder={props.placeholder} onChange={handleChange} onPaste={handlePaste} value={postContent.body} rows={2}
         ref={textAreaRef} />
       
       {postImage !== '' ? (<img src={postImage} alt='post' className='postImage'/>) : null}
