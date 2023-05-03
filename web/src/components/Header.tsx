@@ -7,6 +7,8 @@ import '../App.css'
 import { setIsOpen } from '../hooks/slices/sidebarSlice';
 import GitHub from '../assets/svg/github';
 import { isMobile } from 'react-device-detect';
+import Axios from 'axios';
+import { API } from '../constants';
 interface Props {
   showGithub: boolean
   error?: boolean
@@ -16,6 +18,12 @@ interface Props {
 export const Header: React.FC<Props> = (props: Props) => {
   const dispatch = useAppDispatch();
   const selector = useAppSelector(state => state);
+
+  const updatetoptentemp = () => {
+    Axios.get(`${API}/trends/updateTopTen`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    }).then()
+  }
 
   if (!isMobile) {
     return (
@@ -32,7 +40,7 @@ export const Header: React.FC<Props> = (props: Props) => {
 
           </div>
           <div className='titleContainer'>
-            <p className='title'>frome_road</p>
+            <p onClick={() => updatetoptentemp()} className='title'>frome_road</p>
           </div>
           <div className='chamonix' style={{ justifyContent: 'flex-end' }}>
             <a href='http://www.chamonix.com.au' target={'_blank'} rel='noreferrer'>
@@ -58,7 +66,7 @@ export const Header: React.FC<Props> = (props: Props) => {
             <Hamburger height={20} width={20} stroke='#fff' strokeWidth={1.5}/>
           </button>
           <div className='titleContainer'>
-            <p className='title'>frome_road</p>
+            <p onClick={() => updatetoptentemp()} className='title'>frome_road</p>
           </div>
           <div className='hamburger'>
             <Hamburger height={20} width={20} strokeWidth={1.5}/>
