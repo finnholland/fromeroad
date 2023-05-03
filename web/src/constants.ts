@@ -24,7 +24,9 @@ const EIGHT_MEGABYTES = 1048576 * 8; // 1mb * 8 in bytes
 const DEFAULT_PROFILE_IMAGE = '/data/default/default_profile_image.jpg';
 const JWT_TOKEN = `Bearer ${localStorage.getItem('token')}`
 
-export {API}
+const PLACEHOLDERS = ['hello moon - 🌏', 'hello moon - 🌏', 'pasted links will be shortened :)', 'you can tag; words with ;']
+
+export {API, PLACEHOLDERS}
 export {EIGHT_MEGABYTES}
 export {HOUR}
 export {DEFAULT_PROFILE_IMAGE}

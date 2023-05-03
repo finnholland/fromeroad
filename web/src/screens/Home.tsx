@@ -9,7 +9,7 @@ import SvgPlus from '../assets/svg/SvgPlus';
 import { PostEditor } from '../components/PostEditor';
 import SvgRefresh from '../assets/svg/refreshIcon';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { API, PALCEHOLDERS } from '../constants';
+import { API, PLACEHOLDERS } from '../constants';
 import { Header } from '../components/Header';
 import { Profile } from '../components/Profile/Profile';
 import * as DOMPurify from 'dompurify';
@@ -157,7 +157,7 @@ const Home: React.FC<Props> = (props: Props) => {
 
   const createPost = () => {
     setCreatingPost(!creatingPost);
-    setPlaceholder(PALCEHOLDERS[Math.floor(Math.random() * PALCEHOLDERS.length)])
+    setPlaceholder(PLACEHOLDERS[Math.floor(Math.random() * PLACEHOLDERS.length)])
   }
 
   return (
