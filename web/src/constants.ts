@@ -26,9 +26,4 @@ const JWT_TOKEN = `Bearer ${localStorage.getItem('token')}`
 
 const PLACEHOLDERS = ['hello moon - 🌏', 'hello moon - 🌏', 'pasted links will be shortened :)', 'you can tag; words with ;']
 
-export {API, PLACEHOLDERS}
-export {EIGHT_MEGABYTES}
-export {HOUR}
-export {DEFAULT_PROFILE_IMAGE}
-export {JWT_TOKEN}
-export {S3_BUCKET}
+export {API, PLACEHOLDERS, EIGHT_MEGABYTES, HOUR, DEFAULT_PROFILE_IMAGE, JWT_TOKEN, S3_BUCKET}
