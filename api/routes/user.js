@@ -6,6 +6,7 @@ app = express()
 var db = require('..');
 const cors = require('cors')
 const bcrypt = require("bcrypt")
+const cryptojs = require("crypto-js")
 const jwt = require('jsonwebtoken');
 const salt = 10
 const sendEmail = require('../helpers/sendEmail');
@@ -114,7 +115,8 @@ app.get('/autoLogin', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256
 // get user by password
 app.post('/login', async (req, res) => {
   const email = req.body.email;
-  const password = req.body.password;
+  const password = cryptojs.AES.decrypt(req.body.password, process.env.CRYPTO_KEY);
+  const decrypted = password.toString(cryptojs.enc.Utf8);
   db.query('select * from users where email = ?', email, (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)
@@ -126,7 +128,7 @@ app.post('/login', async (req, res) => {
         message: 'invalid email or password'
       })
     } else {
-      bcrypt.compare(password, result[0].password, function (err, valid) {
+      bcrypt.compare(decrypted, result[0].password, function (err, valid) {
         if (err) {
           return err
         }
@@ -150,11 +152,14 @@ app.post('/login', async (req, res) => {
 
 // create user
 app.post('/signup', async (req, res, next) => {
+  const password = cryptojs.AES.decrypt(req.body.password, process.env.CRYPTO_KEY);
+  const decrypted = password.toString(cryptojs.enc.Utf8);
+
   const user = {
     name: req.body.name,
     email: req.body.email,
     company: req.body.company,
-    password: req.body.password,
+    password: decrypted,
   }
 
   let userID = 0
