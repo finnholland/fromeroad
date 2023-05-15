@@ -11,12 +11,10 @@ write-host $new_ip
 
 if ($old_ip -ne $new_ip) {
     write-host "not equal!"
-    "ip=" | out-file fromeroad_ip_config.txt -NoNewline
-    powershell "(Invoke-WebRequest -UseBasicParsing -URI ifconfig.me).Content | tee fromeroad_ip_config.txt -Append"
     $fileContent[11] = '                        "Value": "'+$new_ip+'"'
     $fileContent | Set-Content aws_fromeroad_ip_update.json
 
-    aws route53 change-resource-record-sets --hosted-zone-id Z046401415VTMVLASRJFO --change-batch file://./aws_fromeroad_ip_update.json
+    aws route53 change-resource-record-sets --hosted-zone-id Z046401415VTMVLASRJFO --change-batch file://./aws_fromeroad_ip_update.json --profile chamonix
 } else {
     write-host "equal!"
 }
