@@ -8,7 +8,7 @@ import { slide as Menu } from 'react-burger-menu'
 
 import { PostEditor } from '../../components/PostEditor';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { API } from '../../constants';
+import { API, PLACEHOLDERS } from '../../constants';
 import { Header } from '../../components/Header';
 import { MobilePost } from '../../components/mobile/MobilePost';
 import { MenuItems } from '../../components/mobile/MenuItems';
@@ -27,6 +27,7 @@ const MobileHome: React.FC<Props> = (props: Props) => {
   const dispatch = useAppDispatch();
 
   const [creatingPost, setCreatingPost] = useState(false);
+  const [placeholder, setPlaceholder] = useState('');
   const [loading, setLoading] = useState(true);
   const [initalLoad, setInitialLoad] = useState(true);
 
@@ -122,6 +123,7 @@ const MobileHome: React.FC<Props> = (props: Props) => {
   const handleCreatePostClick = () => {
     setCreatingPost(!creatingPost);
     window.scrollTo(0, 0);
+    setPlaceholder(PLACEHOLDERS[Math.floor(Math.random() * PLACEHOLDERS.length)]);
   }
 
   const toggleSidebar = () => {
@@ -155,7 +157,7 @@ const MobileHome: React.FC<Props> = (props: Props) => {
                   className={creatingPost ? 'creatingPost' : 'cancelPost'} />
 
                 {creatingPost ? (
-                  <PostEditor setCreatingPost={setCreatingPost} refreshPosts={refreshPosts}/>
+                  <PostEditor setCreatingPost={setCreatingPost} refreshPosts={refreshPosts} placeholder={placeholder} />
                 ) : (
                   null
                 )}

@@ -25,4 +25,14 @@ app.get('/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (r
   })
 })
 
+app.get('/updateTopTen', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
+  db.query(`UPDATE users SET trendPoints = FLOOR(RAND()*10000) where userID >= 0; call sp_updatetopten;`, (err, result, fields) => {
+    if (err) {
+      console.log('error occurred: '+ err)
+    } else {
+      res.send(result)
+    }
+  })
+})
+
 module.exports = app;

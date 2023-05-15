@@ -9,7 +9,7 @@ import SvgPlus from '../assets/svg/SvgPlus';
 import { PostEditor } from '../components/PostEditor';
 import SvgRefresh from '../assets/svg/refreshIcon';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { API } from '../constants';
+import { API, PLACEHOLDERS } from '../constants';
 import { Header } from '../components/Header';
 import { Profile } from '../components/Profile/Profile';
 import * as DOMPurify from 'dompurify';
@@ -27,6 +27,7 @@ const Home: React.FC<Props> = (props: Props) => {
   const [refreshHover, setRefreshHover] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [creatingPost, setCreatingPost] = useState(false);
+  const [placeholder, setPlaceholder] = useState('');
 
   const [posts, setPosts] = useState<PostItem[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -154,6 +155,11 @@ const Home: React.FC<Props> = (props: Props) => {
     })
   }
 
+  const createPost = () => {
+    setCreatingPost(!creatingPost);
+    setPlaceholder(PLACEHOLDERS[Math.floor(Math.random() * PLACEHOLDERS.length)])
+  }
+
   return (
     <div className="app">
       <Header showGithub={true} />
@@ -174,14 +180,14 @@ const Home: React.FC<Props> = (props: Props) => {
             <div className='titleDiv'>
               <p className='sectionTitle'>feed</p>
               <hr className='line' />
-              <SvgPlus onMouseEnter={() => setPlusHover(true)} onMouseLeave={() => setPlusHover(false)} onClick={() => setCreatingPost(!creatingPost)}
+              <SvgPlus onMouseEnter={() => setPlusHover(true)} onMouseLeave={() => setPlusHover(false)} onClick={() => createPost()}
                 height={30} stroke={plusHover ? '#ffb405' : '#8205ff'} style={{ marginLeft: 15 }} className={creatingPost ? 'creatingPost' : 'cancelPost'} />
               
               <SvgRefresh onMouseEnter={() => setRefreshHover(true)} onMouseLeave={() => setRefreshHover(false)} onClick={() => refreshPosts('>')}
                 height={30} strokeWidth={0.5} fill={refreshHover ? '#ffb405' : '#8205ff'} style={{ marginLeft: 15 }} className={refreshing ? 'refresh' : ''}/>
             </div>
             {creatingPost ? (
-              <PostEditor setCreatingPost={setCreatingPost} refreshPosts={refreshPosts}/>
+              <PostEditor setCreatingPost={setCreatingPost} refreshPosts={refreshPosts} placeholder={placeholder} />
 
             ) : (
               null

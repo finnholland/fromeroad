@@ -10,6 +10,7 @@ import Allen from '../assets/logo/Allen';
 import ReactCodeInput from 'react-code-input';
 import { changePassword, findUserByEmail, updateCode, validatePasswords } from '../hooks/login/loginFunctions';
 import AboutDiv from '../components/Login/About';
+import { encrypt } from '../hooks/crypto';
 
 interface Props {
   setAuthenticated: any
@@ -49,7 +50,7 @@ const Login: React.FC<Props> = (props: Props) => {
         name: name,
         email: email.trim(),
         company: company,
-        password: password
+        password: encrypt(password)
       }).then(res => {
         localStorage.setItem('token', res.data.token)
         dispatch(setUser(res.data.user));
@@ -75,7 +76,7 @@ const Login: React.FC<Props> = (props: Props) => {
   const login = () => {
     Axios.post(`${API}/user/login`, {
       email: email.trim(),
-      password: password
+      password:  encrypt(password)
     }).then(res => {
       localStorage.setItem('token', res.data.token)
       dispatch(setUser(res.data.user));

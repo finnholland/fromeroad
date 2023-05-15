@@ -9,7 +9,8 @@ import { Link, getDomain } from '../hooks/posts/postHelpers';
 
 interface Props {
   setCreatingPost: any,
-  refreshPosts: any
+  refreshPosts: any,
+  placeholder: string
 }
 
 interface PostContent {
@@ -51,11 +52,13 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
     evt.preventDefault();
     const domain = getDomain(evt.clipboardData.getData('Text'))
     
-    const tempBody = postContent.body + domain.domain;
-    if (!postLinks.find(link => link.fullUrl === domain.fullUrl)) {
-      setPostLinks(prevState => [...prevState, domain])
+    if (domain.fullUrl !== '' && domain.domain !== '') {
+      const tempBody = postContent.body + domain.domain;
+      if (!postLinks.find(link => link === domain)) {
+        setPostLinks(prevState => [...prevState, domain])
+      }
+      setPostContent(prevState => ({ ...prevState, body: tempBody }));
     }
-    setPostContent(prevState => ({ ...prevState, body: tempBody }));
   };
 
   const uploadPostImage = (e: any) => {
@@ -80,10 +83,22 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
   const createPost = () => {
     postContent.formData.append('userID', selector.user.userID.toString())
     let tempBody = postContent.body;
-    postLinks.forEach(link => {
-      console.log(link)
-      tempBody = tempBody.replace(link.domain, link.fullUrl);
+
+    const map = new Map();
+    postLinks.forEach(a => map.set(a.domain, (map.get(a.domain) || 0) + 1));
+
+    const duplicateLinks = postLinks.filter(dl => map.get(dl.domain) > 1)
+    const uniqueLinks = postLinks.filter(ul => map.get(ul.domain) === 1)
+
+    uniqueLinks.forEach(ul => {
+      tempBody = tempBody.replace(ul.domain, ul.fullUrl);
     });
+    
+    for (let i = 0; i < duplicateLinks.length; i++) {
+      const dl = duplicateLinks[i];
+      const re = new RegExp(`^(?:.*?${dl.domain}){${i+1}}`);
+      tempBody = tempBody.replace(re, function (x) { return x.replace(RegExp(dl.domain + "$"), dl.fullUrl) });
+    }
     postContent.formData.append('body', tempBody);
     props.setCreatingPost(false);
     Axios.post(`${API}/post/create/${selector.user.userID}`, postContent.formData, {
@@ -110,7 +125,7 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
           </div>
 
       </div>
-      <textarea className='postBodyInput' maxLength={157} placeholder='hello moon - 🌏' onChange={handleChange} onPaste={handlePaste} value={postContent.body} rows={2}
+      <textarea className='postBodyInput' maxLength={157} placeholder={props.placeholder} onChange={handleChange} onPaste={handlePaste} value={postContent.body} rows={2}
         ref={textAreaRef} />
       
       {postImage !== '' ? (<img src={postImage} alt='post' className='postImage'/>) : null}
