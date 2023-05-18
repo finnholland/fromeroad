@@ -2,14 +2,17 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  background-color: #fff;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.appDarkMode {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #302245;
 }
 
-.app .header {
+.header {
   background-color: #5900B2;
   flex-direction: row;
   display: flex;
@@ -63,6 +66,15 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+}
+
+.allenPageDarkMode {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #302245;
 }
 
 .postBodyInput::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
