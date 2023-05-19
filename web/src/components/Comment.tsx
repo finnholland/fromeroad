@@ -43,15 +43,15 @@ export const Comment: React.FC<Props> = (props: Props) => {
 
   if (selector.user.userID === props.comment.userID) {
     return (
-      <div className='comment' style={{marginBottom: (props.lastCommentID === props.comment.commentID ? 0 : '1.5rem')}}>
-        <div style={{display: 'flex', width: '100%'}}>
+      <div className={selector.settings.darkMode ? 'commentDarkMode' : 'comment'} style={{marginBottom: (props.lastCommentID === props.comment.commentID ? 0 : '1.5rem')}}>
+        <div style={{display: 'flex', width: '100%'}}>  
           <img src={S3_BUCKET + props.comment.profileImageUrl} alt='profile' className='profileImage' />
           <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1, overflow: 'hidden' }}>
             <div style={{flexDirection: 'row', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
               <span className='text' style={{ color: '#ffb405' }}>{props.comment.name}</span>
               <div style={{justifyContent: 'end', display: 'flex', fontSize: 11}}>
-                <span style={{ marginRight: 15, cursor: 'pointer', userSelect: 'none' }} onClick={() => editHandler()}>{props.editing === props.comment.commentID ? 'cancel' : 'edit'}</span>
-                <span style={{cursor: 'pointer', userSelect: 'none'}} onClick={() => deleteComment()}>delete</span>
+                <span className={selector.settings.darkMode ? 'editDeleteDarkMode' : 'editDelete'} style={{ marginRight: 15 }} onClick={() => editHandler()}>{props.editing === props.comment.commentID ? 'cancel' : 'edit'}</span>
+                <span className={selector.settings.darkMode ? 'editDeleteDarkMode' : 'editDelete'} onClick={() => deleteComment()}>delete</span>
               </div>
             </div>
             <div className='subHeader subtext'>
@@ -64,7 +64,7 @@ export const Comment: React.FC<Props> = (props: Props) => {
     )
   } else {
     return (
-      <div className='comment' style={{marginBottom: (props.lastCommentID === props.comment.commentID ? 0 : '1.5rem')}}>
+      <div className={'comment'} style={{marginBottom: (props.lastCommentID === props.comment.commentID ? 0 : '1.5rem')}}>
         <div className='commentHeader' onMouseOver={() => setProfileHover(true)} onMouseLeave={() => setProfileHover(false)}
           onClick={() => getUserProfile(dispatch, selector.user.userID, props.comment.userID)}>
           <img src={S3_BUCKET + props.comment.profileImageUrl} alt='profile' className='profileImage' />

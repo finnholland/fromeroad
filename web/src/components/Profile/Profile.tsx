@@ -213,12 +213,12 @@ export const Profile: React.FC<Props> = (props: Props) => {
       <div id='profile' className='profile'>
         <div className='titleDiv'>
           <hr className='line' />
-          <SvgRemoveButton style={{marginLeft: 15}} onMouseEnter={() => setCloseProfileView(true)} onMouseLeave={() => setCloseProfileView(false)}
-            onClick={() => { dispatch(setProfile(profileInitialState)); setCloseProfileView(false); setAddSvgHover(-2) }} height={24} strokeWidth={1} stroke={closeProfileView ? '#ffb405' : '#8205ff'} />
+          <SvgRemoveButton style={{marginLeft: 15}} onMouseEnter={() => setCloseProfileView(true)} onMouseLeave={() => setCloseProfileView(false)} height={24} strokeWidth={1}
+            onClick={() => { dispatch(setProfile(profileInitialState)); setCloseProfileView(false); setAddSvgHover(-2) }} stroke={closeProfileView ? '#ffb405' : '#8205ff'}/>
         </div>
         <div>
           <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
-            <img src={API + selector.profile.profileImageUrl} onError={onError} alt='profile' className='profileImage' />
+            <img src={API + selector.profile.profileImageUrl} onError={onError} alt='profile' className={selector.settings.darkMode ? 'profileImageDarkMode' : 'profileImage'} />
             <div className='detailsDiv'>
               <p className='name'>{selector.profile.name}</p>
               <p className='company'>{selector.profile.company}</p>
@@ -261,16 +261,16 @@ export const Profile: React.FC<Props> = (props: Props) => {
     return (
       <div id='profile' className='profile'>
         <div className='titleDiv'>
-          <p className='sectionTitle'>me</p>
-          <hr className='line' />
+          <p className={selector.settings.darkMode ? "sectionTitleDarkMode" : "sectionTitle"}>me</p>
+          <hr className={selector.settings.darkMode ? "lineDarkMode" : "lineDarkMode"} />
           <LogoutIcon onClick={() => props.logout()} height={24} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} stroke={'#8205ff'} strokeWidth={2} />
         </div>
         <div className='profileDesktop'>
           <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
-            <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)}
+            <div className={selector.settings.darkMode ? 'profileImageDarkMode' : 'profileImage'} id='profileImage' onClick={(e) => handleClick(e)}
               style={{ backgroundImage: `url(${S3_BUCKET}${profileImageUrl}), url(${S3_BUCKET}${DEFAULT_PROFILE_IMAGE})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
-              <div className='profileImageOverlay'>
-                <span style={{alignItems: 'center', display:'flex', marginBottom: 5, color: '#fff'}}>change</span>
+              <div className={selector.settings.darkMode ? 'profileImageOverlayDarkMode' : 'profileImageOverlay'}>
+                <span style={{alignItems: 'center', display:'flex', marginBottom: 5}}>change</span>
               </div>
             </div>
             <div className='detailsDiv'>

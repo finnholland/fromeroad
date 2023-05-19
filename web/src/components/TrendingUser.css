@@ -1,4 +1,4 @@
-.trendingUser {
+.trendingUser, .trendingUserDarkMode {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -10,16 +10,10 @@
   direction: ltr;
 }
 
-.trendingUser .subHeader {
-  justify-content: space-between;
-  display: flex;
-  flex-direction: column;
-}
-
 .trendingUser .subtext {
   font-size: .9rem;
-  color: #c182ff;
-  font-weight: 200;
+  color: #b468ff;
+  font-weight: 350;
 }
 .trendingUser .text {
   font-size: 16px;
@@ -31,14 +25,22 @@
   text-overflow: ellipsis;
 }
 
-.trendingUser .profileImage {
+.trendingUser .profileImage, .trendingUserDarkMode .profileImage {
   height: 50px;
   width: 50px;
   border-radius: 60px;
-  border: 2px solid #fff;
-  box-shadow: 0px 2px 3px #888;
+  border: 2px solid #ffffff00;
+  box-shadow: 0px 2px 3px #00000050;
   overflow: hidden;
   margin-right: 1rem;
   aspect-ratio: 1/1;
   object-fit: cover;
+}
+
+
+/* ########### DARK MODE ########### */
+.trendingUserDarkMode .subtext { 
+  color: #F6C6FF;  
+  font-size: .9rem;
+  font-weight: 350;
 }

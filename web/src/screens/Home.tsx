@@ -161,14 +161,14 @@ const Home: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <div className="app">
+    <div className={selector.settings.darkMode ? "appDarkMode" : "app"}>
       <Header showGithub={true} />
       <div className='home'>
         <div id='body' style={{ flexDirection: 'row', display: 'flex', paddingTop: 20, justifyContent: 'space-between'}}>
           <div id='topten' className='topTenList'>
             <div className='titleDiv'>
-              <p className='sectionTitle'>top ten</p>
-              <hr className='line'/>
+              <p className={selector.settings.darkMode ? "sectionTitleDarkMode" : "sectionTitle"}>top ten</p>
+              <hr className={selector.settings.darkMode ? "lineDarkMode" : "lineDarkMode"}/>
             </div>
             <div className='topTenScrollable'>
               {trendingLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
@@ -178,8 +178,8 @@ const Home: React.FC<Props> = (props: Props) => {
           <div style={{width: '20vw'}}/>
           <div id='feed' className='feed'>
             <div className='titleDiv'>
-              <p className='sectionTitle'>feed</p>
-              <hr className='line' />
+              <p className={selector.settings.darkMode ? "sectionTitleDarkMode" : "sectionTitle"}>feed</p>
+              <hr className={selector.settings.darkMode ? "lineDarkMode" : "lineDarkMode"} />
               <SvgPlus onMouseEnter={() => setPlusHover(true)} onMouseLeave={() => setPlusHover(false)} onClick={() => createPost()}
                 height={30} stroke={plusHover ? '#ffb405' : '#8205ff'} style={{ marginLeft: 15 }} className={creatingPost ? 'creatingPost' : 'cancelPost'} />
               
