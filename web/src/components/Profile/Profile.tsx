@@ -27,6 +27,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
   const [interestList, setInterestList] = useState<Interest[]>(selector.user.interests);
   const [interestSearch, setInterestSearch] = useState<Interest[]>([]);
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
+  const [logoutHover, setLogoutHover] = useState(false);
   const [addSvgHover, setAddSvgHover] = useState(-2);
   const [interestLoading, setInterestLoading] = useState(true);
   const [showScroll, setShowScroll] = useState(false);
@@ -262,8 +263,9 @@ export const Profile: React.FC<Props> = (props: Props) => {
       <div id='profile' className='profile'>
         <div className='titleDiv'>
           <p className={selector.settings.darkMode ? "sectionTitleDarkMode" : "sectionTitle"}>me</p>
-          <hr className={selector.settings.darkMode ? "lineDarkMode" : "lineDarkMode"} />
-          <LogoutIcon onClick={() => props.logout()} height={24} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} stroke={'#8205ff'} strokeWidth={2} />
+          <hr className={selector.settings.darkMode ? "lineDarkMode" : "line"} />
+          <LogoutIcon onClick={() => props.logout()} height={24} width={25} style={{ marginLeft: 15, cursor: 'pointer' }}
+            onMouseEnter={() => setLogoutHover(true)} onMouseLeave={() => setLogoutHover(false)} stroke={logoutHover ? '#ffb405' : (selector.settings.darkMode ? '#B17EFF' :'#8205ff')} strokeWidth={3} />
         </div>
         <div className='profileDesktop'>
           <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>

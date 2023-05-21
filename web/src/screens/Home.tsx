@@ -168,7 +168,7 @@ const Home: React.FC<Props> = (props: Props) => {
           <div id='topten' className='topTenList'>
             <div className='titleDiv'>
               <p className={selector.settings.darkMode ? "sectionTitleDarkMode" : "sectionTitle"}>top ten</p>
-              <hr className={selector.settings.darkMode ? "lineDarkMode" : "lineDarkMode"}/>
+              <hr className={selector.settings.darkMode ? "lineDarkMode" : "line"}/>
             </div>
             <div className='topTenScrollable'>
               {trendingLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
@@ -179,12 +179,12 @@ const Home: React.FC<Props> = (props: Props) => {
           <div id='feed' className='feed'>
             <div className='titleDiv'>
               <p className={selector.settings.darkMode ? "sectionTitleDarkMode" : "sectionTitle"}>feed</p>
-              <hr className={selector.settings.darkMode ? "lineDarkMode" : "lineDarkMode"} />
+              <hr className={selector.settings.darkMode ? "lineDarkMode" : "line"} />
               <SvgPlus onMouseEnter={() => setPlusHover(true)} onMouseLeave={() => setPlusHover(false)} onClick={() => createPost()}
-                height={30} stroke={plusHover ? '#ffb405' : '#8205ff'} style={{ marginLeft: 15 }} className={creatingPost ? 'creatingPost' : 'cancelPost'} />
+                height={30} stroke={plusHover ? '#ffb405' : (selector.settings.darkMode ? '#B17EFF': '#8205ff')} style={{ marginLeft: 15 }} className={creatingPost ? 'creatingPost' : 'cancelPost'} />
               
               <SvgRefresh onMouseEnter={() => setRefreshHover(true)} onMouseLeave={() => setRefreshHover(false)} onClick={() => refreshPosts('>')}
-                height={30} strokeWidth={0.5} fill={refreshHover ? '#ffb405' : '#8205ff'} style={{ marginLeft: 15 }} className={refreshing ? 'refresh' : ''}/>
+                height={30} strokeWidth={0.5} fill={refreshHover ? '#ffb405' : (selector.settings.darkMode ? '#B17EFF': '#8205ff')} style={{ marginLeft: 15 }} className={refreshing ? 'refresh' : ''}/>
             </div>
             {creatingPost ? (
               <PostEditor setCreatingPost={setCreatingPost} refreshPosts={refreshPosts} placeholder={placeholder} />

@@ -26,5 +26,6 @@ const JWT_TOKEN = `Bearer ${localStorage.getItem('token')}`
 const CRYPTO_KEY = process.env.REACT_APP_CRYPTO_KEY || 'c973dcf40aa4860d' // local dev 
 
 const PLACEHOLDERS = ['hello moon - 🌏', 'hello moon - 🌏', 'pasted links will be shortened :)', 'you can tag; words with ;']
+const EMAILS = ['@chamonix.com.au', '@expose.com.au']
 
-export {API, PLACEHOLDERS, EIGHT_MEGABYTES, HOUR, DEFAULT_PROFILE_IMAGE, JWT_TOKEN, CRYPTO_KEY, S3_BUCKET}
+export {API, PLACEHOLDERS, EIGHT_MEGABYTES, HOUR, DEFAULT_PROFILE_IMAGE, JWT_TOKEN, CRYPTO_KEY, S3_BUCKET, EMAILS}
