@@ -32,3 +32,5 @@ yarn-error.log*
 aws_fromeroad_ip_update.json
 terraform/.terraform/providers/registry.terraform.io/hashicorp/aws/4.67.0/windows_amd64/terraform-provider-aws_v4.67.0_x5.exe
 terraform/.terraform.lock.hcl
+terraform/scripts.txt
+terraform/env_variables/env.dev.tfvars
