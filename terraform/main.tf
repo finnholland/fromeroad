@@ -18,6 +18,9 @@ provider "aws" {
 # Create a VPC
 resource "aws_vpc" "fr-vpc" {
   cidr_block = "10.0.0.0/16"
+  tags = {
+    Name = "fr-vpc"
+  }
 }
 
 resource "aws_internet_gateway" "gw" { 
@@ -73,13 +76,6 @@ resource "aws_ecs_task_definition" "fr-ecs-task-definition" {
       "image": "${aws_ecr_repository.fromeroad_ecr.repository_url}:latest",
       "portMappings": [
         {
-          "name": "fr-cnt-api-dev-80-tcp",
-          "containerPort": 80,
-          "hostPort": 80,
-          "protocol": "tcp",
-          "appProtocol": "http"
-        },
-        {
           "name": "fr-cnt-api-dev-8080-tcp",
           "containerPort": 8080,
           "hostPort": 8080,
@@ -92,23 +88,15 @@ resource "aws_ecs_task_definition" "fr-ecs-task-definition" {
           "hostPort": 8443,
           "protocol": "tcp",
           "appProtocol": "http"
-        },
-        {
-          "name": "fr-cnt-api-dev-443-tcp",
-          "containerPort": 443,
-          "hostPort": 443,
-          "protocol": "tcp",
-          "appProtocol": "http"
         }
       ],
       "cpu"    = 256
       "memory" = 512
       "environment": [
         { "name": "JWT_SECRET", "value": "${var.JWT_SECRET}" },
-        { "name": "MYSQL_PASSWORD", "value": "${var.MYSQL_PASSWORD}" },
         { "name": "SES_KEY", "value": "${var.SES_KEY}" },
         { "name": "SES_SECRET", "value": "${var.SES_SECRET}" },
-        { "name": "ENV", "value": "${var.ENV}" },
+        { "name": "ENV", "value": "${var.env}" },
         { "name": "S3_KEY", "value": "${var.S3_KEY}" },
         { "name": "S3_SECRET", "value": "${var.S3_SECRET}" },
         { "name": "RDS_DB", "value": "${var.RDS_DB}" },
@@ -142,6 +130,31 @@ resource "aws_security_group" "security_group" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 80
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 443
+    to_port     = 8443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  } 
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
 }
 
 # Create a load balancer
@@ -156,8 +169,8 @@ resource "aws_lb" "load_balancer" {
 # Create a target group
 resource "aws_lb_target_group" "target_group" {
   name     = "fr-tg"
-  port     = 443
-  protocol = "HTTPS"
+  port     = 8080
+  protocol = "HTTP"
 
   vpc_id               = aws_vpc.fr-vpc.id
   target_type          = "ip"
@@ -186,7 +199,7 @@ resource "aws_ecs_service" "fr-ecr-service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.target_group.arn
     container_name   = "fr-cnt-api-${var.env}"
-    container_port   = 80
+    container_port   = 8080
   }
 
   network_configuration {

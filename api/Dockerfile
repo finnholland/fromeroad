@@ -22,6 +22,8 @@ ENV MYSQL_PASSWORD=${MYSQL_PASSWORD}
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 RUN npm install --production --silent && mv node_modules ../
+RUN apk update
+RUN apk add curl
 COPY . .
 RUN chown -R node /usr/src/app/data
 EXPOSE 80
