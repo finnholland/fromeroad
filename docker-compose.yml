@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   mysql_db:
-    container_name: ${ENV}_fromeroad_mysql
+    container_name: ${ENV}_fr_mysql
     image: mysql:8.0.32
     restart: always
     environment:
@@ -25,8 +25,8 @@ services:
       - ./${ENV}_db_data:/var/lib/mysql
       - ./sql/${ENV}/backups:/docker-entrypoint-initdb.d
   nodejs_api:
-    container_name: ${ENV}_fromeroad_api
-    image: ${ENV}_fromeroad_api_image
+    container_name: ${ENV}_fr_api
+    image: ${ENV}_fr_api_image
     restart: always
     build:
       args:

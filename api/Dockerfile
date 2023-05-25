@@ -26,5 +26,7 @@ COPY . .
 RUN chown -R node /usr/src/app/data
 EXPOSE 80
 EXPOSE 443
+EXPOSE 8080
+EXPOSE 8443
 USER node
 CMD ["npm", "start"]

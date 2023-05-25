@@ -34,3 +34,4 @@ terraform/.terraform/providers/registry.terraform.io/hashicorp/aws/4.67.0/window
 terraform/.terraform.lock.hcl
 terraform/scripts.txt
 terraform/env_variables/env.dev.tfvars
+*.tfstate

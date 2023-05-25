@@ -32,6 +32,10 @@ data "aws_availability_zone" "fr-az-b" {
   name = "ap-southeast-2b"
 }
 
+data "aws_iam_role" "ecs_task_execution_role" {
+  name = "ecsTaskExecutionRole"
+}
+
 # Create a subnet
 resource "aws_subnet" "fr-subn-a" {
   vpc_id     = aws_vpc.fr-vpc.id
@@ -53,26 +57,76 @@ resource "aws_ecs_cluster" "fr-cluster" {
 
 # Create an ECR repository for the Docker image
 resource "aws_ecr_repository" "fromeroad_ecr" {
-  name = "fromeroad_ecr"
+  name = "fr_ecr_${var.env}"
 }
 # Create an ECS task definition
 resource "aws_ecs_task_definition" "fr-ecs-task-definition" {
-  family                   = "fr-ecs-task-definition"
-  network_mode = "awsvpc"
+  family                   = "fr-ecs-task-definition-${var.env}"
+  network_mode             = "awsvpc"
+  requires_compatibilities = [ "FARGATE" ]
+  cpu                      = 256
+  memory                   = 512
+  execution_role_arn       = data.aws_iam_role.ecs_task_execution_role.arn
   container_definitions    = jsonencode([
-  {
-    "name": "fr-cnt-api-${var.env}",
-    "image": "${aws_ecr_repository.fromeroad_ecr.repository_url}-${var.env}:latest",
-    "portMappings": [
-      {
-        "containerPort": 80,
-        "hostPort": 80
+    {
+      "name": "fr-cnt-api-${var.env}",
+      "image": "${aws_ecr_repository.fromeroad_ecr.repository_url}:latest",
+      "portMappings": [
+        {
+          "name": "fr-cnt-api-dev-80-tcp",
+          "containerPort": 80,
+          "hostPort": 80,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        },
+        {
+          "name": "fr-cnt-api-dev-8080-tcp",
+          "containerPort": 8080,
+          "hostPort": 8080,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        },
+        {
+          "name": "fr-cnt-api-dev-8443-tcp",
+          "containerPort": 8443,
+          "hostPort": 8443,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        },
+        {
+          "name": "fr-cnt-api-dev-443-tcp",
+          "containerPort": 443,
+          "hostPort": 443,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "cpu"    = 256
+      "memory" = 512
+      "environment": [
+        { "name": "JWT_SECRET", "value": "${var.JWT_SECRET}" },
+        { "name": "MYSQL_PASSWORD", "value": "${var.MYSQL_PASSWORD}" },
+        { "name": "SES_KEY", "value": "${var.SES_KEY}" },
+        { "name": "SES_SECRET", "value": "${var.SES_SECRET}" },
+        { "name": "ENV", "value": "${var.ENV}" },
+        { "name": "S3_KEY", "value": "${var.S3_KEY}" },
+        { "name": "S3_SECRET", "value": "${var.S3_SECRET}" },
+        { "name": "RDS_DB", "value": "${var.RDS_DB}" },
+        { "name": "RDS_USER", "value": "${var.RDS_USER}" },
+        { "name": "RDS_PASSWORD", "value": "${var.RDS_PASSWORD}" }
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8080/ || exit 1"
+        ],
+        "interval": 15,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 5
       }
-    ]
-    "memory" = 128
-    "cpu"    = 2
-  }
-])
+    }
+  ])
 }
 
 # Create a security group for the ECS service
@@ -142,17 +196,17 @@ resource "aws_ecs_service" "fr-ecr-service" {
 }
 
 # Create an RDS database
-resource "aws_db_instance" "fromeroad_rds" {
-  engine               = "mysql"
-  instance_class       = "db.t2.micro"
-  allocated_storage    = 10
-  storage_type         = "gp2"
-  username             = var.RDS_USER
-  password             = var.RDS_PASSWORD
-  db_subnet_group_name = aws_db_subnet_group.fr-rds-subn-group.name
-  skip_final_snapshot  = true
-  final_snapshot_identifier = "fr-rds-final-${var.env}"
-}
+# resource "aws_db_instance" "fromeroad_rds" {
+#   engine               = "mysql"
+#   instance_class       = "db.t2.micro"
+#   allocated_storage    = 10
+#   storage_type         = "gp2"
+#   username             = var.RDS_USER
+#   password             = var.RDS_PASSWORD
+#   db_subnet_group_name = aws_db_subnet_group.fr-rds-subn-group.name
+#   skip_final_snapshot  = true
+#   final_snapshot_identifier = "fr-rds-final-${var.env}"
+# }
 
 # Create an RDS subnet group
 resource "aws_db_subnet_group" "fr-rds-subn-group" {
@@ -192,42 +246,42 @@ resource "aws_s3_bucket_acl" "fr-bucket-acl" {
 }
 
 # Create a Route 53 zone
-resource "aws_route53_zone" "fromeroad" {
-  name = "fromeroad.com"
-}
+# resource "aws_route53_zone" "fromeroad" {
+#   name = "fromeroad.com"
+# }
 
-# Create a Route 53 zone
-resource "aws_route53_zone" "fromeroad_api" {
-  name = "api.fromeroad.com"
-}
+# # Create a Route 53 zone
+# resource "aws_route53_zone" "fromeroad_api" {
+#   name = "api.fromeroad.com"
+# }
 
-# Create a DNS record in Route 53
-resource "aws_route53_record" "fr-api-record" {
-  zone_id = aws_route53_zone.fromeroad_api.id
-  name    = "api.fromeroad.com"
-  type    = "A"
+# # Create a DNS record in Route 53
+# resource "aws_route53_record" "fr-api-record" {
+#   zone_id = aws_route53_zone.fromeroad_api.id
+#   name    = "api.fromeroad.com"
+#   type    = "A"
 
-  alias {
-    name = aws_lb.load_balancer.dns_name
-    zone_id = aws_lb.load_balancer.zone_id
-    evaluate_target_health = true
-  }
-}
+#   alias {
+#     name = aws_lb.load_balancer.dns_name
+#     zone_id = aws_lb.load_balancer.zone_id
+#     evaluate_target_health = true
+#   }
+# }
 
-# Create a DNS record in Route 53
-resource "aws_route53_record" "fr-api-dev-record" {
-  zone_id = aws_route53_zone.fromeroad_api.id
-  name    = "dev.api.fromeroad.com"
-  type    = "CNAME"
-  ttl     = "300"
-  records = [aws_route53_record.fr-api-record.name]
-}
+# # Create a DNS record in Route 53
+# resource "aws_route53_record" "fr-api-dev-record" {
+#   zone_id = aws_route53_zone.fromeroad_api.id
+#   name    = "dev.api.fromeroad.com"
+#   type    = "CNAME"
+#   ttl     = "300"
+#   records = [aws_route53_record.fr-api-record.name]
+# }
 
-# Create a DNS record in Route 53
-resource "aws_route53_record" "fr-api-test-record" {
-  zone_id = aws_route53_zone.fromeroad_api.id
-  name    = "test.api.fromeroad.com"
-  type    = "CNAME"
-  ttl     = "300"
-  records = [aws_route53_record.fr-api-record.name]
-}
+# # Create a DNS record in Route 53
+# resource "aws_route53_record" "fr-api-test-record" {
+#   zone_id = aws_route53_zone.fromeroad_api.id
+#   name    = "test.api.fromeroad.com"
+#   type    = "CNAME"
+#   ttl     = "300"
+#   records = [aws_route53_record.fr-api-record.name]
+# }
