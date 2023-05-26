@@ -253,13 +253,14 @@ resource "aws_lb_listener" "listener" {
 }
 
 # Create an ECS service
-resource "aws_ecs_service" "fr-ecr-service" {
-  name            = "fr-ecr-srv-${var.env}"
+resource "aws_ecs_service" "fr-ecs-service" {
+  name            = "fr-ecs-srv-${var.env}"
   cluster         = aws_ecs_cluster.fr-cluster.id
   task_definition = aws_ecs_task_definition.fr-ecs-task-definition.arn
   desired_count   = 1
-  deployment_maximum_percent = 100
-  deployment_minimum_healthy_percent = 15
+  deployment_maximum_percent = 200
+  deployment_minimum_healthy_percent = 100
+  wait_for_steady_state = false
   load_balancer {
     target_group_arn = aws_lb_target_group.target_group.arn
     container_name   = "fr-cnt-api-${var.env}"
@@ -270,7 +271,13 @@ resource "aws_ecs_service" "fr-ecr-service" {
     subnets = [aws_subnet.fr-subn-a.id, aws_subnet.fr-subn-b.id]
     security_groups = [aws_security_group.security_group.id]
   }
-  depends_on = [ aws_lb.load_balancer, aws_ecs_task_definition.fr-ecs-task-definition ]
+  depends_on = [
+    aws_lb.load_balancer,
+    aws_ecs_task_definition.fr-ecs-task-definition,
+    aws_vpc.fr-vpc,
+    aws_route_table.fr-rt,
+    aws_security_group.security_group
+  ]
 }
 
 # Create an RDS database
