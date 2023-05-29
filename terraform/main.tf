@@ -212,8 +212,8 @@ resource "aws_lb" "load_balancer" {
 # Create a target group
 resource "aws_lb_target_group" "target_group" {
   name     = "fr-tg"
-  port     = 443
-  protocol = "HTTPS"
+  port     = 8080
+  protocol = "HTTP"
   protocol_version = "HTTP1"
 
   vpc_id               = aws_vpc.fr-vpc.id
@@ -331,27 +331,27 @@ resource "aws_s3_bucket_acl" "fr-bucket-acl" {
 }
 
 # Create a Route 53 zone
-# resource "aws_route53_zone" "fromeroad" {
-#   name = "fromeroad.com"
-# }
+resource "aws_route53_zone" "fromeroad" {
+  name = "fromeroad.com"
+}
 
 # # Create a Route 53 zone
 # resource "aws_route53_zone" "fromeroad_api" {
 #   name = "api.fromeroad.com"
 # }
 
-# # Create a DNS record in Route 53
-# resource "aws_route53_record" "fr-api-record" {
-#   zone_id = aws_route53_zone.fromeroad_api.id
-#   name    = "api.fromeroad.com"
-#   type    = "A"
+# Create a DNS record in Route 53
+resource "aws_route53_record" "fr-api-record" {
+  zone_id = aws_route53_zone.fromeroad.id
+  name    = "api.fromeroad.com"
+  type    = "A"
 
-#   alias {
-#     name = aws_lb.load_balancer.dns_name
-#     zone_id = aws_lb.load_balancer.zone_id
-#     evaluate_target_health = true
-#   }
-# }
+  alias {
+    name = aws_lb.load_balancer.dns_name
+    zone_id = aws_lb.load_balancer.zone_id
+    evaluate_target_health = true
+  }
+}
 
 # # Create a DNS record in Route 53
 # resource "aws_route53_record" "fr-api-dev-record" {

@@ -3,7 +3,7 @@ const API_URLS = {
   env: process.env.REACT_APP_API_KEY,
   dev: 'https://dev.api.fromeroad.com',
   prod: 'https://api.fromeroad.com',
-  local: 'http://localhost'
+  local: 'http://localhost:8080'
 }
 
 const S3_URLS = {
