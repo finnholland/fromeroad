@@ -282,7 +282,7 @@ resource "aws_ecs_service" "fr-ecs-service" {
 
 # Create an RDS database
 # resource "aws_db_instance" "fromeroad_rds" {
-#   engine               = "mysql"
+#   engine               = "aurora-mysql"
 #   instance_class       = "db.t2.micro"
 #   allocated_storage    = 10
 #   storage_type         = "gp2"

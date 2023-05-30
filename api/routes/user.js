@@ -81,7 +81,7 @@ app.get('/validateresetcode', (req, res) => {
         message: 'invalid code'
       });
     } else {
-      return res.send(200);
+      return res.sendStatus(200);
     }
   })
 })
