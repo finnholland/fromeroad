@@ -18,6 +18,7 @@ provider "aws" {
 # Create a VPC
 resource "aws_vpc" "fr-vpc" {
   cidr_block = "10.0.0.0/16"
+  enable_dns_hostnames = true
   tags = {
     Name = "fr-vpc"
   }
@@ -117,7 +118,7 @@ resource "aws_ecs_task_definition" "fr-ecs-task-definition" {
       "secrets" : [
         {
           "name": "SES_KEY",
-          "valueFrom": ":SES_KEY::"
+          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:SES_KEY::"
         },
         {
           "name": "SES_SECRET",
@@ -163,8 +164,8 @@ resource "aws_ecs_task_definition" "fr-ecs-task-definition" {
 }
 
 # Create a security group for the ECS service
-resource "aws_security_group" "security_group" {
-  name        = "ecs-service-security-group"
+resource "aws_security_group" "ecs_sg" {
+  name        = "ecs-sg"
   description = "Security group for ECS service"
 
   vpc_id = aws_vpc.fr-vpc.id
@@ -226,13 +227,43 @@ resource "aws_security_group" "security_group" {
   }
 }
 
+resource "aws_security_group" "rds_sg" {
+  name        = "rds-sg"
+  description = "Security group for RDS service"
+
+  vpc_id = aws_vpc.fr-vpc.id
+
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = []
+    description      = ""
+    ipv6_cidr_blocks = []
+    prefix_list_ids  = []
+    security_groups  = [aws_security_group.ecs_sg.id]
+    self             = false
+  }
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    description      = ""
+    prefix_list_ids  = []
+    security_groups  = []
+    self             = false
+  }
+}
+
 # Create a load balancer
 resource "aws_lb" "load_balancer" {
   name               = "fr-lb-${var.env}"
   load_balancer_type = "application"
   subnets            = [aws_subnet.fr-subn-a.id, aws_subnet.fr-subn-b.id]
 
-  security_groups = [aws_security_group.security_group.id]
+  security_groups = [aws_security_group.ecs_sg.id]
 }
 
 # Create a target group
@@ -295,14 +326,14 @@ resource "aws_ecs_service" "fr-ecs-service" {
 
   network_configuration {
     subnets = [aws_subnet.fr-subn-a.id, aws_subnet.fr-subn-b.id]
-    security_groups = [aws_security_group.security_group.id]
+    security_groups = [aws_security_group.ecs_sg.id]
   }
   depends_on = [
     aws_lb.load_balancer,
     aws_ecs_task_definition.fr-ecs-task-definition,
     aws_vpc.fr-vpc,
     aws_route_table.fr-rt,
-    aws_security_group.security_group
+    aws_security_group.ecs_sg
   ]
 }
 
@@ -357,9 +388,9 @@ resource "aws_db_subnet_group" "fr-rds-subn-group" {
 # }
 
 # Create a Route 53 zone
-resource "aws_route53_zone" "fromeroad" {
-  name = "fromeroad.com"
-}
+# resource "aws_route53_zone" "fromeroad" {
+#   name = "fromeroad.com"
+# }
 
 # # Create a Route 53 zone
 # resource "aws_route53_zone" "fromeroad_api" {
@@ -367,17 +398,17 @@ resource "aws_route53_zone" "fromeroad" {
 # }
 
 # Create a DNS record in Route 53
-resource "aws_route53_record" "fr-api-record" {
-  zone_id = aws_route53_zone.fromeroad.id
-  name    = "api.fromeroad.com"
-  type    = "A"
+# resource "aws_route53_record" "fr-api-record" {
+#   zone_id = aws_route53_zone.fromeroad.id
+#   name    = "api.fromeroad.com"
+#   type    = "A"
 
-  alias {
-    name = aws_lb.load_balancer.dns_name
-    zone_id = aws_lb.load_balancer.zone_id
-    evaluate_target_health = true
-  }
-}
+#   alias {
+#     name = aws_lb.load_balancer.dns_name
+#     zone_id = aws_lb.load_balancer.zone_id
+#     evaluate_target_health = true
+#   }
+#}
 
 # # Create a DNS record in Route 53
 # resource "aws_route53_record" "fr-api-dev-record" {
