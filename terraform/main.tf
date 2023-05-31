@@ -112,15 +112,41 @@ resource "aws_ecs_task_definition" "fr-ecs-task-definition" {
       "cpu"    = 256
       "memory" = 512
       "environment": [
-        { "name": "JWT_SECRET", "value": "${var.JWT_SECRET}" },
-        { "name": "SES_KEY", "value": "${var.SES_KEY}" },
-        { "name": "SES_SECRET", "value": "${var.SES_SECRET}" },
-        { "name": "ENV", "value": "${var.env}" },
-        { "name": "S3_KEY", "value": "${var.S3_KEY}" },
-        { "name": "S3_SECRET", "value": "${var.S3_SECRET}" },
-        { "name": "RDS_DB", "value": "${var.RDS_DB}" },
-        { "name": "RDS_USER", "value": "${var.RDS_USER}" },
-        { "name": "RDS_PASSWORD", "value": "${var.RDS_PASSWORD}" }
+        { "name": "ENV", "value": "${var.env}" }
+      ],
+      "secrets" : [
+        {
+          "name": "SES_KEY",
+          "valueFrom": ":SES_KEY::"
+        },
+        {
+          "name": "SES_SECRET",
+          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:SES_SECRET::"
+        },
+        {
+          "name": "JWT_SECRET",
+          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:JWT_SECRET::"
+        },
+        {
+          "name": "S3_SECRET",
+          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:S3_SECRET::"
+        },
+        {
+          "name": "S3_KEY",
+          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:S3_KEY::"
+        },
+        {
+          "name": "RDS_USER",
+          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:RDS_USER::"
+        },
+        {
+          "name": "RDS_DB",
+          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:RDS_DB::"
+        },
+        {
+          "name": "RDS_PASSWORD",
+          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:RDS_PASSWORD::"
+        }
       ],
       "healthCheck": {
         "command": [
@@ -300,35 +326,35 @@ resource "aws_db_subnet_group" "fr-rds-subn-group" {
 }
 
 # Create an S3 bucket
-resource "aws_s3_bucket" "fr-bucket" {
-  bucket = "fromeroad-${var.env}"
-}
+# resource "aws_s3_bucket" "fr-bucket" {
+#   bucket = "fromeroad-${var.env}"
+# }
 
-resource "aws_s3_bucket_ownership_controls" "fr-bucket-ownership" {
-  bucket = aws_s3_bucket.fr-bucket.id
-  rule {
-    object_ownership = "BucketOwnerPreferred"
-  }
-}
+# resource "aws_s3_bucket_ownership_controls" "fr-bucket-ownership" {
+#   bucket = aws_s3_bucket.fr-bucket.id
+#   rule {
+#     object_ownership = "BucketOwnerPreferred"
+#   }
+# }
 
-resource "aws_s3_bucket_public_access_block" "fr-bucket-access" {
-  bucket = aws_s3_bucket.fr-bucket.id
+# resource "aws_s3_bucket_public_access_block" "fr-bucket-access" {
+#   bucket = aws_s3_bucket.fr-bucket.id
 
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-}
+#   block_public_acls       = false
+#   block_public_policy     = false
+#   ignore_public_acls      = false
+#   restrict_public_buckets = false
+# }
 
-resource "aws_s3_bucket_acl" "fr-bucket-acl" {
-  depends_on = [
-    aws_s3_bucket_ownership_controls.fr-bucket-ownership,
-    aws_s3_bucket_public_access_block.fr-bucket-access
-  ]
+# resource "aws_s3_bucket_acl" "fr-bucket-acl" {
+#   depends_on = [
+#     aws_s3_bucket_ownership_controls.fr-bucket-ownership,
+#     aws_s3_bucket_public_access_block.fr-bucket-access
+#   ]
 
-  bucket = aws_s3_bucket.fr-bucket.id
-  acl    = "public-read"
-}
+#   bucket = aws_s3_bucket.fr-bucket.id
+#   acl    = "public-read"
+# }
 
 # Create a Route 53 zone
 resource "aws_route53_zone" "fromeroad" {
