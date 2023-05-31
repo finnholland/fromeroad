@@ -11,10 +11,10 @@ phases:
       - echo Building the Docker image...
       - cd api && docker build -t fr_ecr_$ENV .
       - docker tag fr_ecr_$ENV:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:latest
-      - docker tag fr_ecr_$ENV:$CODEBUILD_BUILD_ID $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:$CODEBUILD_BUILD_ID
+      - docker tag fr_ecr_$ENV:$CODEBUILD_BUILD_NUMBER $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:$CODEBUILD_BUILD_NUMBER
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:$CODEBUILD_BUILD_ID
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:$CODEBUILD_BUILD_NUMBER
