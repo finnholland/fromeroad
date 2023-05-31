@@ -7,3 +7,4 @@ variable "SECRET_KEY" {}
 variable "BUCKET" {}
 variable "REGION" {}
 variable "KEY" {}
+variable "SM_ARN" {}
