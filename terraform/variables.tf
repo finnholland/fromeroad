@@ -8,3 +8,5 @@ variable "BUCKET" {}
 variable "REGION" {}
 variable "KEY" {}
 variable "SM_ARN" {}
+variable "RDS_USER" {}
+variable "RDS_PASSWORD" {}

@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.0"
+      version = "~> 5.0.1"
     }
   }
   backend "s3" { }
@@ -113,7 +113,8 @@ resource "aws_ecs_task_definition" "fr-ecs-task-definition" {
       "cpu"    = 256
       "memory" = 512
       "environment": [
-        { "name": "ENV", "value": "${var.env}" }
+        { "name": "ENV", "value": "${var.env}" },
+        { "name": "RDS_DB", "value": "${aws_rds_cluster.fr_rds.endpoint}" },
       ],
       "secrets" : [
         {
@@ -139,10 +140,6 @@ resource "aws_ecs_task_definition" "fr-ecs-task-definition" {
         {
           "name": "RDS_USER",
           "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:RDS_USER::"
-        },
-        {
-          "name": "RDS_DB",
-          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:RDS_DB::"
         },
         {
           "name": "RDS_PASSWORD",
@@ -338,17 +335,44 @@ resource "aws_ecs_service" "fr-ecs-service" {
 }
 
 # Create an RDS database
-# resource "aws_db_instance" "fromeroad_rds" {
-#   engine               = "aurora-mysql"
-#   instance_class       = "db.t2.micro"
-#   allocated_storage    = 10
-#   storage_type         = "gp2"
-#   username             = var.RDS_USER
-#   password             = var.RDS_PASSWORD
-#   db_subnet_group_name = aws_db_subnet_group.fr-rds-subn-group.name
-#   skip_final_snapshot  = true
-#   final_snapshot_identifier = "fr-rds-final-${var.env}"
-# }
+resource "aws_rds_cluster_instance" "fr_rds_instance" {
+  count              = 1
+  identifier         = "${aws_rds_cluster.fr_rds.cluster_identifier}-${count.index}"
+  cluster_identifier = aws_rds_cluster.fr_rds.id
+  instance_class     = "db.t3.medium"
+  engine             = aws_rds_cluster.fr_rds.engine
+  engine_version     = aws_rds_cluster.fr_rds.engine_version
+  publicly_accessible = true
+  
+}
+
+resource "aws_rds_cluster" "fr_rds" {
+  cluster_identifier = "fr-rds-${var.env}"
+  engine             = "aurora-mysql"
+  engine_mode        = "provisioned"
+  engine_version     = "8.0.mysql_aurora.3.03.1"
+  master_username    = "${var.RDS_USER}_${var.env}"
+  master_password    = var.RDS_PASSWORD
+  copy_tags_to_snapshot = true
+  network_type = "IPV4"
+  skip_final_snapshot = true
+  storage_encrypted = true
+  port = 3306
+  db_subnet_group_name = aws_db_subnet_group.fr-rds-subn-group.name
+  serverlessv2_scaling_configuration {
+    max_capacity = 2
+    min_capacity = 0.5
+  }
+  lifecycle {
+    ignore_changes = [
+      engine_version,
+      availability_zones,
+      master_username,
+      master_password,
+    ]
+  }
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+}
 
 # Create an RDS subnet group
 resource "aws_db_subnet_group" "fr-rds-subn-group" {
