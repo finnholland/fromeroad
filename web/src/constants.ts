@@ -15,8 +15,8 @@ const S3_URLS = {
 
 
 // reset to env each commit
-const API = API_URLS.env; 
-const S3_BUCKET = API
+const API = API_URLS.env;
+const S3_BUCKET = S3_URLS.env
 
 
 const HOUR = 60000 * 60;
