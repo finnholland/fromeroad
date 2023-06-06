@@ -58,7 +58,7 @@ const Login: React.FC<Props> = (props: Props) => {
         props.setVerified(false);
         props.setAuthenticated(true)
       }).catch(err => {
-        if (err.response?.data?.message && err.response?.status != 503) {
+        if (err.response?.data?.message && err.response?.status !== 503) {
           setErrorMessage({ type: 'signup', message: err.response?.data?.message })
           if (err.response.status === 409) {
             setErrorHighlights(['email'])
@@ -84,7 +84,7 @@ const Login: React.FC<Props> = (props: Props) => {
       props.setVerified(res.data.user.verified)
       props.setAuthenticated(true)
     }).catch(err => {
-      if (err.response?.data?.message && err.response?.status != 503) {
+      if (err.response?.data?.message && err.response?.status !== 503) {
         setErrorMessage({ type: 'login', message: err.response?.data?.message })
         if (err.response.status === 401) {
           setErrorHighlights(['email', 'password'])

@@ -105,7 +105,7 @@ app.post('/resetpassword', (req, res) => {
 app.get('/autoLogin', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   db.query('select * from users where userID = ?', [req.auth.userID], (err, result, fields) => {
     if (err) {
-      console.log('error occurred: '+ err)
+      next(err)
     } else {
       res.send(result)
     }
