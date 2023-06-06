@@ -113,18 +113,15 @@ app.get('/autoLogin', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256
 })
 
 // get user by password
-app.post('/login', async (req, res) => {
+app.post('/login', async (req, res, next) => {
   const email = req.body.email;
   const password = cryptojs.AES.decrypt(req.body.password, process.env.CRYPTO_KEY);
   const decrypted = password.toString(cryptojs.enc.Utf8);
   db.query('select * from users where email = ?', email, (err, result, fields) => {
     if (err) {
-      console.log('error occurred: ' + err)
-      res.status(err.code).send({
-        message: err.message
-      })
-    } else if (result.length <= 0) {
-      res.status(401).send({
+      next(err)
+    } else if (!result || result.length <= 0) {
+      return res.status(401).send({
         message: 'invalid email or password'
       })
     } else {
@@ -165,8 +162,9 @@ app.post('/signup', async (req, res, next) => {
   let userID = 0
 
   db.query('select * from users where email = ?', user.email, (err, result) => { 
-    if (err) throw (err)
-    if (result.length != 0) {
+    if (err) {
+      next(err)
+    } else if (result.length != 0) {
       return res.status(409).send({
         message: 'this person exists :O'
       })
@@ -211,8 +209,7 @@ app.post('/updateuser', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS2
   db.query(`update users set name = ?, project = ?, phone = ? where userID = ?`, [name, project, phone, userID],
     (err, result, fields) => {
     if (err) {
-      console.log('error occurred: ' + err)
-      return err.code
+      next(err)
     } else {
       res.send(result)
     }
