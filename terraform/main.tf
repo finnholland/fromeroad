@@ -126,6 +126,10 @@ resource "aws_ecs_task_definition" "fr-ecs-task-definition" {
           "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:SES_SECRET::"
         },
         {
+          "name": "CRYPTO_KEY",
+          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:CRYPTO_KEY::"
+        },
+        {
           "name": "JWT_SECRET",
           "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:JWT_SECRET::"
         },
@@ -343,7 +347,6 @@ resource "aws_rds_cluster_instance" "fr_rds_instance" {
   engine             = aws_rds_cluster.fr_rds.engine
   engine_version     = aws_rds_cluster.fr_rds.engine_version
   publicly_accessible = true
-  
 }
 
 resource "aws_rds_cluster" "fr_rds" {
