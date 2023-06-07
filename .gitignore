@@ -35,3 +35,4 @@ terraform/.terraform.lock.hcl
 terraform/scripts.txt
 *.tfvars
 *.tfstate
+terraform/.terraform/*

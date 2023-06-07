@@ -103,7 +103,7 @@ app.post('/resetpassword', (req, res) => {
 })
 
 // get user from token
-app.get('/autoLogin', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
+app.get('/autoLogin', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res, next) => {
   db.query('select * from users where userID = ?', [req.auth.userID], (err, result, fields) => {
     if (err) {
       next(err)
