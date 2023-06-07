@@ -15,14 +15,14 @@ interface Props {
 
 interface PostContent {
   body: string,
-  userID: number,
+  userId: number,
   formData: FormData
 }
 
 export const PostEditor: React.FC<Props> = (props: Props) => {
   
   const selector = useAppSelector(state => state)
-  const [postContent, setPostContent] = useState<PostContent>({ body: '', formData: new FormData(), userID: selector.user.userID });
+  const [postContent, setPostContent] = useState<PostContent>({ body: '', formData: new FormData(), userId: selector.user.userId });
   const [imageUrl, setImageUrl] = useState(selector.user.profileImageUrl)
   const [postImage, setPostImage] = useState('')
   const [errored, setErrored] = useState(false)
@@ -81,7 +81,7 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
   }
 
   const createPost = () => {
-    postContent.formData.append('userID', selector.user.userID.toString())
+    postContent.formData.append('userId', selector.user.userId.toString())
     let tempBody = postContent.body;
 
     const map = new Map();
@@ -101,7 +101,7 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
     }
     postContent.formData.append('body', tempBody);
     props.setCreatingPost(false);
-    Axios.post(`${API}/post/create/${selector.user.userID}`, postContent.formData, {
+    Axios.post(`${API}/post/create/${selector.user.userId}`, postContent.formData, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => props.refreshPosts('>'))
   }

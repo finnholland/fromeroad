@@ -9,12 +9,12 @@ app.use(cors());
 
 app.get('/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   db.query(`select tt.*, u.name, u.company, u.profileImageUrl, IFNULL(postCount, 0) as postCount from topten as tt 
-              inner join users as u on u.userID = tt.userID
+              inner join users as u on u.userId = tt.userId
               left join (
-                select userID, COUNT(posts.userID) as postCount from posts
-                  where TIMESTAMPDIFF(day, posts.createdAt, NOW()) < 7  group by userID
+                select userId, COUNT(posts.userId) as postCount from posts
+                  where TIMESTAMPDIFF(day, posts.createdAt, NOW()) < 7  group by userId
               ) recentPosts
-              on u.userID = recentPosts.userID
+              on u.userId = recentPosts.userId
               where tt.trendPoints > 0
               limit 10`, (err, result, fields) => {
     if (err) {
@@ -26,7 +26,7 @@ app.get('/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (r
 })
 
 app.get('/updateTopTen', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
-  db.query(`UPDATE users SET trendPoints = FLOOR(RAND()*10000) where userID >= 0; call sp_updatetopten;`, (err, result, fields) => {
+  db.query(`UPDATE users SET trendPoints = FLOOR(RAND()*10000) where userId >= 0; call sp_updatetopten;`, (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)
     } else {

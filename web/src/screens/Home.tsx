@@ -41,13 +41,13 @@ const Home: React.FC<Props> = (props: Props) => {
     const body = renderLinksAndTags(i.post.body);
     let clean = DOMPurify.sanitize(body, { USE_PROFILES: { html: true }, ALLOWED_TAGS: ['span', 'a'], ADD_ATTR: ['target', 'style'] });
     return (
-      <Post key={i.post.postID} post={i.post} body={clean} poster={i.poster} />
+      <Post key={i.post.postId} post={i.post} body={clean} poster={i.poster} />
     )
   });
 
   const trendingUserItem = trendingUsers.map((i) => {
     return (
-      <TrendingUser key={i.userID} user={i} />
+      <TrendingUser key={i.userId} user={i} />
     )
   });
 
@@ -69,7 +69,7 @@ const Home: React.FC<Props> = (props: Props) => {
     setLoading(true);
     Axios.get(`${API}/post/get`, {
       params: {
-        userID: selector.user.userID,
+        userId: selector.user.userId,
         sign: '>',
         condition: 0
       },
@@ -87,18 +87,18 @@ const Home: React.FC<Props> = (props: Props) => {
     }, 500);
     setLoading(true);
     const direction = sign === '>' ? 'top' : 'bottom';
-    let postID = 0
+    let postId = 0
     if (sign === '>' && posts.length > 0) {
-      postID = posts[0].post.postID
+      postId = posts[0].post.postId
     } else if (sign === '<' && posts.length > 0) {
-      postID = posts[posts.length - 1].post.postID
+      postId = posts[posts.length - 1].post.postId
     }
 
     Axios.get(`${API}/post/get`, {
       params: {
-        userID: selector.user.userID,
+        userId: selector.user.userId,
         sign: sign,
-        condition: postID
+        condition: postId
       },
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
@@ -113,16 +113,16 @@ const Home: React.FC<Props> = (props: Props) => {
   const updatePosts = (data: any, direction: string) => {
     const tempPosts: PostItem[] = []
     data.forEach((p: any) => {
-      if (posts.findIndex(fp => fp.post.postID === p.postID) === -1) {
+      if (posts.findIndex(fp => fp.post.postId === p.postId) === -1) {
         const poster: Poster = {
-          userID: p.userID,
+          userId: p.userId,
           name: p.name,
           profileImageUrl: p.profileImageUrl,
           company: p.company
         }
         const post: PostItem = {
           post: {
-            postID: p.postID,
+            postId: p.postId,
             body: p.body,
             trendPoints: p.trendPoints,
             postImageUrl: p.postImageUrl,

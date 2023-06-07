@@ -10,7 +10,7 @@ export const MobileActivity = () => {
   
   const activityItems = activity.map((i) => {
     return (
-      <RecentPoster key={i.userID} user={i} />
+      <RecentPoster key={i.userId} user={i} />
     )
   });
 

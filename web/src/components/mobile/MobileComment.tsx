@@ -9,7 +9,7 @@ import '../Comment.css'
 
 interface Props {
   comment: CommentType
-  lastCommentID: number,
+  lastCommentId: number,
   getComments: any
   editComment: any
   setEditing: any
@@ -23,33 +23,33 @@ export const MobileComment: React.FC<Props> = (props: Props) => {
   const dispatch = useAppDispatch();
   
   const deleteComment = () => {
-    Axios.delete(`${API}/post/comments/delete/${props.comment.commentID}`, {
+    Axios.delete(`${API}/post/comments/delete/${props.comment.commentId}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } 
     }).then(props.getComments())
   }
 
   const editHandler = () => {
     let edit = 0
-    if (props.editing !== -1 && props.editing !== props.comment.commentID) {
-      edit = (props.comment.commentID);
+    if (props.editing !== -1 && props.editing !== props.comment.commentId) {
+      edit = (props.comment.commentId);
     } else {
-      edit = (props.editing === -1 ? props.comment.commentID : -1);
+      edit = (props.editing === -1 ? props.comment.commentId : -1);
     }
     
     props.setEditing(edit);
     props.editComment(edit);
   }
 
-  if (selector.user.userID === props.comment.userID) {
+  if (selector.user.userId === props.comment.userId) {
     return (
-      <div className='comment' style={{marginBottom: (props.lastCommentID === props.comment.commentID ? 0 : '1.5rem')}}>
+      <div className='comment' style={{marginBottom: (props.lastCommentId === props.comment.commentId ? 0 : '1.5rem')}}>
         <div style={{display: 'flex', width: '100%'}}>
           <img src={S3_BUCKET + props.comment.profileImageUrl} alt='profile' className='profileImage' />
           <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1, overflow: 'hidden' }}>
             <div style={{flexDirection: 'row', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
               <span className='text' style={{ color: '#ffb405', width: '65%' }}>{props.comment.name}</span>
               <div style={{justifyContent: 'end', display: 'flex', fontSize: 11}}>
-                <span style={{ marginRight: 15, cursor: 'pointer', userSelect: 'none', marginLeft: 10 }} onClick={() => editHandler()}>{props.editing === props.comment.commentID ? 'cancel' : 'edit'}</span>
+                <span style={{ marginRight: 15, cursor: 'pointer', userSelect: 'none', marginLeft: 10 }} onClick={() => editHandler()}>{props.editing === props.comment.commentId ? 'cancel' : 'edit'}</span>
                 <span style={{cursor: 'pointer', userSelect: 'none'}} onClick={() => deleteComment()}>delete</span>
               </div>
             </div>
@@ -63,8 +63,8 @@ export const MobileComment: React.FC<Props> = (props: Props) => {
     )
   } else {
     return (
-      <div className='comment' style={{marginBottom: (props.lastCommentID === props.comment.commentID ? 0 : '1.5rem')}}>
-        <div className='commentHeader' onClick={() => { getUserProfile(dispatch, selector.user.userID, props.comment.userID); props.setCurrentRoute('profile') }}>
+      <div className='comment' style={{marginBottom: (props.lastCommentId === props.comment.commentId ? 0 : '1.5rem')}}>
+        <div className='commentHeader' onClick={() => { getUserProfile(dispatch, selector.user.userId, props.comment.userId); props.setCurrentRoute('profile') }}>
           <img src={S3_BUCKET + props.comment.profileImageUrl} alt='profile' className='profileImage' />
           <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1, overflow: 'hidden' }}>
             <span className='text' style={{ color: '#ffb405', width: '65%' }}>{props.comment.name}</span>
