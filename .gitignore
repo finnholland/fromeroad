@@ -33,5 +33,5 @@ aws_fromeroad_ip_update.json
 *.exe
 terraform/.terraform.lock.hcl
 terraform/scripts.txt
-terraform/env_variables/env.dev.tfvars
+*.tfvars
 *.tfstate

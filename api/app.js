@@ -53,7 +53,9 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use((err, req, res, next) => {
-  return res.status(err.code?.match(/^[0-9]+$/) ? err.code : 503).send({
+  res.locals.error = err;
+  const status = err.status || 500;
+  res.status(status).send({
     message: err.message
   })
 });

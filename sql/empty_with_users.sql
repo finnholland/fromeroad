@@ -23,12 +23,12 @@ DROP TABLE IF EXISTS `comments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `comments` (
-  `commentID` int NOT NULL AUTO_INCREMENT,
-  `postID` int NOT NULL,
-  `userID` int NOT NULL,
+  `commentId` int NOT NULL AUTO_INCREMENT,
+  `postId` int NOT NULL,
+  `userId` int NOT NULL,
   `body` varchar(255) NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`commentID`)
+  PRIMARY KEY (`commentId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -40,9 +40,9 @@ DROP TABLE IF EXISTS `interests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `interests` (
-  `interestID` int NOT NULL AUTO_INCREMENT,
+  `interestId` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`interestID`),
+  PRIMARY KEY (`interestId`),
   UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -55,14 +55,14 @@ DROP TABLE IF EXISTS `posts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `posts` (
-  `postID` int NOT NULL AUTO_INCREMENT,
+  `postId` int NOT NULL AUTO_INCREMENT,
   `body` longtext NOT NULL,
   `postImageUrl` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
-  `userID` int NOT NULL,
+  `userId` int NOT NULL,
   `trendPoints` int NOT NULL DEFAULT '0',
   `visible` tinyint NOT NULL DEFAULT '1',
-  PRIMARY KEY (`postID`)
+  PRIMARY KEY (`postId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -74,10 +74,10 @@ DROP TABLE IF EXISTS `postvotes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `postvotes` (
-  `postID` int NOT NULL,
-  `userID` int NOT NULL,
+  `postId` int NOT NULL,
+  `userId` int NOT NULL,
   `vote` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`postID`,`userID`)
+  PRIMARY KEY (`postId`,`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -89,11 +89,11 @@ DROP TABLE IF EXISTS `resetcodes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `resetcodes` (
-  `codeID` int NOT NULL AUTO_INCREMENT,
+  `codeId` int NOT NULL AUTO_INCREMENT,
   `code` varchar(100) NOT NULL,
   `email` varchar(255) NOT NULL,
   `createdAt` datetime NOT NULL,
-  PRIMARY KEY (`codeID`)
+  PRIMARY KEY (`codeId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -105,7 +105,7 @@ DROP TABLE IF EXISTS `topten`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `topten` (
-  `userID` int NOT NULL,
+  `userId` int NOT NULL,
   `name` varchar(255) NOT NULL,
   `trendPoints` int NOT NULL,
   `pos` int NOT NULL AUTO_INCREMENT,
@@ -122,7 +122,7 @@ DROP TABLE IF EXISTS `trendingusers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `trendingusers` (
-  `userID` int NOT NULL,
+  `userId` int NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `trendPoints` int DEFAULT NULL,
   `pos` int NOT NULL AUTO_INCREMENT,
@@ -138,12 +138,12 @@ DROP TABLE IF EXISTS `userinterests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `userinterests` (
-  `userID` int NOT NULL,
-  `interestID` int NOT NULL,
-  PRIMARY KEY (`userID`,`interestID`),
-  KEY `interestID` (`interestID`),
-  CONSTRAINT `userinterests_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `userinterests_ibfk_2` FOREIGN KEY (`interestID`) REFERENCES `interests` (`interestID`) ON DELETE CASCADE ON UPDATE CASCADE
+  `userId` int NOT NULL,
+  `interestId` int NOT NULL,
+  PRIMARY KEY (`userId`,`interestId`),
+  KEY `interestId` (`interestId`),
+  CONSTRAINT `userinterests_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `userinterests_ibfk_2` FOREIGN KEY (`interestId`) REFERENCES `interests` (`interestId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -155,7 +155,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
-  `userID` int NOT NULL AUTO_INCREMENT,
+  `userId` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `trendPoints` int NOT NULL DEFAULT '0',
@@ -165,7 +165,7 @@ CREATE TABLE `users` (
   `profileImageUrl` varchar(255) DEFAULT '/data/default/default_profile_image.jpg',
   `password` varchar(255) NOT NULL,
   `verified` tinyint NOT NULL DEFAULT '0',
-  PRIMARY KEY (`userID`)
+  PRIMARY KEY (`userId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -237,7 +237,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`fromeroad_admin_%`@`localhost` PROCEDURE `sp_deletecodes`()
 BEGIN
-	delete from resetcodes where codeID >= 0 and createdAt < DATE_SUB(NOW(),INTERVAL 30 MINUTE);
+	delete from resetcodes where codeId >= 0 and createdAt < DATE_SUB(NOW(),INTERVAL 30 MINUTE);
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -258,20 +258,20 @@ CREATE DEFINER=`fromeroad_admin_%`@`localhost` PROCEDURE `sp_updatetopten`()
 BEGIN
 	-- start of the hour get topten
 	delete from topten where pos >= 0; ALTER TABLE topten AUTO_INCREMENT = 1;
-	insert into topten (userID, name, trendPoints)
-	select userID, name, trendpoints from users order by trendpoints desc limit 10;
+	insert into topten (userId, name, trendPoints)
+	select userId, name, trendpoints from users order by trendpoints desc limit 10;
 
 	-- update topten with difference from previous hour
 	update topten as tt
-	inner join trendingusers as tu on tt.userID = tu.userID
+	inner join trendingusers as tu on tt.userId = tu.userId
 	set difference = tu.pos - tt.pos
 	where tt.pos >= 0
 	order by tt.pos;
 
 	-- overwrite and store list of current positions for the new hour
 	delete from trendingusers where pos >= 0; ALTER TABLE trendingusers AUTO_INCREMENT = 1;
-	insert into trendingusers (userID, name, trendPoints)
-	select userID, name, trendpoints from users order by trendpoints desc;
+	insert into trendingusers (userId, name, trendPoints)
+	select userId, name, trendpoints from users order by trendpoints desc;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -292,11 +292,11 @@ CREATE DEFINER=`fromeroad_admin_%`@`localhost` PROCEDURE `sp_weeklyreset`()
 BEGIN
 	UPDATE users
 	SET trendPoints = 0
-	where userID >= 0;
+	where userId >= 0;
     
     update posts
     set visible = 0
-    where TIMESTAMPDIFF(day, createdAt, NOW()) < 7 and posts.postID > 0;
+    where TIMESTAMPDIFF(day, createdAt, NOW()) < 7 and posts.postId > 0;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;

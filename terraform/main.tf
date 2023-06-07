@@ -119,35 +119,35 @@ resource "aws_ecs_task_definition" "fr-ecs-task-definition" {
       "secrets" : [
         {
           "name": "SES_KEY",
-          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:SES_KEY::"
+          "valueFrom": "${var.SM_ARN}:SES_KEY::"
         },
         {
           "name": "SES_SECRET",
-          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:SES_SECRET::"
+          "valueFrom": "${var.SM_ARN}:SES_SECRET::"
         },
         {
           "name": "CRYPTO_KEY",
-          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:CRYPTO_KEY::"
+          "valueFrom": "${var.SM_ARN}:CRYPTO_KEY::"
         },
         {
           "name": "JWT_SECRET",
-          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:JWT_SECRET::"
+          "valueFrom": "${var.SM_ARN}:JWT_SECRET::"
         },
         {
           "name": "S3_SECRET",
-          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:S3_SECRET::"
+          "valueFrom": "${var.SM_ARN}:S3_SECRET::"
         },
         {
           "name": "S3_KEY",
-          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:S3_KEY::"
+          "valueFrom": "${var.SM_ARN}:S3_KEY::"
         },
         {
           "name": "RDS_USER",
-          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:RDS_USER::"
+          "valueFrom": "${var.SM_ARN}:RDS_USER::"
         },
         {
           "name": "RDS_PASSWORD",
-          "valueFrom": "${var.SM_ARN}:fr/${var.env}/secrets-227gKr:RDS_PASSWORD::"
+          "valueFrom": "${var.SM_ARN}:RDS_PASSWORD::"
         }
       ],
       "healthCheck": {
@@ -314,20 +314,13 @@ resource "aws_lb_listener" "listener" {
 resource "aws_ecs_service" "fr-ecs-service" {
   name            = "fr-ecs-srv-${var.env}"
   cluster         = aws_ecs_cluster.fr-cluster.id
-  task_definition = aws_ecs_task_definition.fr-ecs-task-definition.arn
   desired_count   = 1
   deployment_maximum_percent = 200
   deployment_minimum_healthy_percent = 100
   wait_for_steady_state = false
-  load_balancer {
-    target_group_arn = aws_lb_target_group.target_group.arn
-    container_name   = "fr-cnt-api-${var.env}"
-    container_port   = 8080
-  }
 
-  network_configuration {
-    subnets = [aws_subnet.fr-subn-a.id, aws_subnet.fr-subn-b.id]
-    security_groups = [aws_security_group.ecs_sg.id]
+  deployment_controller {
+    type = "EXTERNAL"
   }
   depends_on = [
     aws_lb.load_balancer,
@@ -336,6 +329,49 @@ resource "aws_ecs_service" "fr-ecs-service" {
     aws_route_table.fr-rt,
     aws_security_group.ecs_sg
   ]
+}
+
+resource "aws_ecs_task_set" "fr-ecs-task" {
+  service         = aws_ecs_service.fr-ecs-service.id
+  cluster         = aws_ecs_cluster.fr-cluster.id
+  task_definition = aws_ecs_task_definition.fr-ecs-task-definition.arn
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.target_group.arn
+    container_name   = "fr-cnt-api-${var.env}"
+    container_port   = 8080
+  }
+
+  network_configuration {
+    subnets = [ aws_subnet.fr-subn-a.id, aws_subnet.fr-subn-b.id ]
+    security_groups = [ aws_security_group.ecs_sg.id ]
+    assign_public_ip = false
+  }
+  depends_on = [ aws_ecs_service.fr-ecs-service ]
+  
+}
+
+resource "aws_appautoscaling_target" "ecs-target" {
+  max_capacity       = 4
+  min_capacity       = 1
+  resource_id        = "service/${aws_ecs_cluster.fr-cluster.name}/${aws_ecs_service.fr-ecs-service.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "ecs-asp" {
+  name               = "fr-ecs-asp-${var.env}"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.ecs-target.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs-target.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs-target.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    target_value = 75
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+  }
 }
 
 # Create an RDS database

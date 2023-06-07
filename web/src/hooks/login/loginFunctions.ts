@@ -1,6 +1,7 @@
 import Axios from "axios"
 import { API } from "../../constants"
 import { Dispatch, SetStateAction } from "react"
+import { encrypt } from "../crypto"
 
 const generateCode = (email: string) => {
   Axios.post(`${API}/user/generateresetcode`, {
@@ -58,7 +59,7 @@ export const changePassword = (props: ChangePasswordProps) => {
   if (canResetPassword) {
     console.log(props.email)
     Axios.post(`${API}/user/resetpassword`, {
-      password: props.password,
+      password: encrypt(props.password),
       email: props.email.trim().toLowerCase()
     }).then(res => {
       props.setShowSuccessPage(true);
