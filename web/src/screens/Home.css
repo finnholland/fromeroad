@@ -1,7 +1,11 @@
-.app .home {
+.app .home, .appDarkMode .home {
   flex: 4; 
   display: flex;
   flex-direction: column;
+}
+
+.appDarkMode .home {
+  background-color: #302245;
 }
 
 .home .footer {
@@ -31,7 +35,7 @@
   margin-top: 5px;
 }
 
-.app .titleContainer {
+.app .titleContainer, .appDarkMode .titleContainer {
   margin: 0;
   padding: 0;
   flex-direction: row;
@@ -54,7 +58,7 @@
   font-size: 1.5rem;
 }
 
-.app .feed {
+.app .feed, .appDarkMode .feed {
   max-width: 30vw;
   flex-grow: 1;
   margin-left: 100px;
@@ -66,13 +70,6 @@
   border: #8205ff solid 1px;
   flex: 1; 
   margin: 0
-}
-
-.subline {
-  color: #c182ff;
-  border: #c182ff solid 1px;
-  margin: 0;
-  margin-top: 2rem;
 }
 
 .sectionTitle {
@@ -100,6 +97,22 @@
   overflow-x: hidden;
   scrollbar-color: #ddd #eee;
   scrollbar-width: thin;
+}
+
+/* ################ DARK MODE ################### */
+
+.lineDarkMode {
+  color: #B17EFF;
+  border: #B17EFF solid 1px;
+  flex: 1; 
+  margin: 0
+}
+
+.sectionTitleDarkMode {
+  font-size: 20px; 
+  color: #B17EFF;
+  margin: 0;
+  margin-right: 0.8rem;
 }
 
 /* ~~~~~~~~   ELEMENT STYLES   ~~~~~~~~ */

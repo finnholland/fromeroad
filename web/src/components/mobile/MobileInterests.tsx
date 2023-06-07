@@ -306,7 +306,6 @@ export const MobileInterests: React.FC<Props> = (props: Props) => {
               {interestLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
             </div>
             <span className='errorMessage'>{addInterestError}</span>
-            <hr className='subline' />
           </div>
         </div>
         <input ref={ref} type={'file'} accept="image/png, image/jpeg" name="file" onChange={uploadImage} hidden />

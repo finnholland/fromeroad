@@ -3,7 +3,7 @@ import './App.css';
 import Axios from 'axios';
 import Home from './screens/Home';
 import { userInitialState, setUser } from './hooks/slices/userSlice';
-import { useAppDispatch } from './hooks/Actions';
+import { useAppDispatch, useAppSelector } from './hooks/Actions';
 import { isMobile } from 'react-device-detect';
 import { API } from './constants';
 import Login from './screens/Login';
@@ -12,10 +12,12 @@ import MobileLogin from './screens/mobile/MobileLogin';
 import MobileHome from './screens/mobile/MobileHome';
 import { setIsOpen } from './hooks/slices/sidebarSlice';
 import { ErrorPage } from './Error';
+import { setDarkMode } from './hooks/slices/settingsSlice';
 
 
 function App() {
   const dispatch = useAppDispatch();
+  const selector = useAppSelector(state => state);
   const [authenticated, setAuthenticated] = useState(false)
   const [checked, setChecked] = useState(false)
   const [verified, setVerified] = useState(false)
@@ -24,6 +26,7 @@ function App() {
     if (localStorage.getItem('token') && localStorage.getItem('token') !== '') {
       setAuthenticated(true)
     }
+    dispatch(setDarkMode(localStorage.getItem('darkMode') === "true"))
     getUserFromToken()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -72,7 +75,7 @@ function App() {
     );
   } else {
     return (
-      <div className='allenPage'>
+      <div className={selector.settings.darkMode ? 'allenPageDarkMode' : 'allenPage'}>
         <Allen height={200} width={200} className='purple'/>
       </div>
       

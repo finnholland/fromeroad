@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SvgChamonix from '../assets/svg/chamonix';
 import Hamburger from '../assets/svg/hamburger';
 import SvgLotfourteen from '../assets/svg/lotfourteen';
@@ -9,6 +9,7 @@ import GitHub from '../assets/svg/github';
 import { isMobile } from 'react-device-detect';
 import Axios from 'axios';
 import { API } from '../constants';
+import { setDarkMode } from '../hooks/slices/settingsSlice';
 interface Props {
   showGithub: boolean
   error?: boolean
@@ -25,6 +26,11 @@ export const Header: React.FC<Props> = (props: Props) => {
     }).then()
   }
 
+  const changeSides = () => {
+    dispatch(setDarkMode(!selector.settings.darkMode))
+    localStorage.setItem('darkMode', String(!selector.settings.darkMode))
+  }
+
   if (!isMobile) {
     return (
       <div>
@@ -37,7 +43,7 @@ export const Header: React.FC<Props> = (props: Props) => {
               props.showGithub ? (<a href='https://github.com/fhllnd/fromeroad' target={'_blank'} rel='noreferrer'> <GitHub height={25} fill={'#fff'} /> </a>) :
                 ( null )
             }
-
+            <span onClick={() => changeSides()}>mode: {selector.settings.darkMode ? 'dark' : 'light'}</span>
           </div>
           <div className='titleContainer'>
             <p onClick={() => updatetoptentemp()} className='title'>frome_road</p>
