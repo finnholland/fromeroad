@@ -16,10 +16,10 @@ app.use(cors());
 
 // ROUTES RELATING TO USER ~~~~ api/user/{route}
 
-// get user by ID
+// get user by Id
 app.get('/profile', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
-  const profileID = req.query.profileID
-  db.query(`select name, email, trendPoints, company, project, phone, profileImageUrl from users where userID = ?`, [profileID], (err, result, fields) => {
+  const profileId = req.query.profileId
+  db.query(`select name, email, trendPoints, company, project, phone, profileImageUrl from users where userId = ?`, [profileId], (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)
     } else {
@@ -27,9 +27,9 @@ app.get('/profile', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"]
     }
   })
 })
-app.get('/profile/interests/:profileID', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
-  const profileID = req.params.profileID
-  db.query(`SELECT interests.interestID, name FROM interests JOIN userinterests ON interests.interestID = userinterests.interestID WHERE userinterests.userID = ?`, [profileID], (err, result, fields) => {
+app.get('/profile/interests/:profileId', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
+  const profileId = req.params.profileId
+  db.query(`SELECT interests.interestId, name FROM interests JOIN userinterests ON interests.interestId = userinterests.interestId WHERE userinterests.userId = ?`, [profileId], (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)
     } else {
@@ -39,11 +39,11 @@ app.get('/profile/interests/:profileID', ejwt({ secret: process.env.JWT_SECRET, 
 })
 
 // get user by email
-app.get('/email', (req, res, next) => {
+app.get('/email', (req, res) => {
   const email = req.query.email
   db.query(`select email from users where email = ?`, [email], (err, result, fields) => {
     if (err) {
-      next(err)
+      console.log('error occurred: '+ err)
     } else if (result.length === 0) {
       return res.status(409).send({
         message: 'invalid email'
@@ -54,11 +54,13 @@ app.get('/email', (req, res, next) => {
   })
 })
 
-app.post('/generateresetcode', (req, res, next) => {
+app.post('/generateresetcode', (req, res) => {
+  const email = req.body.email
+  const resetCode = Math.floor(100000 + Math.random() * 900000);
   console.log(resetCode, email)
   db.query(`insert into resetcodes (code, email, createdAt) values (?, ?, now())`, [resetCode, email], (err, result, fields) => {
     if (err) {
-      next(err)
+      console.log('error occurred: '+ err)
     } else {
       sendResetCodeEmail(email, resetCode)
       return res.send(200);
@@ -66,35 +68,32 @@ app.post('/generateresetcode', (req, res, next) => {
   })
 })
 
-app.get('/validateresetcode', (req, res, next) => {
+app.get('/validateresetcode', (req, res) => {
   const email = req.query.email
   const resetCode = req.query.resetCode
   console.log(resetCode, email);
   db.query(`select * from resetcodes where email = ? and code = ? and createdAt > DATE_SUB(NOW(),INTERVAL 30 MINUTE)`, [email, resetCode], (err, result, fields) => {
+    console.log(result)
     if (err) {
-      next(err)
+      console.log('error occurred: '+ err)
     } else if (result.length === 0) {
       return res.status(409).send({
         message: 'invalid code'
       });
     } else {
-      return res.sendStatus(200);
+      return res.send(200);
     }
   })
 })
 
 app.post('/resetpassword', (req, res) => {
-  if (!req.body.email || !req.body.password) {
-    return res.sendStatus(400)
-  }
   const email = req.body.email
-  const password = cryptojs.AES.decrypt(req.body.password, process.env.CRYPTO_KEY);
-  const decrypted = password.toString(cryptojs.enc.Utf8);
+  const password = req.body.password
 
   bcrypt.hash(password, 10).then((hash) => {
     console.log(hash)
     db.query(`update users set password = ? where email = ?`, [hash, email], (err, result, fields) => { 
-      if (err) next(err)
+      if (err) throw (err)
       else {
         return res.sendStatus(200)
       }
@@ -103,10 +102,10 @@ app.post('/resetpassword', (req, res) => {
 })
 
 // get user from token
-app.get('/autoLogin', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res, next) => {
-  db.query('select * from users where userID = ?', [req.auth.userID], (err, result, fields) => {
+app.get('/autoLogin', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
+  db.query('select * from users where userId = ?', [req.auth.userId], (err, result, fields) => {
     if (err) {
-      next(err)
+      console.log('error occurred: '+ err)
     } else {
       res.send(result)
     }
@@ -114,18 +113,18 @@ app.get('/autoLogin', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256
 })
 
 // get user by password
-app.post('/login', async (req, res, next) => {
-  if (!req.body.email || !req.body.password) {
-    return res.sendStatus(400)
-  }
+app.post('/login', async (req, res) => {
   const email = req.body.email;
   const password = cryptojs.AES.decrypt(req.body.password, process.env.CRYPTO_KEY);
   const decrypted = password.toString(cryptojs.enc.Utf8);
   db.query('select * from users where email = ?', email, (err, result, fields) => {
     if (err) {
-      next(err)
-    } else if (!result || result.length <= 0) {
-      return res.status(401).send({
+      console.log('error occurred: ' + err)
+      res.status(err.code).send({
+        message: err.message
+      })
+    } else if (result.length <= 0) {
+      res.status(401).send({
         message: 'invalid email or password'
       })
     } else {
@@ -134,7 +133,7 @@ app.post('/login', async (req, res, next) => {
           return err
         }
         if (valid) {
-          const encryptToken = jwt.sign({ userID: result[0].userID.toString() }, process.env.JWT_SECRET, { algorithm: 'HS256' });
+          const encryptToken = jwt.sign({ userId: result[0].userId.toString() }, process.env.JWT_SECRET, { algorithm: 'HS256' });
           return res.status(200).send({
             message: "logged in successfully",
             user: result[0],
@@ -153,9 +152,6 @@ app.post('/login', async (req, res, next) => {
 
 // create user
 app.post('/signup', async (req, res, next) => {
-  if (!req.body.email || !req.body.password || !req.body.company || !req.body.name) {
-    return res.sendStatus(400)
-  }
   const password = cryptojs.AES.decrypt(req.body.password, process.env.CRYPTO_KEY);
   const decrypted = password.toString(cryptojs.enc.Utf8);
 
@@ -166,12 +162,11 @@ app.post('/signup', async (req, res, next) => {
     password: decrypted,
   }
 
-  let userID = 0
+  let userId = 0
 
   db.query('select * from users where email = ?', user.email, (err, result) => { 
-    if (err) {
-      next(err)
-    } else if (result.length != 0) {
+    if (err) throw (err)
+    if (result.length != 0) {
       return res.status(409).send({
         message: 'this person exists :O'
       })
@@ -181,7 +176,7 @@ app.post('/signup', async (req, res, next) => {
         user.password = hash;
         db.query('insert into users (name, email, company, password) values (?,?,?,?)', [user.name, user.email, user.company, user.password], (err, result, fields) => {
           if (err) throw (err)
-          userID = result.insertId
+          userId = result.insertId
           db.query('SELECT * FROM users WHERE email = ?', user.email, (err,result) => {
             if (err) {
               return res.status(400).send({
@@ -189,10 +184,10 @@ app.post('/signup', async (req, res, next) => {
               })
             }
             const encryptToken = jwt.sign({
-              userID: userID.toString(),
+              userId: userId.toString(),
               name: user.name
             }, process.env.JWT_SECRET, { algorithm: 'HS256' });
-            sendEmail(userID, user.email, user.name)
+            sendEmail(userId, user.email, user.name)
             return res.status(201).send({
                 user: user,
                 msg: "successfully registered",
@@ -206,17 +201,18 @@ app.post('/signup', async (req, res, next) => {
 })
 
 app.post('/updateuser', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res, next) => { 
-  if (req.auth.userID !== req.body.userID?.toString()) {
+  if (req.auth.userId !== req.body.userId?.toString()) {
     return res.sendStatus(401)
   }
   const name = req.body.name
   const project = req.body.project
   const phone = req.body.phone
-  const userID = req.body.userID
-  db.query(`update users set name = ?, project = ?, phone = ? where userID = ?`, [name, project, phone, userID],
+  const userId = req.body.userId
+  db.query(`update users set name = ?, project = ?, phone = ? where userId = ?`, [name, project, phone, userId],
     (err, result, fields) => {
     if (err) {
-      next(err)
+      console.log('error occurred: ' + err)
+      return err.code
     } else {
       res.send(result)
     }
@@ -225,28 +221,28 @@ app.post('/updateuser', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS2
 
 // add interest
 app.post('/interests/addInterests/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res, next) => {
-  if (!req.body.userID || !req.body.name) {
+  if (!req.body.userId || !req.body.name) {
     return res.sendStatus(400)
-  } else if (req.auth.userID !== req.body.userID.toString()) {
+  } else if (req.auth.userId !== req.body.userId.toString()) {
     return res.sendStatus(401)
   }
   const interestName = req.body.name;
-  const userID = req.body.userID;
-  let interestID = null;
+  const userId = req.body.userId;
+  let interestId = null;
 
-  db.query('select interestID from interests where name = ?', [interestName], async (err, result, fields) => {
+  db.query('select interestId from interests where name = ?', [interestName], async (err, result, fields) => {
     if (err) {
       next(err)
     } else {
-      interestID = result[0]?.interestID
+      interestId = result[0]?.interestId
     }
 
-    if (!interestID || interestID === 0) {
+    if (!interestId || interestId === 0) {
       db.query('insert into interests (name) values (?)', interestName, (err, result, fields) => {
         if (err) next(err)
-        interestID = result.insertId
+        interestId = result.insertId
 
-        db.query('insert into userinterests (userID, interestID) values (?, ?)', [userID, interestID], (err, result, fields) => {
+        db.query('insert into userinterests (userId, interestId) values (?, ?)', [userId, interestId], (err, result, fields) => {
           if (err) next(err)
           else {
             return res.sendStatus(200)
@@ -254,7 +250,7 @@ app.post('/interests/addInterests/', ejwt({ secret: process.env.JWT_SECRET, algo
         })
       })
     } else {
-      db.query('insert into userinterests (userID, interestID) values (?, ?)', [userID, interestID], (err, result, fields) => {
+      db.query('insert into userinterests (userId, interestId) values (?, ?)', [userId, interestId], (err, result, fields) => {
         if (err) return res.sendStatus(409)
         else {
           return res.sendStatus(200)
@@ -267,13 +263,13 @@ app.post('/interests/addInterests/', ejwt({ secret: process.env.JWT_SECRET, algo
 })
 
 // get interest
-app.get('/interests/getInterests/:userID', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
-  if (req.auth.userID !== req.params.userID) {
+app.get('/interests/getInterests/:userId', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userId !== req.params.userId) {
     return res.sendStatus(401)
   }
-  const userID = req.params.userID;
+  const userId = req.params.userId;
   
-  db.query('SELECT * FROM interests JOIN userinterests ON interests.interestID = userinterests.interestID WHERE userinterests.userID = ?', userID, (err, result, fields) => {
+  db.query('SELECT * FROM interests JOIN userinterests ON interests.interestId = userinterests.interestId WHERE userinterests.userId = ?', userId, (err, result, fields) => {
     if (err) throw (err)
     else {
       return res.status(200).send(result)
@@ -283,16 +279,16 @@ app.get('/interests/getInterests/:userID', ejwt({ secret: process.env.JWT_SECRET
 
 // remove interest
 app.delete('/interests/removeInterests', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
-  console.log(req.body.userID)
-  if (!req.body.userID || !req.body.interestID) {
+  console.log(req.body.userId)
+  if (!req.body.userId || !req.body.interestId) {
     return res.sendStatus(400)
-  } else if (req.auth.userID !== req.body.userID.toString()) {
+  } else if (req.auth.userId !== req.body.userId.toString()) {
     return res.sendStatus(401)
   }
-  const userID = req.body.userID;
-  const interestID = req.body.interestID;
+  const userId = req.body.userId;
+  const interestId = req.body.interestId;
   
-  db.query('delete from userinterests where userID = ? and interestID = ?', [userID, interestID], (err, result, fields) => {
+  db.query('delete from userinterests where userId = ? and interestId = ?', [userId, interestId], (err, result, fields) => {
     if (err) throw (err)
     else {
       return res.status(200).send(result)

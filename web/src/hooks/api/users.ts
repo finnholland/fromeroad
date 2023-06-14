@@ -4,9 +4,9 @@ import { API, JWT_TOKEN } from "../../constants";
 import { setUser} from "../slices/userSlice";
 import { setProfile, setProfileInterests } from "../slices/profileSlice";
 
-export const updateUserDetails = (dispatch: any, userState: User, userID: number, setUserState: any) => {
+export const updateUserDetails = (dispatch: any, userState: User, userId: number, setUserState: any) => {
   const params = {
-    userID: userID,
+    userId: userId,
     name: userState.name,
     project: userState.project,
     phone: userState.phone,
@@ -25,10 +25,10 @@ export const updateUserDetails = (dispatch: any, userState: User, userID: number
   })
 }
 
-export const getUserProfile = (dispatch: any, userID: number, profileID: number) => {
+export const getUserProfile = (dispatch: any, userId: number, profileId: number) => {
   const params = {
-    userID: userID,
-    profileID: profileID,
+    userId: userId,
+    profileId: profileId,
   }
   Axios.get(`${API}/user/profile`, {
     params: params,
@@ -41,7 +41,7 @@ export const getUserProfile = (dispatch: any, userID: number, profileID: number)
     return err
   });
 
-  Axios.get(`${API}/user/profile/interests/${profileID}`, {
+  Axios.get(`${API}/user/profile/interests/${profileId}`, {
     headers: {
       Authorization: JWT_TOKEN
   }

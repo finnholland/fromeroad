@@ -53,10 +53,10 @@ export const Post: React.FC<Props> = (props: Props) => {
 
   const upvotePost = () => {
     const params = {
-      userID: selector.user.userID,
-      posterID: props.poster.userID
+      userId: selector.user.userId,
+      posterId: props.poster.userId
     }
-    Axios.post(`${API}/post/upvote/${props.post.postID}`, params, {
+    Axios.post(`${API}/post/upvote/${props.post.postId}`, params, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } 
     }).then(res => {
       setTrendPoints(props.post.voted ? trendPoints - 1 : trendPoints + 1)
@@ -70,8 +70,8 @@ export const Post: React.FC<Props> = (props: Props) => {
       return;
     }
     Axios.post(`${API}/post/comments/post`, {
-      postID: props.post.postID,
-      userID: selector.user.userID,
+      postId: props.post.postId,
+      userId: selector.user.userId,
       body: comment.trim()
     }, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -83,9 +83,9 @@ export const Post: React.FC<Props> = (props: Props) => {
 
   const updateComment = () => {
     Axios.post(`${API}/post/comments/update`, {
-      postID: props.post.postID,
-      commentID: editingComment,
-      userID: selector.user.userID,
+      postId: props.post.postId,
+      commentId: editingComment,
+      userId: selector.user.userId,
       body: comment
     }, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -98,7 +98,7 @@ export const Post: React.FC<Props> = (props: Props) => {
   
   const getComments = () => {
     setLoading(true)
-    Axios.get(`${API}/post/comments/get/${props.post.postID}`, {
+    Axios.get(`${API}/post/comments/get/${props.post.postId}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(res => {
       setComments(res.data)
@@ -111,14 +111,14 @@ export const Post: React.FC<Props> = (props: Props) => {
       setComment('')
     }
     setEditingComment(id)
-    const commentToEdit = comments.filter(c => c.commentID === id)[0]
+    const commentToEdit = comments.filter(c => c.commentId === id)[0]
     setComment(commentToEdit.body)
   }
 
   const commentItems = comments.map((i) => {
-    if (comments.findIndex(c => c.commentID === i.commentID) <= 1 || showComments) {
+    if (comments.findIndex(c => c.commentId === i.commentId) <= 1 || showComments) {
       return (
-        <Comment key={i.commentID} comment={i} lastCommentID={comments[comments.length - 1].commentID} setComments={setComments} comments={comments} editComment={editComment} setEditing={setEditing} editing={editing} />
+        <Comment key={i.commentId} comment={i} lastCommentId={comments[comments.length - 1].commentId} setComments={setComments} comments={comments} editComment={editComment} setEditing={setEditing} editing={editing} />
       )
     } else return (null)
   });
@@ -134,23 +134,23 @@ export const Post: React.FC<Props> = (props: Props) => {
     return (
       <div className='post'>
         <div id='header' className='postHeader'>
-          <div className='user' onMouseOver={() => setProfileHover(true)} onMouseLeave={() => setProfileHover(false)} onClick={() => getUserProfile(dispatch, selector.user.userID, props.poster.userID )}>
+          <div className='user' onMouseOver={() => setProfileHover(true)} onMouseLeave={() => setProfileHover(false)} onClick={() => getUserProfile(dispatch, selector.user.userId, props.poster.userId )}>
             <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className={selector.settings.darkMode ? 'profileImageDarkMode' : 'profileImage'} />
             <div className='headerDetails'>
-              <span style={{textDecoration: profileHover ? 'underline' : 'none'}} className={selector.settings.darkMode ? 'headerTextNameDarkMode' : 'headerTextName'}>{props.poster.name}</span>
-              <span className={selector.settings.darkMode ? 'headerTextCompanyDarkMode' : 'headerTextCompany'}>{props.poster.company}</span>
+              <span style={{textDecoration: profileHover ? 'underline' : 'none'}} className='headerTextName'>{props.poster.name}</span>
+              <span className='headerTextCompany'>{props.poster.company}</span>
             </div>
           </div>
-          <span className={selector.settings.darkMode ? 'headerTextCompanyDarkMode' : 'headerTextCompany'}>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
+          <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
         </div>
         <div id='body' className='postBody'>
-          <span dangerouslySetInnerHTML={{ __html: props.body }} className={selector.settings.darkMode ? 'bodyTextDarkMode' : 'bodyText'} />
+          <span dangerouslySetInnerHTML={{__html: props.body}} className='bodyText'/>
           <img src={S3_BUCKET + props.post.postImageUrl} alt='postImage' className='postImage'/>
         </div>
         <div id='footer' className='postFooter'>
           <div style={{width: '50%', alignItems: 'center', display: 'flex', justifyContent: 'space-between', flexDirection: 'row', userSelect: 'none', textAlign: 'start'}}>
             <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}} onClick={() => upvotePost()}>
-              <Heart stroke={selector.settings.darkMode ? '#00b2b2' : '#8205FF'} fill={props.post.voted || selector.user.userID === props.poster.userID ? (selector.settings.darkMode ? '#B0FFFF' : '#EEBEFF') : '#ffffff00'} strokeWidth={1.1} height={30} />
+              <Heart stroke={selector.settings.darkMode ? '#00b2b2' : '#8205FF'} fill={props.post.voted || selector.user.userId === props.poster.userId ? (selector.settings.darkMode ? '#B0FFFF' : '#EEBEFF') : '#ffffff00'} strokeWidth={1.1} height={30} />
               <span style={{flex: 1, paddingLeft: 10, color: '#8205FF'}}>{convertTrendPoints(trendPoints)}</span>
             </div>
             <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}} onClick={() => setShowComments(!showComments)}>
@@ -161,10 +161,10 @@ export const Post: React.FC<Props> = (props: Props) => {
         </div>
 
         {showComments ? (
-          <div className={selector.settings.darkMode ? 'commentEditorDarkMode' : 'commentEditor'}>
+          <div className='commentEditor'>
             <textarea className='postBodyInput' maxLength={157} placeholder='hello world - 🌒' onKeyDown={commentEnterSubmit} onChange={handleChange} value={comment} rows={2}
               ref={textAreaRef} />
-            <button className='submitButton' style={{ backgroundColor: (comment.trim() === '' ? '#00FFA320' : '#3fffb9') }} disabled={comment.trim() === ''} onClick={() => postComment()}>
+            <button className='submitButton' style={{ backgroundColor: (comment.trim() === '' ? '#d9fff1' : '#3fffb9') }} disabled={comment.trim() === ''} onClick={() => postComment()}>
               post
             </button>
           </div>
@@ -184,23 +184,23 @@ export const Post: React.FC<Props> = (props: Props) => {
     return (
       <div className='post'>
         <div id='header' className='postHeader'>
-          <div className='user' onMouseOver={() => setProfileHover(true)} onMouseLeave={() => setProfileHover(false)} onClick={() => getUserProfile(dispatch, selector.user.userID, props.poster.userID )}>
+          <div className='user' onMouseOver={() => setProfileHover(true)} onMouseLeave={() => setProfileHover(false)} onClick={() => getUserProfile(dispatch, selector.user.userId, props.poster.userId )}>
             <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className={selector.settings.darkMode ? 'profileImageDarkMode' : 'profileImage'} />
             <div className='headerDetails'>
-              <span style={{ textDecoration: profileHover ? 'underline' : 'none' }} className={selector.settings.darkMode ? 'headerTextNameDarkMode' : 'headerTextName'}>{props.poster.name}</span>
-              <span  className={selector.settings.darkMode ? 'headerTextCompanyDarkMode' : 'headerTextCompany'}>{props.poster.company}</span>
+              <span style={{ textDecoration: profileHover ? 'underline' : 'none' }} className='headerTextName'>{props.poster.name}</span>
+              <span className='headerTextCompany'>{props.poster.company}</span>
             </div>
           </div>
-          <span  className={selector.settings.darkMode ? 'headerTextCompanyDarkMode' : 'headerTextCompany'}>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
+          <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
         </div>
         <div id='body' className='postBody'>
-          <span dangerouslySetInnerHTML={{__html: props.body}} className={selector.settings.darkMode ? 'bodyTextDarkMode' : 'bodyText'}/>
+          <span dangerouslySetInnerHTML={{__html: props.body}} className='bodyText'/>
         </div>
 
         <div id='footer' className='postFooter'>
           <div style={{width: '50%', alignItems: 'center', display: 'flex', justifyContent: 'space-between', flexDirection: 'row', userSelect: 'none', textAlign: 'start'}}>
             <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}} onClick={() => upvotePost()}>
-              <Heart stroke={selector.settings.darkMode ? '#00b2b2' : '#8205FF'} fill={props.post.voted || selector.user.userID === props.poster.userID ? (selector.settings.darkMode ? '#B0FFFF' : '#EEBEFF') : '#ffffff00'} strokeWidth={1.1} height={30} />
+              <Heart stroke={selector.settings.darkMode ? '#00b2b2' : '#8205FF'} fill={props.post.voted || selector.user.userId === props.poster.userId ? (selector.settings.darkMode ? '#B0FFFF' : '#EEBEFF') : '#ffffff00'} strokeWidth={1.1} height={30} />
               <span style={{flex: 1, paddingLeft: 10, color: '#8205FF'}}>{convertTrendPoints(trendPoints)}</span>
             </div>
             <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}} onClick={() => setShowComments(!showComments)}>
@@ -211,10 +211,10 @@ export const Post: React.FC<Props> = (props: Props) => {
         </div>
 
         {showComments ? (
-          <div className={selector.settings.darkMode ? 'commentEditorDarkMode' : 'commentEditor'}>
+          <div className='commentEditor'>
             <textarea className='postBodyInput' maxLength={157} placeholder='hello world - 🌒' onKeyDown={commentEnterSubmit} onChange={handleChange} value={comment} rows={2}
               ref={textAreaRef} />
-            <button className='submitButton' style={{ backgroundColor: (comment.trim() === '' ? '#00FFA320' : '#3fffb9') }} disabled={comment.trim() === ''} onClick={() => postComment()}>
+            <button className='submitButton' style={{ backgroundColor: (comment.trim() === '' ? '#d9fff1' : '#3fffb9') }} disabled={comment.trim() === ''} onClick={() => postComment()}>
               post
             </button>
           </div>

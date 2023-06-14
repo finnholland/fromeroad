@@ -28,7 +28,7 @@ const storage = multerS3({
   },
   key: function (req, file, cb) {
     console.log(file)
-    cb(null, `data/user/${req.params.userID}/images/profile/${file.originalname.replace(' ', '_')}`)
+    cb(null, `data/user/${req.params.userId}/images/profile/${file.originalname.replace(' ', '_')}`)
   },
 })
 
@@ -36,17 +36,17 @@ const upload = multer({
   storage: storage
 })
 
-app.post('/profileImage/:userID', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), upload.single('file'), (req, res) => {
-  if (req.auth.userID !== req.body.userID || req.body.userID !== req.params.userID) {
+app.post('/profileImage/:userId', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), upload.single('file'), (req, res) => {
+  if (req.auth.userId !== req.body.userId || req.body.userId !== req.params.userId) {
     return res.sendStatus(401)
   }
   if (!req.file) {
     console.log("No file upload");
     res.sendStatus(403)
   } else {
-    const imgsrc = `/data/user/${req.params.userID}/images/profile/${req.file.originalname.replace(' ', '_')}`
+    const imgsrc = `/data/user/${req.params.userId}/images/profile/${req.file.originalname.replace(' ', '_')}`
     console.log(imgsrc)
-    db.query('update users set profileImageUrl = ? where userID = ?', [imgsrc, req.body.userID], (err, result, fields) => {
+    db.query('update users set profileImageUrl = ? where userId = ?', [imgsrc, req.body.userId], (err, result, fields) => {
       if (err) {
         console.log('error occurred: '+ err)
       } else {
@@ -56,11 +56,11 @@ app.post('/profileImage/:userID', ejwt({ secret: process.env.JWT_SECRET, algorit
   }
 });
 
-app.get('/profileImage/:userID', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
-  if (req.auth.userID !== req.params.userID) {
+app.get('/profileImage/:userId', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userId !== req.params.userId) {
     return res.sendStatus(401)
   }
-  db.query('select profileImageUrl from users where userID = ?', req.params.userID, (err, result, fields) => {
+  db.query('select profileImageUrl from users where userId = ?', req.params.userId, (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)
     } else {

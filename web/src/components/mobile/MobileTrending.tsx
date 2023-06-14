@@ -11,7 +11,7 @@ export const MobileTrending = () => {
   
   const trendingUserItem = trendingUsers.map((i) => {
     return (
-      <TrendingUser key={i.userID} user={i} />
+      <TrendingUser key={i.userId} user={i} />
     )
   });
   

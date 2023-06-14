@@ -39,7 +39,7 @@ export const MobileInterests: React.FC<Props> = (props: Props) => {
 
   const interestItems = interestList.map((i) => {
     return (
-      <div key={i.interestID} className='interestDiv' onClick={() => removeInterest(i.interestID)}>
+      <div key={i.interestId} className='interestDiv' onClick={() => removeInterest(i.interestId)}>
         <span className='interestTitle'>{i.name}</span>
         <SvgRemoveButton height={20} stroke='#c182ff' />
       </div>
@@ -47,18 +47,18 @@ export const MobileInterests: React.FC<Props> = (props: Props) => {
   });
 
   const profileInterests = selector.profile.interests.map((i) => {
-    if (selector.user.interests.some(ui => ui.interestID === i.interestID)) {
+    if (selector.user.interests.some(ui => ui.interestId === i.interestId)) {
       return (
-        <div key={i.interestID} className='interestDiv'>
+        <div key={i.interestId} className='interestDiv'>
           <span className='interestTitle'>{i.name}</span>
         </div>
       )
     } else {
       return (
-        <div key={i.interestID} className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestID)}
+        <div key={i.interestId} className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestId)}
             onMouseLeave={() => setAddSvgHover(-1)} onClick={() => addInterestHelper(i)}>
           <span className='interestTitle'>{i.name}</span>
-          <SvgAddButton height={20} strokeWidth={2} stroke={addSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
+          <SvgAddButton height={20} strokeWidth={2} stroke={addSvgHover === i.interestId ? '#ffb405' : '#c182ff'} />
         </div>
       )
     }
@@ -74,29 +74,29 @@ export const MobileInterests: React.FC<Props> = (props: Props) => {
   });
 
   useEffect(() => {
-    getInterests(selector.user.userID);
+    getInterests(selector.user.userId);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const addInterest = (interest: string) => {
     const params = {
-      userID: selector.user.userID,
+      userId: selector.user.userId,
       name: interest,
     }
     Axios.post(`${API}/user/interests/addInterests`, params, {
       headers:
         { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
-        getInterests(selector.user.userID)
+        getInterests(selector.user.userId)
         setAddInterestError('interest already exists')
     }).catch(err => {
       setAddInterestError('interest already added')
     })
   }
 
-  const getInterests = (userID: number) => {
+  const getInterests = (userId: number) => {
     setInterestLoading(true)
-    Axios.get(`${API}/user/interests/getInterests/${userID}`, {
+    Axios.get(`${API}/user/interests/getInterests/${userId}`, {
       headers:
         { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
@@ -117,7 +117,7 @@ export const MobileInterests: React.FC<Props> = (props: Props) => {
       }).then((res) => {
         const tempArr: Interest[] = []
         res.data.forEach((interest: Interest) => {
-          if (interestList.findIndex(i => i.interestID === interest.interestID) === -1) {
+          if (interestList.findIndex(i => i.interestId === interest.interestId) === -1) {
             tempArr.push(interest)
           }
         });
@@ -128,25 +128,25 @@ export const MobileInterests: React.FC<Props> = (props: Props) => {
   }
 
   const addInterestHelper = (interest: Interest) => {
-    if (interest.interestID) {
+    if (interest.interestId) {
       let removalArray: Interest[] = interestSearch
-      removalArray = removalArray.filter(i => i.interestID !== interest.interestID)
+      removalArray = removalArray.filter(i => i.interestId !== interest.interestId)
       setInterestSearch(removalArray)
     }
     addInterest(interest.name)
   }
   
-  const removeInterest = (interestID: number) => {
+  const removeInterest = (interestId: number) => {
     const params = {
-      userID: selector.user.userID,
-      interestID: interestID
+      userId: selector.user.userId,
+      interestId: interestId
     }
     Axios.delete(`${API}/user/interests/removeInterests`, {
       data: params,
       headers:
         { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(() => {
-      getInterests(selector.user.userID)
+      getInterests(selector.user.userId)
     })
   }
 
@@ -158,13 +158,13 @@ export const MobileInterests: React.FC<Props> = (props: Props) => {
       } else {
         const fd = new FormData();
         fd.append('file', e.target.files[0])
-        fd.append('userID', selector.user.userID.toString())
-        Axios.post(`${API}/image/profileImage/${selector.user.userID}`, fd, {
+        fd.append('userId', selector.user.userId.toString())
+        Axios.post(`${API}/image/profileImage/${selector.user.userId}`, fd, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         }).then(() => {
-          Axios.get(`${API}/image/profileImage/${selector.user.userID}`, {
+          Axios.get(`${API}/image/profileImage/${selector.user.userId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
@@ -178,7 +178,7 @@ export const MobileInterests: React.FC<Props> = (props: Props) => {
   }
 
   const finishEditingDetails = () => {
-    updateUserDetails(dispatch, userState, selector.user.userID, setUserState);
+    updateUserDetails(dispatch, userState, selector.user.userId, setUserState);
     setEditing(false);
   }
   if (selector.profile.email !== '') {

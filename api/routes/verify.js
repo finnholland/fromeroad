@@ -18,7 +18,7 @@ app.get('/:token', (req, res) => {
       }
       else {
         // get userid
-        db.query('update users set verified = 1 where userID = ?', [decoded.userID], (err, result, fields) => {
+        db.query('update users set verified = 1 where userId = ?', [decoded.userId], (err, result, fields) => {
           if (err) {
             console.log('error occurred: '+ err)
           } else {
@@ -31,10 +31,10 @@ app.get('/:token', (req, res) => {
 })
 
 app.put('/reverify', (req, res) => {
-  const userID = req.body.userID
+  const userId = req.body.userId
   const name = req.body.name
   const email = req.body.email
-  const statusCode = sendEmail(userID, email, name)
+  const statusCode = sendEmail(userId, email, name)
   return res.send(statusCode)
 })
 

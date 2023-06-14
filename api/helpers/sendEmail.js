@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 let aws = require("@aws-sdk/client-ses");
 
-function sendEmail(userID, email, name) {
+function sendEmail(userId, email, name) {
   const subdomain = process.env.ENV === 'prod' ? '' : 'dev.'
 
   const ses = new aws.SES({
@@ -21,7 +21,7 @@ function sendEmail(userID, email, name) {
   });
 
   const token = jwt.sign({
-      userID: userID,
+      userId: userId,
       name: name
     }, process.env.JWT_SECRET, { expiresIn: '10m' }
   );
