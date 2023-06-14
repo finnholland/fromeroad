@@ -21,35 +21,48 @@ const storage = multer.diskStorage({
   }
 })
 
+const storage = multerS3({
+  s3: s3,
+  bucket: `fromeroad-${process.env.ENV}`,
+  contentType: multerS3.AUTO_CONTENT_TYPE,
+  metadata: function (req, file, cb) {
+    cb(null, {fieldName: file.fieldname});
+  },
+  key: function (req, file, cb) {
+    console.log(file)
+    cb(null, `data/user/${req.params.userId}/images/posts/${file.originalname.replace(' ', '_')}`)
+  },
+})
+
 const upload = multer({
   storage: storage
 })
 
-app.post('/create/:userID', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), upload.single('file'), (req, res) => {
-  if (req.auth.userID !== req.body.userID.toString()) {
+app.post('/create/:userId', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), upload.single('file'), (req, res) => {
+  if (req.auth.userId !== req.body.userId.toString()) {
     return res.sendStatus(401)
   }
-  const userID = req.body.userID;
+  const userId = req.body.userId;
   const body = req.body.body;
   const initialUpvoteValue = 0;
   if (!req.file) {
-    db.query('insert into posts (body, createdAt, userID) values (?, now(), ?)', [body, userID], (err, result, fields) => {
+    db.query('insert into posts (body, createdAt, userId) values (?, now(), ?)', [body, userId], (err, result, fields) => {
       if (err) {
         console.log('error occurred: ' + err)
       } else {
-        db.query('insert into postvotes (postID, userID, vote) values (?, ?, ?)', [result.insertId, userID, initialUpvoteValue], (err, result, fields) => {
+        db.query('insert into postvotes (postId, userId, vote) values (?, ?, ?)', [result.insertId, userId, initialUpvoteValue], (err, result, fields) => {
           if (err) return err.code
           res.sendStatus(201)
         })
       }
     })
   } else {
-    const imgsrc = `/data/user/${req.params.userID}/images/posts/${req.file.filename.replace(' ', '_')}`
-    db.query('insert into posts (body, postImageUrl, createdAt, userID) values (?, ?, now(), ?)', [body, imgsrc, userID], (err, result, fields) => {
+    const imgsrc = `/data/user/${req.params.userId}/images/posts/${req.file.originalname.replace(' ', '_')}`
+    db.query('insert into posts (body, postImageUrl, createdAt, userId) values (?, ?, now(), ?)', [body, imgsrc, userId], (err, result, fields) => {
       if (err) {
         console.log('error occurred: '+ err)
       } else {
-        db.query('insert into postvotes (postID, userID, vote) values (?, ?, ?)', [result.insertId, userID, initialUpvoteValue], (err, result, fields) => {
+        db.query('insert into postvotes (postId, userId, vote) values (?, ?, ?)', [result.insertId, userId, initialUpvoteValue], (err, result, fields) => {
           if (err) return err.code
           res.sendStatus(201)
         })
@@ -59,19 +72,19 @@ app.post('/create/:userID', ejwt({ secret: process.env.JWT_SECRET, algorithms: [
 });
 
 app.get('/get', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
-  if (req.auth.userID !== req.query.userID.toString()) {
+  if (req.auth.userId !== req.query.userId.toString()) {
     return res.sendStatus(401)
   }
-  const userID = req.query.userID
+  const userId = req.query.userId
   const sign = req.query.sign
   const condition = req.query.condition
   db.query(`SELECT posts.*, UNIX_TIMESTAMP(createdAt) AS createdAtUnix, name, company, profileImageUrl, IFNULL(vote, 0) as vote FROM posts
-            inner join users on posts.userID = users.userID
-            LEFT JOIN postvotes ON postvotes.postID = posts.postID AND postvotes.userID = ?
-            where TIMESTAMPDIFF(day, createdAt, NOW()) < 7 and posts.postID ${sign} ? and visible = 1
-            GROUP BY postID
+            inner join users on posts.userId = users.userId
+            LEFT JOIN postvotes ON postvotes.postId = posts.postId AND postvotes.userId = ?
+            where TIMESTAMPDIFF(day, createdAt, NOW()) < 7 and posts.postId ${sign} ? and visible = 1
+            GROUP BY postId
             order by createdAt desc
-            limit 10;`, [userID, condition],
+            limit 10;`, [userId, condition],
     (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)
@@ -82,11 +95,11 @@ app.get('/get', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }),
   })
 })
 
-app.get('/comments/get/:postID', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
-  const postID = req.params.postID
+app.get('/comments/get/:postId', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
+  const postId = req.params.postId
   db.query(`select pc.*, name, company, profileImageUrl, UNIX_TIMESTAMP(pc.createdAt) AS createdAt from comments as pc 
-            left join users as u on u.userID = pc.userID where postID = ?
-            order by pc.createdAt desc`, [postID],
+            left join users as u on u.userId = pc.userId where postId = ?
+            order by pc.createdAt desc`, [postId],
     (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)
@@ -97,12 +110,12 @@ app.get('/comments/get/:postID', ejwt({ secret: process.env.JWT_SECRET, algorith
   })
 })
 
-app.delete('/comments/delete/:userID/:commentID', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
-  if (req.auth.userID !== req.params.userID) {
+app.delete('/comments/delete/:userId/:commentId', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userId !== req.params.userId) {
     return res.sendStatus(401)
   }
-  const commentID = req.params.commentID
-  db.query(`delete from comments where commentID = ?`, [commentID],
+  const commentId = req.params.commentId
+  db.query(`delete from comments where commentId = ?`, [commentId],
     (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)
@@ -114,13 +127,13 @@ app.delete('/comments/delete/:userID/:commentID', ejwt({ secret: process.env.JWT
 })
 
 app.post('/comments/post/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
-  if (req.auth.userID !== req.body.userID.toString()) {
+  if (req.auth.userId !== req.body.userId.toString()) {
     return res.sendStatus(401)
   }
-  const postID = req.body.postID
-  const userID = req.body.userID
+  const postId = req.body.postId
+  const userId = req.body.userId
   const body = req.body.body
-  db.query(`insert into comments (postID, userID, body) values (?, ?, ?)`, [postID, userID, body],
+  db.query(`insert into comments (postId, userId, body) values (?, ?, ?)`, [postId, userId, body],
     (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)
@@ -132,14 +145,14 @@ app.post('/comments/post/', ejwt({ secret: process.env.JWT_SECRET, algorithms: [
 })
 
 app.post('/comments/update/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
-  if (req.auth.userID !== req.body.userID.toString()) {
+  if (req.auth.userId !== req.body.userId.toString()) {
     return res.sendStatus(401)
   }
-  const postID = req.body.postID
-  const userID = req.body.userID
-  const commentID = req.body.commentID
+  const postId = req.body.postId
+  const userId = req.body.userId
+  const commentId = req.body.commentId
   const body = req.body.body
-  db.query(`update comments set body = ? where commentID = ? and postID = ? and userID = ?`, [body, commentID, postID, userID],
+  db.query(`update comments set body = ? where commentId = ? and postId = ? and userId = ?`, [body, commentId, postId, userId],
     (err, result, fields) => {
     if (err) {
       console.log('error occurred: ' + err)
@@ -150,17 +163,17 @@ app.post('/comments/update/', ejwt({ secret: process.env.JWT_SECRET, algorithms:
   })
 })
 
-app.post('/upvote/:postID/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
-  if (req.auth.userID !== req.body.userID.toString() || req.body.userID === req.body.posterID) {
+app.post('/upvote/:postId/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
+  if (req.auth.userId !== req.body.userId.toString() || req.body.userId === req.body.posterId) {
     return res.sendStatus(401)
   }
-  const postID = req.params.postID;
-  const posterID = req.body.posterID;
+  const postId = req.params.postId;
+  const posterId = req.body.posterId;
   const upvoteValue = 1 
-  db.query(`update users set trendpoints = trendpoints - (SELECT IFNULL(SUM(vote), 0) as vote FROM postvotes WHERE postID = ?) where userID = ?;
-            INSERT INTO postvotes (postID, userID, vote) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE vote = not vote;
-            update posts set trendpoints = (SELECT SUM(vote) FROM postvotes WHERE postID = ?) where postID = ?;
-            update users set trendpoints = trendpoints + (SELECT IFNULL(SUM(vote), 0) as vote FROM postvotes WHERE postID = ?) where userID = ?;`, [postID, posterID, postID, req.body.userID, upvoteValue, postID, postID, postID, posterID], (err, result, fields) => {
+  db.query(`update users set trendpoints = trendpoints - (SELECT IFNULL(SUM(vote), 0) as vote FROM postvotes WHERE postId = ?) where userId = ?;
+            INSERT INTO postvotes (postId, userId, vote) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE vote = not vote;
+            update posts set trendpoints = (SELECT SUM(vote) FROM postvotes WHERE postId = ?) where postId = ?;
+            update users set trendpoints = trendpoints + (SELECT IFNULL(SUM(vote), 0) as vote FROM postvotes WHERE postId = ?) where userId = ?;`, [postId, posterId, postId, req.body.userId, upvoteValue, postId, postId, postId, posterId], (err, result, fields) => {
     if (err) return err.code
     else {
       return res.status(200).send({

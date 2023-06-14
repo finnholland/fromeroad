@@ -4,7 +4,7 @@ import '../../App.css';
 import './MobileStyles.css';
 import { API } from '../../constants';
 import Allen from '../../assets/logo/Allen';
-import { useAppDispatch } from '../../hooks/Actions';
+import { useAppDispatch, useAppSelector } from '../../hooks/Actions';
 import { setUser } from '../../hooks/slices/userSlice';
 import { Header } from '../../components/Header';
 import ReactCodeInput from 'react-code-input';
@@ -37,7 +37,8 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
   const [codeSentMessage, setCodeSentMessage] = useState('get code');
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
+  const selector = useAppSelector(state => state);
 
   const signUp = async () => {
     if (name === '' || company === '' || confirmPassword === '') {
@@ -201,7 +202,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
             <p style={{ fontSize: 14, width: '100%', textAlign: 'center', marginTop: '2rem', color: 'red' }}>{errorMessage.type === 'global' ? errorMessage.message : ''}</p>
           </div>
           <div>
-            <AboutDiv />
+            <AboutDiv darkMode={selector.settings.darkMode} />
           </div>
         </div>
       </div>
@@ -227,7 +228,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
             </div>
           </div>
           <div>
-            <AboutDiv />
+            <AboutDiv darkMode={selector.settings.darkMode} />
           </div>
         </div>
       </div>
@@ -288,7 +289,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
             </div>
           </form>
           <div>
-            <AboutDiv />
+            <AboutDiv darkMode={selector.settings.darkMode} />
           </div>
         </div>
       </div>

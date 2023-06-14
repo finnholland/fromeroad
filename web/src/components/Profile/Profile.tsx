@@ -27,6 +27,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
   const [interestList, setInterestList] = useState<Interest[]>(selector.user.interests);
   const [interestSearch, setInterestSearch] = useState<Interest[]>([]);
   const [removeSvgHover, setRemoveSvgHover] = useState(-1);
+  const [logoutHover, setLogoutHover] = useState(false);
   const [addSvgHover, setAddSvgHover] = useState(-2);
   const [interestLoading, setInterestLoading] = useState(true);
   const [showScroll, setShowScroll] = useState(false);
@@ -36,7 +37,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
   const [closeProfileView, setCloseProfileView] = useState(false);
   
   useEffect(() => {
-    getInterests(selector.user.userID);
+    getInterests(selector.user.userId);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -50,27 +51,27 @@ export const Profile: React.FC<Props> = (props: Props) => {
   
   const interestItems = interestList.map((i) => {
     return (
-      <div key={i.interestID} className='interestDiv' onMouseEnter={() => setRemoveSvgHover(i.interestID)}
-          onMouseLeave={() => setRemoveSvgHover(-1)} onClick={() => removeInterest(i.interestID)}>
+      <div key={i.interestId} className='interestDiv' onMouseEnter={() => setRemoveSvgHover(i.interestId)}
+          onMouseLeave={() => setRemoveSvgHover(-1)} onClick={() => removeInterest(i.interestId)}>
         <span className='interestTitle'>{i.name}</span>
-        <SvgRemoveButton height={20} stroke={removeSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
+        <SvgRemoveButton height={20} stroke={removeSvgHover === i.interestId ? '#ffb405' : '#c182ff'} />
       </div>
     )
   });
 
   const profileInterests = selector.profile.interests.map((i) => {
-    if (selector.user.interests.some(ui => ui.interestID === i.interestID)) {
+    if (selector.user.interests.some(ui => ui.interestId === i.interestId)) {
       return (
-        <div key={i.interestID} className='interestDiv'>
+        <div key={i.interestId} className='interestDiv'>
           <span className='interestTitle'>{i.name}</span>
         </div>
       )
     } else {
       return (
-        <div key={i.interestID} className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestID)}
+        <div key={i.interestId} className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestId)}
             onMouseLeave={() => setAddSvgHover(-1)} onClick={() => addInterestHelper(i)}>
           <span className='interestTitle'>{i.name}</span>
-          <SvgAddButton height={20} strokeWidth={2} stroke={addSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
+          <SvgAddButton height={20} strokeWidth={2} stroke={addSvgHover === i.interestId ? '#ffb405' : '#c182ff'} />
         </div>
       )
     }
@@ -78,47 +79,47 @@ export const Profile: React.FC<Props> = (props: Props) => {
 
   const interestSearchResults = interestSearch.map((i) => {
     return (
-      <div className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestID)}
+      <div className='interestDiv' onMouseEnter={() => setAddSvgHover(i.interestId)}
           onMouseLeave={() => setAddSvgHover(-2)} onClick={() => addInterestHelper(i)}>
         <span className='interestTitle'>{i.name}</span>
-          <SvgAddButton height={20} stroke={addSvgHover === i.interestID ? '#ffb405' : '#c182ff'} />
+          <SvgAddButton height={20} stroke={addSvgHover === i.interestId ? '#ffb405' : '#c182ff'} />
       </div>
     )
   });
 
   const addInterestHelper = (interest: Interest) => {
-    if (interest.interestID) {
+    if (interest.interestId) {
       let removalArray: Interest[] = interestSearch
-      removalArray = removalArray.filter(i => i.interestID !== interest.interestID)
+      removalArray = removalArray.filter(i => i.interestId !== interest.interestId)
       setInterestSearch(removalArray)
     }
     addInterest(interest.name)
   }
 
-  const removeInterest = (interestID: number) => {
+  const removeInterest = (interestId: number) => {
     const params = {
-      userID: selector.user.userID,
-      interestID: interestID
+      userId: selector.user.userId,
+      interestId: interestId
     }
     Axios.delete(`${API}/user/interests/removeInterests`, {
       data: params,
       headers:
         { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then(() => {
-      getInterests(selector.user.userID)
+      getInterests(selector.user.userId)
     })
   }
 
   const addInterest = (interest: string) => {
     const params = {
-      userID: selector.user.userID,
+      userId: selector.user.userId,
       name: interest,
     }
     Axios.post(`${API}/user/interests/addInterests`, params, {
       headers:
         { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
-      getInterests(selector.user.userID)
+      getInterests(selector.user.userId)
       setRemoveSvgHover(-1);
       let removalArray: Interest[] = interestSearch
       removalArray = removalArray.filter(i => i.name !== interest)
@@ -128,9 +129,9 @@ export const Profile: React.FC<Props> = (props: Props) => {
     })
   }
 
-  const getInterests = (userID: number) => {
+  const getInterests = (userId: number) => {
     setInterestLoading(true)
-    Axios.get(`${API}/user/interests/getInterests/${userID}`, {
+    Axios.get(`${API}/user/interests/getInterests/${userId}`, {
       headers:
         { Authorization: `Bearer ${localStorage.getItem('token')}` }
     }).then((res) => {
@@ -151,7 +152,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
       }).then((res) => {
         const tempArr: Interest[] = []
         res.data.forEach((interest: Interest) => {
-          if (interestList.findIndex(i => i.interestID === interest.interestID) === -1) {
+          if (interestList.findIndex(i => i.interestId === interest.interestId) === -1) {
             tempArr.push(interest)
           }
         });
@@ -169,7 +170,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
   }
 
   const finishEditingDetails = () => {
-    updateUserDetails(dispatch, userState, selector.user.userID, setUserState);
+    updateUserDetails(dispatch, userState, selector.user.userId, setUserState);
     setEditing(false);
   }
 
@@ -189,13 +190,13 @@ export const Profile: React.FC<Props> = (props: Props) => {
         setProfileImageUrl(DEFAULT_PROFILE_IMAGE)
         const fd = new FormData();
         fd.append('file', e.target.files[0])
-        fd.append('userID', selector.user.userID.toString())
-        Axios.post(`${API}/image/profileImage/${selector.user.userID}`, fd, {
+        fd.append('userId', selector.user.userId.toString())
+        Axios.post(`${API}/image/profileImage/${selector.user.userId}`, fd, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         }).then(() => {
-          Axios.get(`${API}/image/profileImage/${selector.user.userID}`, {
+          Axios.get(`${API}/image/profileImage/${selector.user.userId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
@@ -213,12 +214,12 @@ export const Profile: React.FC<Props> = (props: Props) => {
       <div id='profile' className='profile'>
         <div className='titleDiv'>
           <hr className='line' />
-          <SvgRemoveButton style={{marginLeft: 15}} onMouseEnter={() => setCloseProfileView(true)} onMouseLeave={() => setCloseProfileView(false)}
-            onClick={() => { dispatch(setProfile(profileInitialState)); setCloseProfileView(false); setAddSvgHover(-2) }} height={24} strokeWidth={1} stroke={closeProfileView ? '#ffb405' : '#8205ff'} />
+          <SvgRemoveButton style={{marginLeft: 15}} onMouseEnter={() => setCloseProfileView(true)} onMouseLeave={() => setCloseProfileView(false)} height={24} strokeWidth={1}
+            onClick={() => { dispatch(setProfile(profileInitialState)); setCloseProfileView(false); setAddSvgHover(-2) }} stroke={closeProfileView ? '#ffb405' : '#8205ff'}/>
         </div>
         <div>
           <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
-            <img src={API + selector.profile.profileImageUrl} onError={onError} alt='profile' className='profileImage' />
+            <img src={API + selector.profile.profileImageUrl} onError={onError} alt='profile' className={selector.settings.darkMode ? 'profileImageDarkMode' : 'profileImage'} />
             <div className='detailsDiv'>
               <p className='name'>{selector.profile.name}</p>
               <p className='company'>{selector.profile.company}</p>
@@ -261,16 +262,17 @@ export const Profile: React.FC<Props> = (props: Props) => {
     return (
       <div id='profile' className='profile'>
         <div className='titleDiv'>
-          <p className='sectionTitle'>me</p>
-          <hr className='line' />
-          <LogoutIcon onClick={() => props.logout()} height={24} width={25} style={{ marginLeft: 15, cursor: 'pointer' }} stroke={'#8205ff'} strokeWidth={2} />
+          <p className={selector.settings.darkMode ? "sectionTitleDarkMode" : "sectionTitle"}>me</p>
+          <hr className={selector.settings.darkMode ? "lineDarkMode" : "line"} />
+          <LogoutIcon onClick={() => props.logout()} height={24} width={25} style={{ marginLeft: 15, cursor: 'pointer' }}
+            onMouseEnter={() => setLogoutHover(true)} onMouseLeave={() => setLogoutHover(false)} stroke={logoutHover ? '#ffb405' : (selector.settings.darkMode ? '#B17EFF' :'#8205ff')} strokeWidth={3} />
         </div>
         <div className='profileDesktop'>
           <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
-            <div className='profileImage' id='profileImage' onClick={(e) => handleClick(e)}
+            <div className={selector.settings.darkMode ? 'profileImageDarkMode' : 'profileImage'} id='profileImage' onClick={(e) => handleClick(e)}
               style={{ backgroundImage: `url(${S3_BUCKET}${profileImageUrl}), url(${S3_BUCKET}${DEFAULT_PROFILE_IMAGE})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
-              <div className='profileImageOverlay'>
-                <span style={{alignItems: 'center', display:'flex', marginBottom: 5, color: '#fff'}}>change</span>
+              <div className={selector.settings.darkMode ? 'profileImageOverlayDarkMode' : 'profileImageOverlay'}>
+                <span style={{alignItems: 'center', display:'flex', marginBottom: 5}}>change</span>
               </div>
             </div>
             <div className='detailsDiv'>

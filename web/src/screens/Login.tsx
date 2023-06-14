@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import '../App.css';
 import './Login.css';
 import { API } from '../constants';
-import { useAppDispatch } from '../hooks/Actions';
+import { useAppDispatch, useAppSelector } from '../hooks/Actions';
 import { setUser } from '../hooks/slices/userSlice';
 import { Header } from '../components/Header';
 import Allen from '../assets/logo/Allen';
@@ -39,7 +39,8 @@ const Login: React.FC<Props> = (props: Props) => {
   const [codeSentMessage, setCodeSentMessage] = useState('get code');
   
   
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
+  const selector = useAppSelector(state => state);
 
   const signUp = async () => {
     if (name === '' || company === '' || confirmPassword === '') {
@@ -145,52 +146,52 @@ const Login: React.FC<Props> = (props: Props) => {
     height: "46px",
     fontSize: "32px",
     color: "black",
-    backgroundColor: "#f8f1ff",
+    backgroundColor: `${selector.settings.darkMode ? "#8205FF10" : "#f8f1ff" }`,
     textAlign: "center" as "center"
   }
 
   if (resetting) {
     return (
-      <div className="app">
+      <div className={selector.settings.darkMode ? "appDarkMode" : "app"}>
         <Header showGithub={false} />
         <div className='welcome'>
           <Allen height={150} className='purple' />
-          <span style={{ color: '#5900B2', fontSize: 18, marginTop: 15 }}>Welcome to frome_road</span>
+          <span style={{ color: selector.settings.darkMode ? '#F6C6FF' : '#5900B2', fontSize: 18, marginTop: 15 }}>Welcome to frome_road</span>
         </div>
         <div className='body'>
           <div style={{ flex: 1 }} />
           <div style={{ flex: 1 }}>
             <div className='inputDiv'>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>email *</span>
+                <span className={selector.settings.darkMode ? 'labelDarkMode' : 'label'}>email *</span>
               </div>
-              <input type={'text'} className='input' style={{ borderColor: (errorHighlights.includes('email') ? '#ff0000' : '#8205ff') }} value={email} onChange={(e) => updateEmail(e.target.value)} />
+              <input type={'text'} className={selector.settings.darkMode ? 'inputDarkMode' : 'input'} style={{ borderColor: (errorHighlights.includes('email') ? '#ff0000' : '#8205ff') }} value={email} onChange={(e) => updateEmail(e.target.value)} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-              <span className='label'>code *</span>
-              <span className='label' onClick={() => findUserByEmail({ email, codeSentMessage, setCodeSentMessage, setErrorMessage, setErrorHighlights })} style={{ cursor: 'pointer' }}>{codeSentMessage}</span>
+              <span className={selector.settings.darkMode ? 'labelDarkMode' : 'label'}>code *</span>
+              <span className={selector.settings.darkMode ? 'labelDarkMode' : 'label'} onClick={() => findUserByEmail({ email, codeSentMessage, setCodeSentMessage, setErrorMessage, setErrorHighlights })} style={{ cursor: 'pointer' }}>{codeSentMessage}</span>
             </div>
             <ReactCodeInput type='number' fields={6} name={'resetCode'} inputMode='numeric' style={{alignItems: 'center'}} autoFocus={false} inputStyle={codeStyle} className='rci' onChange={(e) => updateCode({ code: e, email, setCode, setValidCode, setErrorMessage,  setErrorHighlights })} />
             <div className='inputDiv'>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>password *</span>
+                <span className={selector.settings.darkMode ? 'labelDarkMode' : 'label'}>password *</span>
               </div>
-              <input type={'password'} className='input' style={{ borderColor: (errorHighlights.includes('password') ? '#ff0000' : '#8205ff') }} value={password} onChange={(e) => onPasswordChange(e.target.value, confirmPassword)} />
+              <input type={'password'} className={selector.settings.darkMode ? 'inputDarkMode' : 'input'} style={{ borderColor: (errorHighlights.includes('password') ? '#ff0000' : '#8205ff') }} value={password} onChange={(e) => onPasswordChange(e.target.value, confirmPassword)} />
             </div>
             <div className='inputDiv'>
               <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <span className='label'>confirm password *</span>
+                <span className={selector.settings.darkMode ? 'labelDarkMode' : 'label'}>confirm password *</span>
               </div>
-              <input type={'password'} className='input' style={{ borderColor: (errorHighlights.includes('confirmPassword') ? '#ff0000' : '#8205ff') }} value={confirmPassword} onChange={(e) => onPasswordChange(password, e.target.value)} />
+              <input type={'password'} className={selector.settings.darkMode ? 'inputDarkMode' : 'input'} style={{ borderColor: (errorHighlights.includes('confirmPassword') ? '#ff0000' : '#8205ff') }} value={confirmPassword} onChange={(e) => onPasswordChange(password, e.target.value)} />
             </div>
             <div className='buttonDiv'>
               <div style={{ width: '30%' }}>
-                <button className='button' onClick={() => toggleLoginOrReset()}>
+                <button className={selector.settings.darkMode ? 'buttonDarkMode' : 'button'} onClick={() => toggleLoginOrReset()}>
                   back
                 </button>
               </div>
               <div style={{ width: '50%' }}>
-                <button className='button' onClick={() => changePassword({password, confirmPassword, email, validCode, setShowSuccessPage, toggleLoginOrReset})}>
+                <button className={selector.settings.darkMode ? 'buttonDarkMode' : 'button'} onClick={() => changePassword({password, confirmPassword, email, validCode, setShowSuccessPage, toggleLoginOrReset})}>
                   change password *
                 </button>
                 <p style={{ fontSize: 13, textAlign: 'end', color: 'red', marginTop: 5 }}>{errorMessage.type === 'signup' ? errorMessage.message : ''}</p>
@@ -200,46 +201,46 @@ const Login: React.FC<Props> = (props: Props) => {
           </div>
           
           <div style={{ flex: 1 }}>
-            <AboutDiv />
+            <AboutDiv darkMode={selector.settings.darkMode} />
           </div>
         </div>
       </div>
     )
   } else if (showSuccessPage) {
     return (
-      <div className="app">
+      <div className={selector.settings.darkMode ? "appDarkMode" : "app"}>
         <Header showGithub={false} />
         <div className='welcome'>
           <Allen height={150} className='purple' />
-          <span style={{ color: '#5900B2', fontSize: 18, marginTop: 15 }}>Welcome to frome_road</span>
+          <span style={{ color: selector.settings.darkMode ? '#F6C6FF' : '#5900B2', fontSize: 18, marginTop: 15 }}>Welcome to frome_road</span>
         </div>
         <div className='body'>
           <div style={{ flex: 1 }} />
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', flexDirection: 'column', paddingTop: '1.25rem' }}>
             
-            <span style={{ fontSize: 20, color: '#5900B2' }}>Success!</span>
-            <span>your password has been updated</span>
+            <span style={{ fontSize: 20, color: selector.settings.darkMode ? '#F6C6FF' : '#5900B2' }}>Success!</span>
+            <span style={{ color: selector.settings.darkMode ? '#fff' : '#5900B2' }}>your password has been updated</span>
             <div className='buttonDiv'>
               <div style={{ flex: 1 }}>
-                <button className='button' onClick={() => setShowSuccessPage(false)}>
+                <button className={selector.settings.darkMode ? 'buttonDarkMode' : 'button'} onClick={() => setShowSuccessPage(false)}>
                   login
                 </button>
               </div>
             </div>
           </div>
           <div style={{ flex: 1 }}>
-            <AboutDiv />
+            <AboutDiv darkMode={selector.settings.darkMode} />
           </div>
         </div>
       </div>
     )
   } else {
     return (
-      <div className="app">
+      <div className={selector.settings.darkMode ? "appDarkMode" : "app"}>
         <Header showGithub={false} />
         <div className='welcome'>
           <Allen height={150} className='purple' />
-          <span style={{ color: '#5900B2', fontSize: 18, marginTop: 15 }}>Welcome to frome_road</span>
+          <span style={{ color: selector.settings.darkMode ? '#F6C6FF' : '#5900B2', fontSize: 18, marginTop: 15 }}>Welcome to frome_road</span>
         </div>
         <div className='body'>
           <div style={{ flex: 1 }} />
@@ -248,47 +249,47 @@ const Login: React.FC<Props> = (props: Props) => {
 
               <div className='inputDiv'>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <span className='label'>email *</span><span style={{ color: '#FFB405' }}>*</span>
+                  <span className={selector.settings.darkMode ? 'labelDarkMode' : 'label'}>email *</span><span style={{ color: '#FFB405' }}>*</span>
                 </div>
-                <input type={'text'} className='input' style={{ borderColor: (errorHighlights.includes('email') ? '#ff0000' : '#8205ff') }} value={email} onChange={(e) => setEmail(e.target.value)} />
+                <input type={'text'} className={selector.settings.darkMode ? 'inputDarkMode' : 'input'} style={{ borderColor: (errorHighlights.includes('email') ? '#ff0000' : '#8205ff') }} value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
               <div className='inputDiv'>
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                   <span>
-                    <span className='label'>password *</span><span style={{ color: '#FFB405' }}>*</span>
+                    <span className={selector.settings.darkMode ? 'labelDarkMode' : 'label'}>password *</span><span style={{ color: '#FFB405' }}>*</span>
                   </span>
-                  <span className='label' style={{ cursor: 'pointer' }} onClick={() => toggleLoginOrReset()}>forgot</span>
+                  <span className={selector.settings.darkMode ? 'labelDarkMode' : 'label'} style={{ cursor: 'pointer' }} onClick={() => toggleLoginOrReset()}>forgot</span>
                 </div>
-                <input type={'password'} className='input' style={{ borderColor: (errorHighlights.includes('password') ? '#ff0000' : '#8205ff') }} value={password} onChange={(e) => onPasswordChange(e.target.value, confirmPassword)} />
+                <input type={'password'} className={selector.settings.darkMode ? 'inputDarkMode' : 'input'} style={{ borderColor: (errorHighlights.includes('password') ? '#ff0000' : '#8205ff') }} value={password} onChange={(e) => onPasswordChange(e.target.value, confirmPassword)} />
               </div>
               <div className='inputDiv'>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <span className='label'>name *</span>
+                  <span className={selector.settings.darkMode ? 'labelDarkMode' : 'label'}>name *</span>
                 </div>
-                <input className='input' style={{ borderColor: (errorHighlights.includes('name') ? '#ff0000' : '#8205ff') }} value={name} onChange={(e) => setName(e.target.value)} />
+                <input className={selector.settings.darkMode ? 'inputDarkMode' : 'input'} style={{ borderColor: (errorHighlights.includes('name') ? '#ff0000' : '#8205ff') }} value={name} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className='inputDiv'>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <span className='label'>company *</span>
+                  <span className={selector.settings.darkMode ? 'labelDarkMode' : 'label'}>company *</span>
                 </div>
-                <input className='input' style={{ borderColor: (errorHighlights.includes('company') ? '#ff0000' : '#8205ff') }} value={company} onChange={(e) => setCompany(e.target.value)} />
+                <input className={selector.settings.darkMode ? 'inputDarkMode' : 'input'} style={{ borderColor: (errorHighlights.includes('company') ? '#ff0000' : '#8205ff') }} value={company} onChange={(e) => setCompany(e.target.value)} />
               </div>
               <div className='inputDiv'>
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <span className='label'>confirm password *</span>
+                  <span className={selector.settings.darkMode ? 'labelDarkMode' : 'label'}>confirm password *</span>
                 </div>
-                <input type={'password'} className='input' style={{ borderColor: (errorHighlights.includes('confirmPassword') ? '#ff0000' : '#8205ff') }} value={confirmPassword} onChange={(e) => onPasswordChange(password, e.target.value)} />
+                <input type={'password'} className={selector.settings.darkMode ? 'inputDarkMode' : 'input'} style={{ borderColor: (errorHighlights.includes('confirmPassword') ? '#ff0000' : '#8205ff') }} value={confirmPassword} onChange={(e) => onPasswordChange(password, e.target.value)} />
               </div>
               <div className='buttonDiv'>
                 <div style={{ width: '40%' }}>
-                  <button type='submit' className='button' name='signup'>
+                  <button type='submit' className={selector.settings.darkMode ? 'buttonDarkMode' : 'button'} name='signup'>
                     sign up
-                    <span style={{ color: '#8205ff', marginLeft: 5 }}>*</span><span style={{ color: '#FFB405' }}>*</span>
+                    <span style={{ color: selector.settings.darkMode ? '#F6C6FF' : '#8205ff', marginLeft: 5 }}>*</span><span style={{ color: '#FFB405' }}>*</span>
                   </button>
                   <p style={{ fontSize: 13, color: 'red', marginTop: 5 }}>{errorMessage.type === 'signup' ? errorMessage.message : ''}</p>
                 </div>
                 <div style={{ width: '40%' }}>
-                  <button type='submit' className='button' name='login'>
+                  <button type='submit' className={selector.settings.darkMode ? 'buttonDarkMode' : 'button'} name='login'>
                     login
                     <span style={{ color: '#FFB405', marginLeft: 5 }}>*</span>
                   </button>
@@ -299,7 +300,7 @@ const Login: React.FC<Props> = (props: Props) => {
             <p style={{ fontSize: 14, width: '100%', textAlign: 'center', marginTop: '2rem', color: 'red' }}>{errorMessage.type === 'global' ? errorMessage.message : ''}</p>
           </div>
           <div style={{ flex: 1 }}>
-            <AboutDiv />
+            <AboutDiv darkMode={selector.settings.darkMode} />
           </div>
         </div>
       </div>

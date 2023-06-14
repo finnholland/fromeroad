@@ -20,7 +20,7 @@ export const ErrorPage: React.FC<Props> = (props: Props) => {
 
   const sendVerification = () => {
     const params = {
-      userID: selector.user.userID,
+      userId: selector.user.userId,
       name: selector.user.name,
       email: selector.user.email,
     }

@@ -1,5 +1,5 @@
 export interface User {
-  userID: number,
+  userId: number,
   name: string,
   email: string,
   company: string,
@@ -12,13 +12,13 @@ export interface User {
 }
 
 export interface Interest {
-  interestID: number,
+  interestId: number,
   name: string,
-  userID: number
+  userId: number
 }
 
 export interface PostType {
-  postID: number,
+  postId: number,
   body: string,
   postImageUrl: string | undefined,
   trendPoints: number,
@@ -27,7 +27,7 @@ export interface PostType {
 }
 
 export interface Poster {
-  userID: number,
+  userId: number,
   name: string,
   profileImageUrl: string,
   company: string
@@ -39,7 +39,7 @@ export interface PostItem {
 }
 
 export interface RecentPosterType {
-  userID: number,
+  userId: number,
   name: string,
   company: string,
   postCount: number,
@@ -48,7 +48,7 @@ export interface RecentPosterType {
 
 
 export interface TrendingUserType {
-  userID: number,
+  userId: number,
   name: string,
   trendPoints: number,
   position: number,
@@ -59,9 +59,9 @@ export interface TrendingUserType {
 }
 
 export interface CommentType {
-  commentID: number,
-  postID: number,
-  userID: number,
+  commentId: number,
+  postId: number,
+  userId: number,
   body: string,
   createdAt: number,
   name: string,
