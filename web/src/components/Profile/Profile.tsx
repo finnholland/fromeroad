@@ -298,12 +298,12 @@ export const Profile: React.FC<Props> = (props: Props) => {
             </div>
             <div>
               <p className='detailHeader'>project</p>
-              <input type={'text'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.project} 
+              <input type={'text'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.project || ''} 
               style={{ textDecorationLine: (editing) ? 'underline' : 'none' }} onChange={(e) => setUserState((prevState) => ({ ...prevState, project: e.target.value }))}/>
             </div>
             <div>
               <p className='detailHeader'>phone</p>
-              <input type={'tel'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.phone}
+              <input type={'tel'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.phone || ''}
               style={{ textDecorationLine: (editing) ? 'underline' : 'none' }} onChange={(e) => setUserState((prevState) => ({ ...prevState, phone: e.target.value }))}
               />
             </div>

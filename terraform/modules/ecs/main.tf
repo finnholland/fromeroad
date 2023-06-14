@@ -38,14 +38,14 @@ resource "aws_ecs_task_definition" "fr_ecs_task_definition" {
       "image": "${aws_ecr_repository.fromeroad_ecr.repository_url}:latest",
       "portMappings": [
         {
-          "name": "fr-cnt-api-dev-8080-tcp",
+          "name": "fr-cnt-api-${var.env}-8080-tcp",
           "containerPort": 8080,
           "hostPort": 8080,
           "protocol": "tcp",
           "appProtocol": "http"
         },
         {
-          "name": "fr-cnt-api-dev-8443-tcp",
+          "name": "fr-cnt-api-${var.env}-8443-tcp",
           "containerPort": 8443,
           "hostPort": 8443,
           "protocol": "tcp",
