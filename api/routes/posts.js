@@ -7,17 +7,15 @@ var db = require('..');
 const cors = require('cors');
 app.use(cors());
 const multer = require('multer');
+const multerS3 = require('multer-s3')
+const { S3Client } = require('@aws-sdk/client-s3')
 const fs = require('fs')
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const path = `./data/user/${req.params.userID}/images/posts/`
-    fs.mkdirSync(path, { recursive: true })
-    cb(null, path)
-  },
-  filename: function (req, file, cb) {
-    const ext = file.mimetype.split('/')[1]
-    cb(null, file.originalname.replace(' ', '_'))
+const s3 = new S3Client({
+  region: 'ap-southeast-2',
+  credentials: {
+    accessKeyId: process.env.S3_KEY,
+    secretAccessKey: process.env.S3_SECRET
   }
 })
 
