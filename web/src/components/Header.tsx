@@ -10,6 +10,7 @@ import { isMobile } from 'react-device-detect';
 import Axios from 'axios';
 import { API } from '../constants';
 import { setDarkMode } from '../hooks/slices/settingsSlice';
+import Lightbulb from '../assets/svg/lightbulb';
 interface Props {
   showGithub: boolean
   error?: boolean
@@ -36,14 +37,15 @@ export const Header: React.FC<Props> = (props: Props) => {
       <div>
         <header className="header">
           <div className='lotfourteen'>
-            <a href='http://www.lotfourteen.com.au' target={'_blank'} rel='noreferrer' style={{marginRight: 20}}>
+            <a href='http://www.lotfourteen.com.au' target={'_blank'} rel='noreferrer' style={{lineHeight: 0}}>
               <SvgLotfourteen height={25} fill={'#fff'}/>
             </a>
             {
-              props.showGithub ? (<a href='https://github.com/fhllnd/fromeroad' target={'_blank'} rel='noreferrer'> <GitHub height={25} fill={'#fff'} /> </a>) :
+              props.showGithub ? (<a href='https://github.com/fhllnd/fromeroad' style={{marginRight: 20, marginLeft: 20, lineHeight: 0}} target={'_blank'} rel='noreferrer'> <GitHub height={25} fill={'#fff'} /> </a>) :
                 ( null )
             }
-            <span onClick={() => changeSides()}>mode: {selector.settings.darkMode ? 'dark' : 'light'}</span>
+            <Lightbulb onClick={() => changeSides()} height={25} fill={'#fff'} stroke={selector.settings.darkMode ? '#ABABAB' : '#F9EF00'}/>
+            
           </div>
           <div className='titleContainer'>
             <p onClick={() => updatetoptentemp()} className='title'>frome_road</p>
