@@ -27,7 +27,7 @@ function sendEmail(userId, email, name) {
   );
 
   const mailConfigurations = {
-    from: 'no-reply-fromeroad@fromeroad.com',
+    from: 'noreply@fromeroad.com',
     to: email,
     subject: 'Fromeroad Email Verification',
     

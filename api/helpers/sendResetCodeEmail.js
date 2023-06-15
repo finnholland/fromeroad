@@ -21,7 +21,7 @@ function sendResetCodeEmail(email, resetCode) {
   });
 
   const mailConfigurations = {
-    from: 'no-reply-fromeroad@fromeroad.com',
+    from: 'noreply@fromeroad.com',
     to: email,
     subject: 'frome_road Password reset',
     

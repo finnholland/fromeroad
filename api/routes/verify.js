@@ -7,7 +7,7 @@ const sendEmail = require('../helpers/sendEmail');
 
 app = express()
 
-app.get('/:token', (req, res) => {
+app.get('/:token', (req, res, next) => {
   const token = req.params.token;
 
   // Verifying the JWT token 
@@ -30,11 +30,11 @@ app.get('/:token', (req, res) => {
   });
 })
 
-app.put('/reverify', (req, res) => {
+app.put('/reverify', (req, res, next) => {
   const userId = req.body.userId
   const name = req.body.name
   const email = req.body.email
-  const statusCode = sendEmail(userId, email, name)
+  const statusCode = sendEmail(userId, email, name, next)
   return res.send(statusCode)
 })
 

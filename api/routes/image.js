@@ -4,8 +4,6 @@ const { expressjwt: ejwt } = require("express-jwt");
 var express = require('express');
 app = express()
 var db = require('..');
-const cors = require('cors');
-app.use(cors());
 const multer = require('multer');
 const fs = require('fs')
 const multerS3 = require('multer-s3')

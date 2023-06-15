@@ -4,8 +4,6 @@ var express = require('express');
 
 app = express()
 var db = require('..');
-const cors = require('cors')
-app.use(cors());
 
 app.get('/', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }), (req, res) => {
   db.query(`select users.userId, name, company, profileImageUrl, postCount, lastPost from users

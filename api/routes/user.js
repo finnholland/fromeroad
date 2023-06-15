@@ -4,14 +4,12 @@ const { expressjwt: ejwt } = require("express-jwt");
 var express = require('express');
 app = express()
 var db = require('..');
-const cors = require('cors')
 const bcrypt = require("bcrypt")
 const cryptojs = require("crypto-js")
 const jwt = require('jsonwebtoken');
 const salt = 10
 const sendEmail = require('../helpers/sendEmail');
 const sendResetCodeEmail = require('../helpers/sendResetCodeEmail');
-app.use(cors());
 
 
 // ROUTES RELATING TO USER ~~~~ api/user/{route}
@@ -57,7 +55,6 @@ app.get('/email', (req, res) => {
 app.post('/generateresetcode', (req, res) => {
   const email = req.body.email
   const resetCode = Math.floor(100000 + Math.random() * 900000);
-  console.log(resetCode, email)
   db.query(`insert into resetcodes (code, email, createdAt) values (?, ?, now())`, [resetCode, email], (err, result, fields) => {
     if (err) {
       console.log('error occurred: '+ err)

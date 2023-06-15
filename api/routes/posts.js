@@ -4,8 +4,6 @@ const { expressjwt: ejwt } = require("express-jwt");
 var express = require('express');
 app = express()
 var db = require('..');
-const cors = require('cors');
-app.use(cors());
 const multer = require('multer');
 const multerS3 = require('multer-s3')
 const { S3Client } = require('@aws-sdk/client-s3')
