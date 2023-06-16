@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TrendingUserType } from '../../types'
 import { DEFAULT_PROFILE_IMAGE, S3_BUCKET } from '../constants'
 import { convertTrendPoints } from '../hooks/helpers'
@@ -22,10 +22,14 @@ export const TrendingUser: React.FC<Props> = ({ user }) => {
       setImageUrl(DEFAULT_PROFILE_IMAGE)
     }
   }
+
+  useEffect(() => {
+    console.log(S3_BUCKET + imageUrl)
+  }, [])
   
   return (
     <div className={selector.settings.darkMode ? 'trendingUserDarkMode' : 'trendingUser'}>
-      <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage' />
+      <img src={`${S3_BUCKET + imageUrl}`} onError={onError} alt='profile' className='profileImage' />
       <div style={{ flexDirection: 'column', display: 'flex', textAlign: 'start', flex: 1, width: 0 }}>
         <span className='text' style={{color: (user.difference > 0 ? '#05ff37' : user.difference < 0 ? '#ff1f3a' : selector.settings.darkMode ? '#fff' : '#8205ff')}}>{user.name}</span>
         <div className='subtext'>
