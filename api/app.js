@@ -23,7 +23,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(cors({
-  origin: process.env.ENV === ('dev' || 'prod') ? ['https://www.fromeroad.com', 'https://fromeroad.com', 'https://dev.fromeroad.com'] : ['http://localhost:3000'],
+  origin: ['https://www.fromeroad.com', 'https://fromeroad.com', 'https://dev.fromeroad.com'],
   methods: '*',
   allowedHeaders: ['Authorization', 'Content-Type'],
   preflightContinue: true
