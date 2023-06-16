@@ -37,11 +37,11 @@ export const Header: React.FC<Props> = (props: Props) => {
       <div>
         <header className="header">
           <div className='lotfourteen'>
-            <a href='http://www.lotfourteen.com.au' target={'_blank'} rel='noreferrer' style={{lineHeight: 0}}>
+            <a href='http://www.lotfourteen.com.au' target={'_blank'} rel='noreferrer' style={{lineHeight: 0, marginRight: 20}}>
               <SvgLotfourteen height={25} fill={'#fff'}/>
             </a>
             {
-              props.showGithub ? (<a href='https://github.com/fhllnd/fromeroad' style={{marginRight: 20, marginLeft: 20, lineHeight: 0}} target={'_blank'} rel='noreferrer'> <GitHub height={25} fill={'#fff'} /> </a>) :
+              props.showGithub ? (<a href='https://github.com/fhllnd/fromeroad' style={{ marginRight: 20, lineHeight: 0}} target={'_blank'} rel='noreferrer'> <GitHub height={25} fill={'#fff'} /> </a>) :
                 ( null )
             }
             <Lightbulb onClick={() => changeSides()} height={25} fill={'#fff'} stroke={selector.settings.darkMode ? '#ABABAB' : '#F9EF00'}/>
