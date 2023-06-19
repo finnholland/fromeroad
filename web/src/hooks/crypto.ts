@@ -2,7 +2,7 @@ import { CRYPTO_KEY } from "../constants";
 import CryptoJS from "crypto-js";
 
 const encrypt = (string: string) => {
-  if (!string || string == '') {
+  if (!string || string === '') {
     return null
   }
   let encrypted = CryptoJS.AES.encrypt(string, CRYPTO_KEY).toString();
