@@ -10,7 +10,7 @@ import Allen from '../assets/logo/Allen';
 import ReactCodeInput from 'react-code-input';
 import { changePassword, findUserByEmail, updateCode, validatePasswords } from '../hooks/login/loginFunctions';
 import AboutDiv from '../components/Login/About';
-import { encrypt } from '../hooks/crypto';
+import { decrypt, encrypt } from '../hooks/crypto';
 
 interface Props {
   setAuthenticated: any
@@ -54,6 +54,7 @@ const Login: React.FC<Props> = (props: Props) => {
         password: encrypt(password)
       }).then(res => {
         localStorage.setItem('token', res.data.token)
+        res.data.user.phone = decrypt(res.data.user.phone);
         dispatch(setUser(res.data.user));
         props.setVerified(false);
         props.setAuthenticated(true)
@@ -80,6 +81,7 @@ const Login: React.FC<Props> = (props: Props) => {
       password:  encrypt(password)
     }).then(res => {
       localStorage.setItem('token', res.data.token)
+      res.data.user.phone = decrypt(res.data.user.phone);
       dispatch(setUser(res.data.user));
       console.log(res.data.user);
       props.setVerified(res.data.user.verified)

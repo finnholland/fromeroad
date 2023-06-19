@@ -3,13 +3,14 @@ import { User } from "../../../types";
 import { API, JWT_TOKEN } from "../../constants";
 import { setUser} from "../slices/userSlice";
 import { setProfile, setProfileInterests } from "../slices/profileSlice";
+import { encrypt } from "../crypto";
 
 export const updateUserDetails = (dispatch: any, userState: User, userId: number, setUserState: any) => {
   const params = {
     userId: userId,
     name: userState.name,
     project: userState.project,
-    phone: userState.phone,
+    phone: encrypt(userState.phone),
   }
 
   Axios.post(`${API}/user/updateuser`, params, {

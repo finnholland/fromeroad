@@ -10,6 +10,7 @@ import { Header } from '../../components/Header';
 import ReactCodeInput from 'react-code-input';
 import { validatePasswords, updateCode, findUserByEmail, changePassword } from '../../hooks/login/loginFunctions';
 import AboutDiv from '../../components/Login/About';
+import { decrypt } from '../../hooks/crypto';
 
 interface Props {
   setAuthenticated: any,
@@ -56,6 +57,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
         password: password
       }).then(res => {
         localStorage.setItem('token', res.data.token)
+        res.data.user.phone = decrypt(res.data.user.phone);
         dispatch(setUser(res.data.user));
         props.setVerified(false);
         props.setAuthenticated(true)
@@ -82,6 +84,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
       password: password
     }).then(res => {
       localStorage.setItem('token', res.data.token)
+      res.data.user.phone = decrypt(res.data.user.phone);
       dispatch(setUser(res.data.user));
       props.setVerified(res.data.user.verified)
       props.setAuthenticated(true)
