@@ -318,8 +318,15 @@ export const Profile: React.FC<Props> = (props: Props) => {
           </div>
           <div className='addInterestDiv'>
             <input type={'text'} placeholder='add interests' className='interestInput' value={interest} onChange={(e) => changeInterestSearch(e.target.value)}/>
-            <SvgAddButton fill={addSvgHover === -1 ? '#ffb405' : '#DECCF0'} stroke={addSvgHover === -1 ? '#ffb405' : '#c182ff'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
-              onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
+            {selector.settings.darkMode ?
+              (<SvgAddButton strokeOpacity={addSvgHover === -1 ? '#ffb405' : '#461A77'} fill='#302245' stroke={addSvgHover === -1 ? '#ffb405' : '#9054D0'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
+                onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />)
+              :
+              (<SvgAddButton strokeOpacity={addSvgHover === -1 ? '#ffb405' : '#DECCF0'} stroke={addSvgHover === -1 ? '#ffb405' : '#c182ff'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
+                onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />)
+            }
+
+
           </div>
           <div ref={scrollRef} id='interestList' className='interestScrollable' style={{paddingRight: (showScroll ? 10 : 18)}}>
             {interestSearchResults.length === 0 && interest === '' ? interestItems :

@@ -239,7 +239,7 @@
   justify-content: space-between; 
   align-items: center; 
   display: flex; 
-  background-color: #8205ff44; 
+  background-color: #461A77; 
   height: 40px;
   border-radius: 20px; 
   padding-left: 15px; 
@@ -251,7 +251,7 @@
 .appDarkMode .interestInput {
   flex: 1; 
   margin-right: 10px; 
-  background-color:#8205ff00;
+  background-color:#461A77;
   border: none; 
   border-bottom: 2px solid #c182ff66;
   color: white;
