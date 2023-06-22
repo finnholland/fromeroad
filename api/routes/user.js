@@ -4,7 +4,7 @@ const { expressjwt: ejwt } = require("express-jwt");
 var express = require('express');
 app = express()
 var db = require('..');
-const bcrypt = require("bcrypt")
+const argon2 = require("argon2")
 const cryptojs = require("crypto-js")
 const jwt = require('jsonwebtoken');
 const salt = 10
@@ -60,7 +60,7 @@ app.post('/generateresetcode', (req, res) => {
       console.log('error occurred: '+ err)
     } else {
       sendResetCodeEmail(email, resetCode)
-      return res.send(200);
+      return res.sendStatus(200);
     }
   })
 })
@@ -87,8 +87,10 @@ app.post('/resetpassword', (req, res) => {
   const email = req.body.email
   const password = req.body.password
 
-  bcrypt.hash(password, 10).then((hash) => {
-    console.log(hash)
+  if (!email || !password) {
+    return res.sendStatus(400)
+  }
+  argon2.hash(password).then((hash) => {
     db.query(`update users set password = ? where email = ?`, [hash, email], (err, result, fields) => { 
       if (err) throw (err)
       else {
@@ -125,23 +127,17 @@ app.post('/login', async (req, res) => {
         message: 'invalid email or password'
       })
     } else {
-      bcrypt.compare(decrypted, result[0].password, function (err, valid) {
-        if (err) {
-          return err
-        }
-        if (valid) {
-          const encryptToken = jwt.sign({ userId: result[0].userId.toString() }, process.env.JWT_SECRET, { algorithm: 'HS256' });
-          return res.status(200).send({
-            message: "logged in successfully",
-            user: result[0],
-            token: encryptToken,
-          })
-        }
-        else {
-          return res.status(401).send({
-            message: 'invalid email or password'
-          })
-        }
+      argon2.verify(result[0].password, decrypted).then((success) => {
+        const encryptToken = jwt.sign({ userId: result[0].userId.toString() }, process.env.JWT_SECRET, { algorithm: 'HS256' });
+        return res.status(200).send({
+          message: "logged in successfully",
+          user: result[0],
+          token: encryptToken,
+        })
+      }).catch(err => {
+        return res.status(401).send({
+          message: 'invalid email or password'
+        })
       })
     }
   })
@@ -169,7 +165,7 @@ app.post('/signup', async (req, res, next) => {
       })
     }
     else {
-      bcrypt.hash(user.password, 10).then((hash) => { 
+      argon2.hash(user.password).then((hash) => { 
         user.password = hash;
         db.query('insert into users (name, email, company, password) values (?,?,?,?)', [user.name, user.email, user.company, user.password], (err, result, fields) => {
           if (err) throw (err)

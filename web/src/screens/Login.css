@@ -139,9 +139,16 @@ a:visited { text-decoration: none; color:#8205ff; }
 a:hover { text-decoration: none; color:#ffb405; }
 a:focus { text-decoration: none; color:#8205ff; }
 
-input:-webkit-autofill,
+.appDarkMode input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active{
-    -webkit-box-shadow: 0 0 0 30px #f8f1ff inset !important;
+  -webkit-box-shadow: 0 0 0 30px #302245 inset !important;
+}
+
+.app input:-webkit-autofill,
+.app input:-webkit-autofill:hover, 
+.app input:-webkit-autofill:focus, 
+.app input:-webkit-autofill:active{
+  -webkit-box-shadow: 0 0 0 30px #f8f1ff inset !important;
 }

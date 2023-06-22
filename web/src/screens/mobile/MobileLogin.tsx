@@ -11,6 +11,7 @@ import ReactCodeInput from 'react-code-input';
 import { validatePasswords, updateCode, findUserByEmail, changePassword } from '../../hooks/login/loginFunctions';
 import AboutDiv from '../../components/Login/About';
 import { decrypt } from '../../hooks/crypto';
+import { ErrorMessage } from '../../../types';
 
 interface Props {
   setAuthenticated: any,
@@ -30,7 +31,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
   const [company, setCompany] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [errorMessage, setErrorMessage] = useState({ type: '', message: '' })
+  const [errorMessage, setErrorMessage] = useState<ErrorMessage>({ type: '', message: '' })
   const [errorHighlights, setErrorHighlights] = useState<string[]>([])
   const [code, setCode] = useState('');
   const [resetting, setResetting] = useState(false);
@@ -195,7 +196,7 @@ const MobileLogin: React.FC<Props> = (props: Props) => {
                 </button>
               </div>
               <div style={{ width: '60%' }}>
-                <button className='button' onClick={() => changePassword({password, confirmPassword, email, validCode, setShowSuccessPage, toggleLoginOrReset})}>
+                <button className='button' onClick={() => changePassword({password, confirmPassword, email, validCode, setShowSuccessPage, toggleLoginOrReset, setErrorMessage})}>
                   change password
                   <span style={{ color: '#FFB405', marginLeft: 5 }}>*</span>
                 </button>

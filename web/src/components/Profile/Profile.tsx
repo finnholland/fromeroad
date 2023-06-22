@@ -131,9 +131,6 @@ export const Profile: React.FC<Props> = (props: Props) => {
   }
 
   const getInterests = (userId: number) => {
-    console.log('====================================');
-    console.log(selector.user);
-    console.log('====================================');
     setInterestLoading(true)
     Axios.get(`${API}/user/interests/getInterests/${userId}`, {
       headers:

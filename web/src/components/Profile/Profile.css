@@ -202,7 +202,7 @@
 .interestInput {
   flex: 1; 
   margin-right: 10px; 
-  background-color:#DECCF0; 
+  background-color:#DECCF000;
   border: none; 
   border-bottom: 2px solid #c182ff;
   color: white;
@@ -233,6 +233,29 @@
   justify-content: center;
   pointer-events: none;
   color: #F6C6FF;
+}
+
+.appDarkMode .addInterestDiv {
+  justify-content: space-between; 
+  align-items: center; 
+  display: flex; 
+  background-color: #8205ff44; 
+  height: 40px;
+  border-radius: 20px; 
+  padding-left: 15px; 
+  margin-bottom: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.appDarkMode .interestInput {
+  flex: 1; 
+  margin-right: 10px; 
+  background-color:#8205ff00;
+  border: none; 
+  border-bottom: 2px solid #c182ff66;
+  color: white;
+  min-width: 2rem;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */

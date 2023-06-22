@@ -2,6 +2,7 @@ import Axios from "axios"
 import { API } from "../../constants"
 import { Dispatch, SetStateAction } from "react"
 import { encrypt } from "../crypto"
+import { ErrorMessage } from "../../../types"
 
 const generateCode = (email: string) => {
   Axios.post(`${API}/user/generateresetcode`, {
@@ -53,8 +54,12 @@ interface ChangePasswordProps {
   validCode: string,
   setShowSuccessPage: Dispatch<SetStateAction<boolean>>,
   toggleLoginOrReset: any
+  setErrorMessage: Dispatch<SetStateAction<ErrorMessage>>
 }
 export const changePassword = (props: ChangePasswordProps) => {
+  if (!props.password || !props.confirmPassword) {
+    props.setErrorMessage({type: 'signup', message: 'Password fields cannot be blank'})
+  }
   const canResetPassword = props.password === props.confirmPassword && props.email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/) && props.validCode === "#0f0"
   if (canResetPassword) {
     console.log(props.email)
