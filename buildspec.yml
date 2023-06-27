@@ -8,6 +8,7 @@ phases:
       - unzip -o terraform.zip
       - terraform --version
       - cd $CODEBUILD_SRC_DIR
+      - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
   pre_build:
     commands:
       - pwd
@@ -28,5 +29,5 @@ phases:
   post_build:
     commands:
       - pwd
-      - cd ../terraform npm run tfim
+      - cd ../terraform && npm run tfim
       - terraform plan -var="ACCESS_KEY=$ACCESS_KEY" -var="SECRET_KEY=$SECRET_KEY" -var="region=$region" -var="env=$env" -var="SM_ARN=$SM_ARN" -var="RDS_USER=$RDS_USER" -var="RDS_PASSWORD=$RDS_PASSWORD"
