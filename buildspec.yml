@@ -15,6 +15,7 @@ phases:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - cd terraform && terraform init -var="ACCESS_KEY=$ACCESS_KEY" -var="SECRET_KEY=$SECRET_KEY" -backend-config="bucket=$bucket" -backend-config="region=$region" -backend-config="key=$key" -migrate-state
+      - terraform plan -var="ACCESS_KEY=$ACCESS_KEY" -var="SECRET_KEY=$SECRET_KEY" -var="region=$region" -var="env=$ENV" -var="SM_ARN=$SM_ARN" -var="RDS_USER=$RDS_USER" -var="RDS_PASSWORD=$RDS_PASSWORD"
   build:
     commands:
       - echo Build started on `date`
@@ -26,10 +27,7 @@ phases:
       - echo Pushing the Docker image...
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:latest
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:$CODEBUILD_BUILD_NUMBER
-  tf_plan:
+  post_build:
     commands:
       - cd ../terraform
-      - terraform plan -var="ACCESS_KEY=$ACCESS_KEY" -var="SECRET_KEY=$SECRET_KEY" -var="region=$region" -var="env=$ENV" -var="SM_ARN=$SM_ARN" -var="RDS_USER=$RDS_USER" -var="RDS_PASSWORD=$RDS_PASSWORD"
-  tf_apply:
-    commands:
       - terraform apply -var="ACCESS_KEY=$ACCESS_KEY" -var="SECRET_KEY=$SECRET_KEY" -var="region=$region" -var="env=$ENV" -var="SM_ARN=$SM_ARN" -var="RDS_USER=$RDS_USER" -var="RDS_PASSWORD=$RDS_PASSWORD"
