@@ -10,7 +10,7 @@ terraform {
 
 # Define the provider and AWS region
 provider "aws" {
-  region = "ap-southeast-2"
+  region = var.region
   access_key = var.ACCESS_KEY
   secret_key = var.SECRET_KEY
 }
@@ -38,7 +38,7 @@ module "networking" {
 module "ecs" {
   source       = "./modules/ecs"
   env          = var.env
-  region       = var.REGION
+  region       = var.region
   SM_ARN       = var.SM_ARN
   ecs_role_arn = data.aws_iam_role.ecs_task_execution_role.arn
   subn_a_id    = module.networking.fr_subn_a_id

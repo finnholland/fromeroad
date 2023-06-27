@@ -5,6 +5,7 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - cd terraform && terraform init -var="ACCESS_KEY=$ACCESS_KEY" -var="SECRET_KEY=$SECRET_KEY" -var="bucket=$bucket" -var="region=$region" -var="key=$key"
   build:
     commands:
       - echo Build started on `date`
@@ -12,9 +13,11 @@ phases:
       - cd api && docker build -t fr_ecr_$ENV .
       - docker tag fr_ecr_$ENV:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:latest
       - docker tag fr_ecr_$ENV $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:$CODEBUILD_BUILD_NUMBER
-  post_build:
-    commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:latest
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:$CODEBUILD_BUILD_NUMBER
+  post_build:
+    commands:
+      - cd terraform npm run tfim
+      - cd terraform && terraform plan -var="ACCESS_KEY=$ACCESS_KEY" -var="SECRET_KEY=$SECRET_KEY" -var="region=$region" -var="env=$env" -var="SM_ARN=$SM_ARN" -var="RDS_USER=$RDS_USER" -var="RDS_PASSWORD=$RDS_PASSWORD"
