@@ -38,6 +38,7 @@ module "networking" {
 module "ecs" {
   source       = "./modules/ecs"
   env          = var.env
+  region       = var.REGION
   SM_ARN       = var.SM_ARN
   ecs_role_arn = data.aws_iam_role.ecs_task_execution_role.arn
   subn_a_id    = module.networking.fr_subn_a_id
@@ -54,6 +55,12 @@ module "rds" {
   RDS_PASSWORD    = var.RDS_PASSWORD
   subn_group_name = module.networking.subn_group_name 
   rds_sg_id          = module.networking.fr_rds_sg_id
+}
+
+module "route_53" {
+  source = "./modules/route_53"
+  lb_dns_name  = module.ecs.lb_dns_name
+  lb_zone_id   = module.ecs.lb_zone_id
 }
 
 # Create an S3 bucket
@@ -85,35 +92,4 @@ module "rds" {
 
 #   bucket = aws_s3_bucket.fr_bucket.id
 #   acl    = "public-read"
-# }
-
-# Create a Route 53 zone
-# resource "aws_route53_zone" "fromeroad" {
-#   name = "fromeroad.com"
-# }
-
-# Create a DNS record in Route 53
-# resource "aws_route53_record" "fr_api_record" {
-#   zone_id = aws_route53_zone.fromeroad.id
-#   name    = "api.fromeroad.com"
-#   type    = "A"
-
-#   alias {
-#     name = aws_lb.load_balancer.dns_name
-#     zone_id = aws_lb.load_balancer.zone_id
-#     evaluate_target_health = true
-#   }
-#}
-
-# # Create a DNS record in Route 53
-# resource "aws_route53_record" "fr_api_dev_record" {
-#   zone_id = aws_route53_zone.fromeroad_api.id
-#   name    = "dev.api.fromeroad.com"
-#   type    = "A"
-
-#   alias {
-#     name = aws_lb.load_balancer.dns_name
-#     zone_id = aws_lb.load_balancer.zone_id
-#     evaluate_target_health = true
-#   }
 # }

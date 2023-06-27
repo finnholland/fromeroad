@@ -2,6 +2,10 @@ variable "env" {
   default   = "dev"
 }
 
+variable "region" {
+  default   = "ap-southeast-2"
+}
+
 variable "SM_ARN" {
   default = ""
   description = "secret manager arn"

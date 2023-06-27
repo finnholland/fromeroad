@@ -112,16 +112,13 @@ app.get('/autoLogin', ejwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256
 })
 
 // get user by password
-app.post('/login', async (req, res) => {
+app.post('/login', async (req, res, next) => {
   const email = req.body.email;
   const password = cryptojs.AES.decrypt(req.body.password, process.env.CRYPTO_KEY);
   const decrypted = password.toString(cryptojs.enc.Utf8);
   db.query('select * from users where email = ?', email, (err, result, fields) => {
     if (err) {
-      console.log('error occurred: ' + err)
-      res.status(err.code).send({
-        message: err.message
-      })
+      next(err)
     } else if (result.length <= 0) {
       res.status(401).send({
         message: 'invalid email or password'

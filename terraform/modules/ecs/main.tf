@@ -8,20 +8,37 @@ resource "aws_ecs_cluster" "fr_cluster" {
 
 # Create an ECS service
 resource "aws_ecs_service" "fr_ecs_service" {
-  name            = "fr-ecs-srv-${var.env}"
+  name            = "${var.env}-service"
   cluster         = aws_ecs_cluster.fr_cluster.id
   desired_count   = 1
   deployment_maximum_percent = 200
   deployment_minimum_healthy_percent = 100
   wait_for_steady_state = false
-
+  enable_ecs_managed_tags = true
+  task_definition = aws_ecs_task_definition.fr_ecs_task_definition.arn
+  platform_version = "LATEST"
+  launch_type = "FARGATE"
   deployment_controller {
-    type = "EXTERNAL"
+    type = "ECS"
   }
   depends_on = [
     aws_lb.load_balancer,
     aws_ecs_task_definition.fr_ecs_task_definition
   ]
+  deployment_circuit_breaker {
+    enable = true
+    rollback = true
+  }
+  load_balancer {
+    container_name   = "container-${var.env}"
+    container_port   = 8080
+    target_group_arn = aws_lb_target_group.target_group.arn
+  }
+  network_configuration {
+    assign_public_ip = true
+    security_groups = [ var.ecs_sg_id ]
+    subnets = [ var.subn_a_id, var.subn_b_id ]
+  }
 }
 
 # Create an ECS task definition
@@ -34,18 +51,18 @@ resource "aws_ecs_task_definition" "fr_ecs_task_definition" {
   execution_role_arn       = var.ecs_role_arn
   container_definitions    = jsonencode([
     {
-      "name": "fr-cnt-api-${var.env}",
+      "name": "container-${var.env}",
       "image": "${aws_ecr_repository.fromeroad_ecr.repository_url}:latest",
       "portMappings": [
         {
-          "name": "fr-cnt-api-${var.env}-8080-tcp",
+          "name": "container-${var.env}-8080-tcp",
           "containerPort": 8080,
           "hostPort": 8080,
           "protocol": "tcp",
           "appProtocol": "http"
         },
         {
-          "name": "fr-cnt-api-${var.env}-8443-tcp",
+          "name": "container-${var.env}-8443-tcp",
           "containerPort": 8443,
           "hostPort": 8443,
           "protocol": "tcp",
@@ -101,30 +118,32 @@ resource "aws_ecs_task_definition" "fr_ecs_task_definition" {
         "timeout": 5,
         "retries": 3,
         "startPeriod": 5
+      },
+      "logConfiguration": {
+        "logDriver" : "awslogs",
+        "options" : {
+          "awslogs-group" : "${aws_cloudwatch_log_group.logs.name}",
+          "awslogs-region" : "${var.region}",
+          "awslogs-create-group" : "true",
+          "awslogs-stream-prefix" : "/ecs"
+
+        }
       }
     }
   ])
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "X86_64"
+  }
 }
 
-
-resource "aws_ecs_task_set" "fr_ecs_task" {
-  service         = aws_ecs_service.fr_ecs_service.id
-  cluster         = aws_ecs_cluster.fr_cluster.id
-  task_definition = aws_ecs_task_definition.fr_ecs_task_definition.arn
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.target_group.arn
-    container_name   = "fr-cnt-api-${var.env}"
-    container_port   = 8080
+resource "aws_cloudwatch_log_group" "logs" {
+  name = "fr_logs_${var.env}"
+  retention_in_days = 7
+  tags = {
+    Environment = "${var.env}"
+    Application = "fromeroad"
   }
-
-  network_configuration {
-    subnets = [ var.subn_a_id, var.subn_b_id ]
-    security_groups = [ var.ecs_sg_id ]
-    assign_public_ip = false
-  }
-  depends_on = [ aws_ecs_service.fr_ecs_service ]
-  
 }
 
 resource "aws_appautoscaling_target" "ecs_target" {
@@ -136,18 +155,22 @@ resource "aws_appautoscaling_target" "ecs_target" {
 }
 
 resource "aws_appautoscaling_policy" "ecs_asp" {
-  name               = "fr-ecs-asp-${var.env}"
+  name               = "scale-policy"
   policy_type        = "TargetTrackingScaling"
   resource_id        = aws_appautoscaling_target.ecs_target.resource_id
   scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
   service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
 
   target_tracking_scaling_policy_configuration {
-    target_value = 75
+    target_value = 50
     predefined_metric_specification {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
+    scale_in_cooldown = 0
+    scale_out_cooldown = 0
+    disable_scale_in = true
   }
+  depends_on = [ aws_ecs_service.fr_ecs_service ]
 }
 
 #####################################
