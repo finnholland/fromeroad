@@ -12,7 +12,6 @@ phases:
       - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
   pre_build:
     commands:
-      - pwd
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - cd terraform && terraform init -var="ACCESS_KEY=$ACCESS_KEY" -var="SECRET_KEY=$SECRET_KEY" -backend-config="bucket=$bucket" -backend-config="region=$region" -backend-config="key=$key" -migrate-state
@@ -29,6 +28,4 @@ phases:
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:$CODEBUILD_BUILD_NUMBER
   post_build:
     commands:
-      - pwd
-      - cd ../terraform && npm run tfim
       - terraform plan -var="ACCESS_KEY=$ACCESS_KEY" -var="SECRET_KEY=$SECRET_KEY" -var="region=$region" -var="env=$env" -var="SM_ARN=$SM_ARN" -var="RDS_USER=$RDS_USER" -var="RDS_PASSWORD=$RDS_PASSWORD"
