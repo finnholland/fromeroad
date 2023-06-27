@@ -13,7 +13,7 @@ phases:
       - pwd
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - cd terraform && terraform init -backend-config="ACCESS_KEY=$ACCESS_KEY" -backend-config="SECRET_KEY=$SECRET_KEY" -backend-config="bucket=$bucket" -backend-config="region=$region" -backend-config="key=$key"
+      - cd terraform && terraform init -var="ACCESS_KEY=$ACCESS_KEY" -var="SECRET_KEY=$SECRET_KEY" -backend-config="bucket=$bucket" -backend-config="region=$region" -backend-config="key=$key"
   build:
     commands:
       - echo Build started on `date`
