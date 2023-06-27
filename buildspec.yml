@@ -8,6 +8,7 @@ phases:
       - unzip -o terraform.zip
       - terraform --version
       - cd $CODEBUILD_SRC_DIR
+      - echo $DOCKER_USERNAME
       - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
   pre_build:
     commands:
