@@ -28,4 +28,4 @@ phases:
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:$CODEBUILD_BUILD_NUMBER
   post_build:
     commands:
-      - terraform plan -var="ACCESS_KEY=$ACCESS_KEY" -var="SECRET_KEY=$SECRET_KEY" -var="region=$region" -var="env=$env" -var="SM_ARN=$SM_ARN" -var="RDS_USER=$RDS_USER" -var="RDS_PASSWORD=$RDS_PASSWORD"
+      - cd ../terraform && terraform plan -var="ACCESS_KEY=$ACCESS_KEY" -var="SECRET_KEY=$SECRET_KEY" -var="region=$region" -var="env=$env" -var="SM_ARN=$SM_ARN" -var="RDS_USER=$RDS_USER" -var="RDS_PASSWORD=$RDS_PASSWORD"
