@@ -1,6 +1,5 @@
 variable "env" {}
 variable "region" {}
-variable "key" {}
 
 variable "ACCESS_KEY" {}
 variable "SECRET_KEY" {}
