@@ -4,7 +4,6 @@ phases:
   install:
     commands:
       - pwd
-      - cd /usr/bin
       - curl -s -qL -o terraform.zip https://releases.hashicorp.com/terraform/1.5.1/terraform_1.5.1_linux_amd64.zip
       - unzip -o terraform.zip
       - terraform --version
@@ -18,7 +17,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - cd api && docker build -t fr_ecr_$ENV .
+      - cd ../api && docker build -t fr_ecr_$ENV .
       - docker tag fr_ecr_$ENV:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:latest
       - docker tag fr_ecr_$ENV $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/fr_ecr_$ENV:$CODEBUILD_BUILD_NUMBER
       - echo Build completed on `date`
@@ -28,5 +27,5 @@ phases:
   post_build:
     commands:
       - pwd
-      - cd terraform npm run tfim
-      - cd terraform && terraform plan -var="ACCESS_KEY=$ACCESS_KEY" -var="SECRET_KEY=$SECRET_KEY" -var="region=$region" -var="env=$env" -var="SM_ARN=$SM_ARN" -var="RDS_USER=$RDS_USER" -var="RDS_PASSWORD=$RDS_PASSWORD"
+      - cd ../terraform npm run tfim
+      - terraform plan -var="ACCESS_KEY=$ACCESS_KEY" -var="SECRET_KEY=$SECRET_KEY" -var="region=$region" -var="env=$env" -var="SM_ARN=$SM_ARN" -var="RDS_USER=$RDS_USER" -var="RDS_PASSWORD=$RDS_PASSWORD"
