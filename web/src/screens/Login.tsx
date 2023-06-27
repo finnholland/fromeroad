@@ -10,7 +10,8 @@ import Allen from '../assets/logo/Allen';
 import ReactCodeInput from 'react-code-input';
 import { changePassword, findUserByEmail, updateCode, validatePasswords } from '../hooks/login/loginFunctions';
 import AboutDiv from '../components/Login/About';
-import { encrypt } from '../hooks/crypto';
+import { decrypt, encrypt } from '../hooks/crypto';
+import { ErrorMessage } from '../../types';
 
 interface Props {
   setAuthenticated: any
@@ -31,7 +32,7 @@ const Login: React.FC<Props> = (props: Props) => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [code, setCode] = useState('')
-  const [errorMessage, setErrorMessage] = useState({ type: '', message: '' })
+  const [errorMessage, setErrorMessage] = useState<ErrorMessage>({ type: '', message: '' })
   const [errorHighlights, setErrorHighlights] = useState<string[]>([])
   const [resetting, setResetting] = useState(false);
   const [validCode, setValidCode] = useState("#8205ff");
@@ -54,6 +55,7 @@ const Login: React.FC<Props> = (props: Props) => {
         password: encrypt(password)
       }).then(res => {
         localStorage.setItem('token', res.data.token)
+        res.data.user.phone = decrypt(res.data.user.phone);
         dispatch(setUser(res.data.user));
         props.setVerified(false);
         props.setAuthenticated(true)
@@ -80,8 +82,8 @@ const Login: React.FC<Props> = (props: Props) => {
       password:  encrypt(password)
     }).then(res => {
       localStorage.setItem('token', res.data.token)
+      res.data.user.phone = decrypt(res.data.user.phone);
       dispatch(setUser(res.data.user));
-      console.log(res.data.user);
       props.setVerified(res.data.user.verified)
       props.setAuthenticated(true)
     }).catch(err => {
@@ -103,7 +105,7 @@ const Login: React.FC<Props> = (props: Props) => {
   const onSubmit = (e: any) => {
     setErrorHighlights([])
     e.preventDefault();
-    if (email !== '' && !email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@chamonix\.com\.au$/)) {
+    if (email !== '' && !email.match(/^[A-Za-z0-9]+\.+[A-Za-z0-9]+@[A-Za-z0-9]+\.+[A-Za-z\.]+$/)) {
       setErrorMessage({ type: 'global', message: 'invalid email format' });
       setErrorHighlights(['email']);
     } else if (name === '' && email === '' && company === '' && password === '' && confirmPassword === '') {
@@ -192,7 +194,7 @@ const Login: React.FC<Props> = (props: Props) => {
                 </button>
               </div>
               <div style={{ width: '50%' }}>
-                <button className={selector.settings.darkMode ? 'buttonDarkMode' : 'button'} onClick={() => changePassword({password, confirmPassword, email, validCode, setShowSuccessPage, toggleLoginOrReset})}>
+                <button className={selector.settings.darkMode ? 'buttonDarkMode' : 'button'} onClick={() => changePassword({password, confirmPassword, email, validCode, setShowSuccessPage, toggleLoginOrReset, setErrorMessage})}>
                   change password *
                 </button>
                 <p style={{ fontSize: 13, textAlign: 'end', color: 'red', marginTop: 5 }}>{errorMessage.type === 'signup' ? errorMessage.message : ''}</p>

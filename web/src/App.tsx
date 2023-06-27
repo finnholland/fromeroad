@@ -13,6 +13,7 @@ import MobileHome from './screens/mobile/MobileHome';
 import { setIsOpen } from './hooks/slices/sidebarSlice';
 import { ErrorPage } from './Error';
 import { setDarkMode } from './hooks/slices/settingsSlice';
+import { decrypt } from './hooks/crypto';
 
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     }).then(res => {
+      res.data[0].phone = decrypt(res.data[0].phone);
       dispatch(setUser(res.data[0]));
       setVerified(res.data[0].verified)
       setAuthenticated(true);

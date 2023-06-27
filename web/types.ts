@@ -79,3 +79,8 @@ export interface ProfileType {
   trendPoints: number
   interests: Interest[]
 }
+
+export interface ErrorMessage {
+  type: string,
+  message: string
+}

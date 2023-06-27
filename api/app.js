@@ -23,12 +23,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(cors({
-  origin: ['https://www.fromeroad.com', 'https://fromeroad.com', 'https://dev.fromeroad.com'],
+  origin: process.env.ENV == 'local' ? ['http://localhost:3000'] : ['https://www.fromeroad.com', 'https://fromeroad.com', 'https://dev.fromeroad.com'],
   methods: '*',
   allowedHeaders: ['Authorization', 'Content-Type'],
   preflightContinue: true
 }));
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

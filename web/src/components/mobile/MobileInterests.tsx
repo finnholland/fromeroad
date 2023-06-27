@@ -11,6 +11,7 @@ import { setProfile, profileInitialState } from '../../hooks/slices/profileSlice
 import { setInterests } from '../../hooks/slices/userSlice';
 import '../Profile/Profile.css'
 import './MobileProfile.css'
+import { decrypt } from '../../hooks/crypto';
 
 interface Props {
   setCurrentRoute: any
@@ -214,7 +215,7 @@ export const MobileInterests: React.FC<Props> = (props: Props) => {
             </div>
             <div>
               <p className='detailHeader'>phone</p>
-              <input type={'tel'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.phone}
+              <input type={'tel'} disabled={!editing} placeholder={'-'} className='detailInput' value={decrypt(userState.phone) || '-'}
                 style={{ textDecorationLine: (editing) ? 'underline' : 'none' }} onChange={(e) => setUserState((prevState) => ({ ...prevState, phone: e.target.value }))}
               />
             </div>
@@ -273,8 +274,8 @@ export const MobileInterests: React.FC<Props> = (props: Props) => {
               </div>
               <div>
                 <p className='detailHeader'>phone</p>
-                <input type={'tel'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.phone}
-                  style={{ textDecorationLine: (editing) ? 'underline' : 'none' }} onChange={(e) => setUserState((prevState) => ({ ...prevState, phone: e.target.value }))}
+                <input type={'tel'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.phone.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3')}
+                style={{ textDecorationLine: (editing) ? 'underline' : 'none' }} onChange={(e) => setUserState((prevState) => ({ ...prevState, phone: e.target.value }))}
                 />
               </div>
               <div>

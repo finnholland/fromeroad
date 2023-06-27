@@ -11,6 +11,7 @@ import { convertTrendPoints } from '../../hooks/helpers';
 import { profileInitialState, setProfile } from '../../hooks/slices/profileSlice';
 import { setInterests } from '../../hooks/slices/userSlice';
 import './Profile.css'
+import { decrypt, encrypt } from '../../hooks/crypto';
 
 interface Props {
   logout: any
@@ -130,9 +131,6 @@ export const Profile: React.FC<Props> = (props: Props) => {
   }
 
   const getInterests = (userId: number) => {
-    console.log('====================================');
-    console.log(selector.user);
-    console.log('====================================');
     setInterestLoading(true)
     Axios.get(`${API}/user/interests/getInterests/${userId}`, {
       headers:
@@ -206,7 +204,6 @@ export const Profile: React.FC<Props> = (props: Props) => {
         }).then(res => {
             setProfileImageUrl(res.data[0].profileImageUrl)
           })
-          
         })
       }
     }
@@ -239,11 +236,11 @@ export const Profile: React.FC<Props> = (props: Props) => {
             </div>
             <div>
               <p className='detailHeader'>project</p>
-              <p className='detailBody'>{selector.profile.project ? selector.profile.project : '-'}</p>
+              <p className='detailBody'>{selector.profile.project || '-'}</p>
             </div>
             <div>
               <p className='detailHeader'>phone</p>
-              <p className='detailBody'>{selector.profile.phone ? selector.profile.phone : '-'}</p>
+              <p className='detailBody'>{(selector.profile.phone) || '-'}</p>
             </div>
             <div>
               <p className='detailHeader'>trend points</p>
@@ -306,7 +303,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
             </div>
             <div>
               <p className='detailHeader'>phone</p>
-              <input type={'tel'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.phone || ''}
+              <input type={'tel'} disabled={!editing} placeholder={'-'} className='detailInput' value={userState.phone.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3')}
               style={{ textDecorationLine: (editing) ? 'underline' : 'none' }} onChange={(e) => setUserState((prevState) => ({ ...prevState, phone: e.target.value }))}
               />
             </div>
@@ -321,8 +318,15 @@ export const Profile: React.FC<Props> = (props: Props) => {
           </div>
           <div className='addInterestDiv'>
             <input type={'text'} placeholder='add interests' className='interestInput' value={interest} onChange={(e) => changeInterestSearch(e.target.value)}/>
-            <SvgAddButton fill={addSvgHover === -1 ? '#ffb405' : '#DECCF0'} stroke={addSvgHover === -1 ? '#ffb405' : '#c182ff'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
-              onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />
+            {selector.settings.darkMode ?
+              (<SvgAddButton strokeOpacity={addSvgHover === -1 ? '#ffb405' : '#461A77'} fill='#302245' stroke={addSvgHover === -1 ? '#ffb405' : '#9054D0'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
+                onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />)
+              :
+              (<SvgAddButton strokeOpacity={addSvgHover === -1 ? '#ffb405' : '#DECCF0'} stroke={addSvgHover === -1 ? '#ffb405' : '#c182ff'} height={40} onMouseEnter={() => setAddSvgHover(-1)}
+                onMouseLeave={() => setAddSvgHover(-2)} onClick={() => interest.trim() !== '' ? addInterest(interest.trim()) : null} />)
+            }
+
+
           </div>
           <div ref={scrollRef} id='interestList' className='interestScrollable' style={{paddingRight: (showScroll ? 10 : 18)}}>
             {interestSearchResults.length === 0 && interest === '' ? interestItems :

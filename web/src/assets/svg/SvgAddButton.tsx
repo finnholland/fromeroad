@@ -7,7 +7,7 @@ export const SvgAddButton: React.FC<React.SVGProps<SVGSVGElement>> = (props: any
     xmlSpace="preserve"
     {...props}
   >
-    <circle cx="20" cy="20" r="19.5" fill="white" style={{stroke: props.fill, fill: "white"}}/>
+    <circle cx="20" cy="20" r="19.5" fill="white" style={{stroke: props.strokeOpacity, fill: props.fill}}/>
     <path d="M29 20L11 20" strokeLinecap="round" style={{stroke: props.stroke, strokeWidth: props.strokeWidth}}/>
     <path d="M20 29L20 11" strokeLinecap="round" style={{stroke: props.stroke, strokeWidth: props.strokeWidth, visibility: props.fontVariant}}/>
   </svg>
