@@ -3,7 +3,7 @@
 resource "aws_route53_zone" "fromeroad" {
   name = "fromeroad.com"
   lifecycle {
-    ignore_changes = [  ]
+    prevent_destroy = true
   }
   comment = "Fromeroad records"
 }

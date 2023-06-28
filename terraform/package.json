@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "tfrm": "terraform state rm module.route_53.aws_route53_record.fr_api_record module.route_53.aws_route53_zone.fromeroad",
-    "tfim": "terraform import -var=\"env=prod\" -var-file=\"env_variables/env.prod.tfvars\" module.route_53.aws_route53_zone.fromeroad Z05958123CORK6QOQQSRR && terraform import -var=\"env=prod\" -var-file=\"env_variables/env.prod.tfvars\" module.route_53.aws_route53_record.fr_api_record Z05958123CORK6QOQQSRR_api.fromeroad.com_A"
+    "tfrm": "terraform state rm module.route_53.aws_route53_zone.fromeroad",
+    "tfim": "terraform import -var=\"ACCESS_KEY=$ACCESS_KEY\" -var=\"SECRET_KEY=$SECRET_KEY\" -var=\"region=$region\" -var=\"env=$ENV\" -var=\"SM_ARN=$SM_ARN\" -var=\"RDS_USER=$RDS_USER\" -var=\"RDS_PASSWORD=$RDS_PASSWORD\" module.route_53.aws_route53_zone.fromeroad Z05958123CORK6QOQQSRR"
   }
 }
