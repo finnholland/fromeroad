@@ -15,7 +15,7 @@ resource "aws_rds_cluster" "fr_rds" {
   engine             = "aurora-mysql"
   engine_mode        = "provisioned"
   engine_version     = "8.0.mysql_aurora.3.03.1"
-  master_username    = "${var.RDS_USER}_${var.env}"
+  master_username    = "${var.RDS_USER}"
   master_password    = var.RDS_PASSWORD
   copy_tags_to_snapshot = true
   network_type = "IPV4"
