@@ -23,6 +23,7 @@ resource "aws_rds_cluster" "fr_rds" {
   storage_encrypted = true
   port = 3306
   db_subnet_group_name = var.subn_group_name
+  snapshot_identifier = "fr-${var.env}-empty-with-users"
   serverlessv2_scaling_configuration {
     max_capacity = 2
     min_capacity = 0.5
@@ -35,5 +36,6 @@ resource "aws_rds_cluster" "fr_rds" {
       master_password,
     ]
   }
+  backup_retention_period = 7
   vpc_security_group_ids = [var.rds_sg_id]
 }
