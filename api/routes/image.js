@@ -19,7 +19,7 @@ const s3 = new S3Client({
 
 const storage = multerS3({
   s3: s3,
-  bucket: `fromeroad-${process.env.ENV}`,
+  bucket: `fromeroad-${process.env.ENV === "local" ? "dev" : process.env.ENV}`,
   contentType: multerS3.AUTO_CONTENT_TYPE,
   metadata: function (req, file, cb) {
     cb(null, {fieldName: file.fieldname});

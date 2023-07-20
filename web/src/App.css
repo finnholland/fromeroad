@@ -32,7 +32,7 @@
   aspect-ratio: 1/1;
   width: 80px;
   border-radius: 80px;
-  border: 3px solid #fff;
+  border: 3px solid #ffffff00;
   box-shadow: 0px 2px 3px #888;
   justify-content: center;
   align-items: flex-end;
@@ -98,21 +98,6 @@
 
 .postBodyInput::-ms-input-placeholder { /* Microsoft Edge */
   color: #ababab;
-}
-
-.postBodyInput {
-  background-color: #f3f3f3; 
-  font-size: 1.5rem;
-  border: 0;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 1rem;
-  padding-bottom: 0;
-  border-radius: 10px;  
-  color: #8205ff;
-  overflow: hidden;
-  resize: none;
-  height: 44px;
 }
 
 .errorMessage {

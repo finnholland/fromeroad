@@ -144,7 +144,7 @@ export const Post: React.FC<Props> = (props: Props) => {
           <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
         </div>
         <div id='body' className='postBody'>
-          <span dangerouslySetInnerHTML={{__html: props.body}} className='bodyText'/>
+          <span dangerouslySetInnerHTML={{__html: props.body}} className={selector.settings.darkMode ? 'bodyTextDarkMode' : 'bodyText'}/>
           <img src={S3_BUCKET + props.post.postImageUrl} alt='postImage' className='postImage'/>
         </div>
         <div id='footer' className='postFooter'>
@@ -161,10 +161,10 @@ export const Post: React.FC<Props> = (props: Props) => {
         </div>
 
         {showComments ? (
-          <div className='commentEditor'>
+          <div className={selector.settings.darkMode ? 'commentEditorDarkMode' : 'commentEditor'}>
             <textarea className='postBodyInput' maxLength={157} placeholder='hello world - 🌒' onKeyDown={commentEnterSubmit} onChange={handleChange} value={comment} rows={2}
               ref={textAreaRef} />
-            <button className='submitButton' style={{ backgroundColor: (comment.trim() === '' ? '#d9fff1' : '#3fffb9') }} disabled={comment.trim() === ''} onClick={() => postComment()}>
+            <button className={comment.trim() === '' ? 'submitButton submitButtonDisabled' : 'submitButton'} disabled={comment.trim() === ''} onClick={() => postComment()}>
               post
             </button>
           </div>
@@ -194,7 +194,7 @@ export const Post: React.FC<Props> = (props: Props) => {
           <span className='headerTextCompany'>{getMessageAge(new Date(props.post.createdAt * 1000))}</span>
         </div>
         <div id='body' className='postBody'>
-          <span dangerouslySetInnerHTML={{__html: props.body}} className='bodyText'/>
+          <span dangerouslySetInnerHTML={{__html: props.body}} className={selector.settings.darkMode ? 'bodyTextDarkMode' : 'bodyText'}/>
         </div>
 
         <div id='footer' className='postFooter'>
@@ -211,10 +211,10 @@ export const Post: React.FC<Props> = (props: Props) => {
         </div>
 
         {showComments ? (
-          <div className='commentEditor'>
+          <div className={selector.settings.darkMode ? 'commentEditorDarkMode' : 'commentEditor'}>
             <textarea className='postBodyInput' maxLength={157} placeholder='hello world - 🌒' onKeyDown={commentEnterSubmit} onChange={handleChange} value={comment} rows={2}
               ref={textAreaRef} />
-            <button className='submitButton' style={{ backgroundColor: (comment.trim() === '' ? '#d9fff1' : '#3fffb9') }} disabled={comment.trim() === ''} onClick={() => postComment()}>
+            <button className={comment.trim() === '' ? 'submitButton submitButtonDisabled' : 'submitButton'} disabled={comment.trim() === ''} onClick={() => postComment()}>
               post
             </button>
           </div>

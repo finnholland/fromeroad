@@ -114,7 +114,7 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <div className='post'>
+    <div className={selector.settings.darkMode ? 'post postDarkMode' : 'post'}>
       <div id='header' className='postHeader'>
           <div className='user' style={{width: '100%'}}>
             <img src={S3_BUCKET + imageUrl} onError={onError} alt='profile' className='profileImage' />
@@ -125,16 +125,18 @@ export const PostEditor: React.FC<Props> = (props: Props) => {
           </div>
 
       </div>
-      <textarea className='postBodyInput' maxLength={157} placeholder={props.placeholder} onChange={handleChange} onPaste={handlePaste} value={postContent.body} rows={2}
+      <textarea className={selector.settings.darkMode ? 'postBodyInput postBodyInputDarkMode' : 'postBodyInput'} maxLength={157} placeholder={props.placeholder} onChange={handleChange} onPaste={handlePaste} value={postContent.body} rows={2}
         ref={textAreaRef} />
       
       {postImage !== '' ? (<img src={postImage} alt='post' className='postImage'/>) : null}
       {fileTooLarge ? (<span style={{color: 'red', fontSize: 12, marginTop: 10}}>files cannot be more than <b>8mb</b> thanks!</span>) : null}
       <div style={{flexDirection: 'row', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1rem'}}>
         <SvgUploadImage onMouseEnter={() => setImageHover(true)} onMouseLeave={() => setImageHover(false)}
-          style={{ cursor: 'pointer'}} width={30} height={30} onClick={(e) => handleClick(e)} fill={imageHover ? '#3fffb9' : '#CCFFED'} />
+          style={{ cursor: 'pointer' }} width={30} height={30} onClick={(e) => handleClick(e)}
+          fill={imageHover ? (selector.settings.darkMode ? '#F6C6FF' : '#3fffb9') : (selector.settings.darkMode ? '#F6C6FF50' : '#CCFFED')} />
         
-        <button className='postButton' style={{ flex: 1, marginLeft: '1rem', cursor: 'pointer', backgroundColor: (postContent.body === '' ? '#d9fff1' : '#3fffb9') }}
+        <button className={postContent.body.trim() === '' ? 'postButton postButtonDisabled' : 'postButton'}
+          style={{ flex: 1, marginLeft: '1rem', cursor: 'pointer' }}
          onClick={() => createPost()} disabled={postContent.body === ''} >
           <span>post</span>
         </button>
