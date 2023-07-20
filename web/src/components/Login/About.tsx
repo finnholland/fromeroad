@@ -24,7 +24,7 @@ const AboutDiv: React.FC<Props> = (props) => {
       <p className={props.darkMode ? 'aboutTextDarkMode' : 'aboutText'} style={{marginTop: 0}}>I originally created this project as a way to get into full-stack devving.</p>
       <p className={props.darkMode ? 'aboutTextDarkMode' : 'aboutText'}>The project stack is ReactJS hosted on AWS Amplify & Route 53, NodeJS Express running on AWS ECS Fargate, and MySQL on AWS RDS Aurora.</p>
       <p className={props.darkMode ? 'aboutTextDarkMode' : 'aboutText'}>I honestly have no idea if it'll work or how many bugs there'll be so please don't hesitate to report them.</p>
-      <p className={props.darkMode ? 'aboutTextDarkMode' : 'aboutText'}>Contributors will be added in future. For now you can access the repo once logged in and verified :)</p>
+      <p className={props.darkMode ? 'aboutTextDarkMode' : 'aboutText'}>Contributors may be added in future (depending on reception). For now you can access the repo once logged in and verified :)</p>
     </div>
   );
 }
