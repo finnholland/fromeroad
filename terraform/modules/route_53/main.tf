@@ -1,16 +1,12 @@
 
 # Create a Route 53 zone
-resource "aws_route53_zone" "fromeroad" {
+data "aws_route53_zone" "fromeroad" {
   name = "fromeroad.com"
-  lifecycle {
-    prevent_destroy = true
-  }
-  comment = "Fromeroad records"
 }
 
 # Create a DNS record in Route 53
 resource "aws_route53_record" "fr_api_record" {
-  zone_id = aws_route53_zone.fromeroad.id
+  zone_id = data.aws_route53_zone.fromeroad.id
   name    = "api.fromeroad.com"
   type    = "A"
 
