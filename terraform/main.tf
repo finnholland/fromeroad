@@ -39,7 +39,7 @@ module "ecs" {
   source       = "./modules/ecs"
   env          = var.env
   region       = var.region
-  SM_ARN       = var.SM_ARN
+  ssm_arn      = module.secrets_manager.ssm_arn
   ecs_role_arn = data.aws_iam_role.ecs_task_execution_role.arn
   subn_a_id    = module.networking.fr_subn_a_id
   subn_b_id    = module.networking.fr_subn_b_id

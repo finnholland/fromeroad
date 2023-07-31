@@ -6,7 +6,7 @@ variable "region" {
   default   = "ap-southeast-2"
 }
 
-variable "SM_ARN" {
+variable "ssm_arn" {
   default = ""
   description = "secret manager arn"
 }
