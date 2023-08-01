@@ -39,7 +39,7 @@ module "ecs" {
   source       = "./modules/ecs"
   env          = var.env
   region       = var.region
-  SM_ARN       = var.SM_ARN
+  ssm_arn      = module.secrets_manager.ssm_arn
   ecs_role_arn = data.aws_iam_role.ecs_task_execution_role.arn
   subn_a_id    = module.networking.fr_subn_a_id
   subn_b_id    = module.networking.fr_subn_b_id
@@ -62,34 +62,20 @@ module "route_53" {
   lb_dns_name  = module.ecs.lb_dns_name
   lb_zone_id   = module.ecs.lb_zone_id
 }
-
-# Create an S3 bucket
-# resource "aws_s3_bucket" "fr_bucket" {
-#   bucket = "fromeroad-${var.env}"
-# }
-
-# resource "aws_s3_bucket_ownership_controls" "fr_bucket_ownership" {
-#   bucket = aws_s3_bucket.fr_bucket.id
-#   rule {
-#     object_ownership = "BucketOwnerPreferred"
-#   }
-# }
-
-# resource "aws_s3_bucket_public_access_block" "fr_bucket_access" {
-#   bucket = aws_s3_bucket.fr_bucket.id
-
-#   block_public_acls       = false
-#   block_public_policy     = false
-#   ignore_public_acls      = false
-#   restrict_public_buckets = false
-# }
-
-# resource "aws_s3_bucket_acl" "fr_bucket_acl" {
-#   depends_on = [
-#     aws_s3_bucket_ownership_controls.fr_bucket_ownership,
-#     aws_s3_bucket_public_access_block.fr_bucket_access
-#   ]
-
-#   bucket = aws_s3_bucket.fr_bucket.id
-#   acl    = "public-read"
-# }
+module "secrets_manager" {
+  source = "./modules/secrets_manager"
+  env    = var.env
+}
+module "iam" {
+  source  = "./modules/iam"
+  ssm_arn = module.secrets_manager.ssm_arn
+  env     = var.env
+}
+module "ses" {
+  source = "./modules/ses"
+  env    = var.env
+}
+# Reference S3 bucket
+data "aws_s3_bucket" "fr_bucket" {
+  bucket = "fromeroad-${var.env}"
+}

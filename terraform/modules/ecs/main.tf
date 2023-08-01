@@ -52,7 +52,7 @@ resource "aws_ecs_task_definition" "fr_ecs_task_definition" {
   container_definitions    = jsonencode([
     {
       "name": "container-${var.env}",
-      "image": "${aws_ecr_repository.fromeroad_ecr.repository_url}:latest",
+      "image": "${data.aws_ecr_repository.fromeroad_ecr.repository_url}:latest",
       "portMappings": [
         {
           "name": "container-${var.env}-8080-tcp",
@@ -78,35 +78,35 @@ resource "aws_ecs_task_definition" "fr_ecs_task_definition" {
       "secrets" : [
         {
           "name": "SES_KEY",
-          "valueFrom": "${var.SM_ARN}:SES_KEY::"
+          "valueFrom": "${var.ssm_arn}:SES_KEY::"
         },
         {
           "name": "SES_SECRET",
-          "valueFrom": "${var.SM_ARN}:SES_SECRET::"
+          "valueFrom": "${var.ssm_arn}:SES_SECRET::"
         },
         {
           "name": "CRYPTO_KEY",
-          "valueFrom": "${var.SM_ARN}:CRYPTO_KEY::"
+          "valueFrom": "${var.ssm_arn}:CRYPTO_KEY::"
         },
         {
           "name": "JWT_SECRET",
-          "valueFrom": "${var.SM_ARN}:JWT_SECRET::"
+          "valueFrom": "${var.ssm_arn}:JWT_SECRET::"
         },
         {
           "name": "S3_SECRET",
-          "valueFrom": "${var.SM_ARN}:S3_SECRET::"
+          "valueFrom": "${var.ssm_arn}:S3_SECRET::"
         },
         {
           "name": "S3_KEY",
-          "valueFrom": "${var.SM_ARN}:S3_KEY::"
+          "valueFrom": "${var.ssm_arn}:S3_KEY::"
         },
         {
           "name": "RDS_USER",
-          "valueFrom": "${var.SM_ARN}:RDS_USER::"
+          "valueFrom": "${var.ssm_arn}:RDS_USER::"
         },
         {
           "name": "RDS_PASSWORD",
-          "valueFrom": "${var.SM_ARN}:RDS_PASSWORD::"
+          "valueFrom": "${var.ssm_arn}:RDS_PASSWORD::"
         }
       ],
       "healthCheck": {
@@ -234,7 +234,7 @@ resource "aws_lb_listener" "listener" {
 #####################################
 ################ ECR ################
 #####################################
-# Create an ECR repository for the Docker image
-resource "aws_ecr_repository" "fromeroad_ecr" {
+# Reference the ECR repository for the Docker image
+data "aws_ecr_repository" "fromeroad_ecr" {
   name = "fr_ecr_${var.env}"
 }
