@@ -195,7 +195,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE*/ /*!50117 DEFINER=`admin_fromeroad_prod`@`%`*/ /*!50106 EVENT `deletecodes` ON SCHEDULE EVERY 1 HOUR STARTS (concat(curdate(), ' 00:00:00')) ON COMPLETION PRESERVE ENABLE DO call sp_deletecodes */ ;;
+/*!50106 CREATE*/ /*!50117 DEFINER=`admin_fromeroad_local`@`%`*/ /*!50106 EVENT `deletecodes` ON SCHEDULE EVERY 1 HOUR STARTS (concat(curdate(), ' 00:00:00')) ON COMPLETION PRESERVE ENABLE DO call sp_deletecodes */ ;;
 /*!50003 SET time_zone             = @saved_time_zone */ ;;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;;
@@ -213,7 +213,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE*/ /*!50117 DEFINER=`admin_fromeroad_prod`@`%`*/ /*!50106 EVENT `updatetopten` ON SCHEDULE EVERY 1 HOUR STARTS (concat(curdate(), ' 00:00:00')) ON COMPLETION PRESERVE ENABLE DO call sp_updatetopten */ ;;
+/*!50106 CREATE*/ /*!50117 DEFINER=`admin_fromeroad_local`@`%`*/ /*!50106 EVENT `updatetopten` ON SCHEDULE EVERY 1 HOUR STARTS (concat(curdate(), ' 00:00:00')) ON COMPLETION PRESERVE ENABLE DO call sp_updatetopten */ ;;
 /*!50003 SET time_zone             = @saved_time_zone */ ;;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;;
@@ -235,7 +235,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin_fromeroad_prod`@`%` PROCEDURE `sp_deletecodes`()
+CREATE DEFINER=`admin_fromeroad_local`@`%` PROCEDURE `sp_deletecodes`()
 BEGIN
 	delete from resetcodes where codeId >= 0 and createdAt < DATE_SUB(NOW(),INTERVAL 30 MINUTE);
 END ;;
@@ -254,7 +254,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin_fromeroad_prod`@`%` PROCEDURE `sp_updatetopten`()
+CREATE DEFINER=`admin_fromeroad_local`@`%` PROCEDURE `sp_updatetopten`()
 BEGIN
 	-- start of the hour get topten
 	delete from topten where pos >= 0; ALTER TABLE topten AUTO_INCREMENT = 1;
@@ -287,7 +287,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin_fromeroad_prod`@`%` PROCEDURE `sp_weeklyreset`()
+CREATE DEFINER=`admin_fromeroad_local`@`%` PROCEDURE `sp_weeklyreset`()
 BEGIN
 	UPDATE users
 	SET trendPoints = 0

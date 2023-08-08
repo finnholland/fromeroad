@@ -7,8 +7,7 @@ import { Comment } from './Comment';
 import { convertTrendPoints, getMessageAge, useAutosizeTextArea } from '../hooks/helpers';
 import { API, DEFAULT_PROFILE_IMAGE, S3_BUCKET } from '../constants';
 import { getUserProfile } from '../hooks/api/users';
-import Heart from '../assets/svg/post/Heart';
-import CommentIcon from '../assets/svg/post/Comments';
+import { HeartInactive, HeartActive, CommentIcon } from '../assets/svg/post';
 
 interface Props {
   post: PostType,
@@ -149,8 +148,11 @@ export const Post: React.FC<Props> = (props: Props) => {
         </div>
         <div id='footer' className='postFooter'>
           <div style={{width: '50%', alignItems: 'center', display: 'flex', justifyContent: 'space-between', flexDirection: 'row', userSelect: 'none', textAlign: 'start'}}>
-            <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}} onClick={() => upvotePost()}>
-              <Heart stroke={selector.settings.darkMode ? '#00b2b2' : '#8205FF'} fill={props.post.voted || selector.user.userId === props.poster.userId ? (selector.settings.darkMode ? '#B0FFFF' : '#EEBEFF') : '#ffffff00'} strokeWidth={1.1} height={30} />
+            <div style={{ alignItems: 'center', display: 'flex', cursor: 'pointer' }} onClick={() => upvotePost()}>
+              { props.post.voted || selector.user.userId === props.poster.userId ?
+                (<HeartActive height={30} />) :
+                (<HeartInactive height={30} />)
+              }
               <span style={{flex: 1, paddingLeft: 10, color: '#8205FF'}}>{convertTrendPoints(trendPoints)}</span>
             </div>
             <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}} onClick={() => setShowComments(!showComments)}>
@@ -200,8 +202,11 @@ export const Post: React.FC<Props> = (props: Props) => {
         <div id='footer' className='postFooter'>
           <div style={{width: '50%', alignItems: 'center', display: 'flex', justifyContent: 'space-between', flexDirection: 'row', userSelect: 'none', textAlign: 'start'}}>
             <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}} onClick={() => upvotePost()}>
-              <Heart stroke={selector.settings.darkMode ? '#00b2b2' : '#8205FF'} fill={props.post.voted || selector.user.userId === props.poster.userId ? (selector.settings.darkMode ? '#B0FFFF' : '#EEBEFF') : '#ffffff00'} strokeWidth={1.1} height={30} />
-              <span style={{flex: 1, paddingLeft: 10, color: '#8205FF'}}>{convertTrendPoints(trendPoints)}</span>
+              { props.post.voted || selector.user.userId === props.poster.userId ?
+                (<HeartActive height={30} />) :
+                (<HeartInactive height={30} />)
+              }
+              <span style={{ flex: 1, paddingLeft: 10, color: '#8205FF' }}>{convertTrendPoints(trendPoints)}</span>
             </div>
             <div style={{alignItems: 'center', display: 'flex', cursor: 'pointer'}} onClick={() => setShowComments(!showComments)}>
               <CommentIcon fill={'#00FFA3'} height={30} />

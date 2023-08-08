@@ -166,8 +166,18 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `verified` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'finn holland','finn.holland@chamonix.com.au',0,'chamonix',null,null,'/data/default/default_profile_image.jpg','$argon2id$v=19$m=65536,t=3,p=4$NqDLLmU8HwV6xXNKKYBDkA$uLlNffd6r9oUZoUF3wN2X6A37SqGbWtp4A3TVzxxWC4',1),(2,'Alan Turing','alan.turing@chamonix.com.au',0,'chamonix',null,null,'/data/default/default_profile_image.jpg','$argon2id$v=19$m=65536,t=3,p=4$NqDLLmU8HwV6xXNKKYBDkA$uLlNffd6r9oUZoUF3wN2X6A37SqGbWtp4A3TVzxxWC4',0),(3,'Ada Lovelace','ada.lovelace@chamonix.com.au',0,'chamonix',null,null,'/data/default/default_profile_image.jpg','$argon2id$v=19$m=65536,t=3,p=4$NqDLLmU8HwV6xXNKKYBDkA$uLlNffd6r9oUZoUF3wN2X6A37SqGbWtp4A3TVzxxWC4',0),(4,'Marie Curie','marie.curie@chamonix.com.au',0,'chamonix',null,null,'/data/default/default_profile_image.jpg','$argon2id$v=19$m=65536,t=3,p=4$NqDLLmU8HwV6xXNKKYBDkA$uLlNffd6r9oUZoUF3wN2X6A37SqGbWtp4A3TVzxxWC4',0),(5,'Yuan Shuai','yuan.shuai@chamonix.com.au',0,'chamonix',null,null,'/data/default/default_profile_image.jpg','$argon2id$v=19$m=65536,t=3,p=4$NqDLLmU8HwV6xXNKKYBDkA$uLlNffd6r9oUZoUF3wN2X6A37SqGbWtp4A3TVzxxWC4',0),(6,'Nikola Tesla','nikola.tesla@chamonix.com.au',0,'chamonix',null,null,'/data/default/default_profile_image.jpg','$argon2id$v=19$m=65536,t=3,p=4$NqDLLmU8HwV6xXNKKYBDkA$uLlNffd6r9oUZoUF3wN2X6A37SqGbWtp4A3TVzxxWC4',0),(7,'Du Lei','du.lei@chamonix.com.au',0,'chamonix',null,null,'/data/default/default_profile_image.jpg','$argon2id$v=19$m=65536,t=3,p=4$NqDLLmU8HwV6xXNKKYBDkA$uLlNffd6r9oUZoUF3wN2X6A37SqGbWtp4A3TVzxxWC4',0),(8,'David Bowie','david.bowie@chamonix.com.au',0,'chamonix',null,null,'/data/default/default_profile_image.jpg','$argon2id$v=19$m=65536,t=3,p=4$NqDLLmU8HwV6xXNKKYBDkA$uLlNffd6r9oUZoUF3wN2X6A37SqGbWtp4A3TVzxxWC4',0),(9,'Mike Pound','mike.pound@chamonix.com.au',0,'chamonix',null,null,'/data/default/default_profile_image.jpg','$argon2id$v=19$m=65536,t=3,p=4$NqDLLmU8HwV6xXNKKYBDkA$uLlNffd6r9oUZoUF3wN2X6A37SqGbWtp4A3TVzxxWC4',0),(10,'Eduardo Saverin','eduardo.saverin@chamonix.com.au',0,'chamonix',null,null,'/data/default/default_profile_image.jpg','$argon2id$v=19$m=65536,t=3,p=4$NqDLLmU8HwV6xXNKKYBDkA$uLlNffd6r9oUZoUF3wN2X6A37SqGbWtp4A3TVzxxWC4',0),(11,'Elon Musk','elon.musk@chamonix.com.au',0,'chamonix',null,null,'/data/default/default_profile_image.jpg','$argon2id$v=19$m=65536,t=3,p=4$NqDLLmU8HwV6xXNKKYBDkA$uLlNffd6r9oUZoUF3wN2X6A37SqGbWtp4A3TVzxxWC4',0),(12,'Mark Zuckerberg','markzuckerberg@facebook.com',0,'facebook',null,null,'/data/default/default_profile_image.jpg','$argon2id$v=19$m=65536,t=3,p=4$NqDLLmU8HwV6xXNKKYBDkA$uLlNffd6r9oUZoUF3wN2X6A37SqGbWtp4A3TVzxxWC4',0);
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Dumping events for database 'fromeroad'
@@ -185,7 +195,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE*/ /*!50117 DEFINER=`admin_fromeroad_local`@`%`*/ /*!50106 EVENT `deletecodes` ON SCHEDULE EVERY 1 HOUR STARTS (concat(curdate(), ' 00:00:00')) ON COMPLETION PRESERVE ENABLE DO call sp_deletecodes */ ;;
+/*!50106 CREATE*/ /*!50117 DEFINER=`admin_fromeroad_dev`@`%`*/ /*!50106 EVENT `deletecodes` ON SCHEDULE EVERY 1 HOUR STARTS (concat(curdate(), ' 00:00:00')) ON COMPLETION PRESERVE ENABLE DO call sp_deletecodes */ ;;
 /*!50003 SET time_zone             = @saved_time_zone */ ;;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;;
@@ -203,7 +213,7 @@ DELIMITER ;;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;;
 /*!50003 SET @saved_time_zone      = @@time_zone */ ;;
 /*!50003 SET time_zone             = 'SYSTEM' */ ;;
-/*!50106 CREATE*/ /*!50117 DEFINER=`admin_fromeroad_local`@`%`*/ /*!50106 EVENT `updatetopten` ON SCHEDULE EVERY 1 HOUR STARTS (concat(curdate(), ' 00:00:00')) ON COMPLETION PRESERVE ENABLE DO call sp_updatetopten */ ;;
+/*!50106 CREATE*/ /*!50117 DEFINER=`admin_fromeroad_dev`@`%`*/ /*!50106 EVENT `updatetopten` ON SCHEDULE EVERY 1 HOUR STARTS (concat(curdate(), ' 00:00:00')) ON COMPLETION PRESERVE ENABLE DO call sp_updatetopten */ ;;
 /*!50003 SET time_zone             = @saved_time_zone */ ;;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;;
@@ -225,7 +235,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin_fromeroad_local`@`%` PROCEDURE `sp_deletecodes`()
+CREATE DEFINER=`admin_fromeroad_dev`@`%` PROCEDURE `sp_deletecodes`()
 BEGIN
 	delete from resetcodes where codeId >= 0 and createdAt < DATE_SUB(NOW(),INTERVAL 30 MINUTE);
 END ;;
@@ -244,7 +254,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin_fromeroad_local`@`%` PROCEDURE `sp_updatetopten`()
+CREATE DEFINER=`admin_fromeroad_dev`@`%` PROCEDURE `sp_updatetopten`()
 BEGIN
 	-- start of the hour get topten
 	delete from topten where pos >= 0; ALTER TABLE topten AUTO_INCREMENT = 1;
@@ -277,7 +287,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin_fromeroad_local`@`%` PROCEDURE `sp_weeklyreset`()
+CREATE DEFINER=`admin_fromeroad_dev`@`%` PROCEDURE `sp_weeklyreset`()
 BEGIN
 	UPDATE users
 	SET trendPoints = 0
@@ -302,4 +312,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-19 15:45:20
+-- Dump completed on 2023-06-01 12:04:06
