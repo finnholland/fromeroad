@@ -12,7 +12,7 @@ call sp_updatetopten;
 
 USE mysql;
 CREATE USER 'name'@'%' IDENTIFIED BY 'password';
-GRANT ALL PRIVILEGES ON *.* TO 'name'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'name'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 
 -- clear all posts
