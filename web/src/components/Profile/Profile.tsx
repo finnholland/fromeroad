@@ -219,7 +219,7 @@ export const Profile: React.FC<Props> = (props: Props) => {
         </div>
         <div>
           <div style={{ flexDirection: 'row', display: 'flex', paddingLeft: 10, paddingRight: 10 }}>
-            <img src={API + selector.profile.profileImageUrl} onError={onError} alt='profile' className={selector.settings.darkMode ? 'profileImageDarkMode' : 'profileImage'} />
+            <img src={S3_BUCKET + selector.profile.profileImageUrl} onError={onError} alt='profile' className={selector.settings.darkMode ? 'profileImageDarkMode' : 'profileImage'} />
             <div className='detailsDiv'>
               <p className='name'>{selector.profile.name}</p>
               <p className='company'>{selector.profile.company}</p>
