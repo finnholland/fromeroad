@@ -46,6 +46,10 @@ module "ecs" {
   vpc_id       = module.networking.fr_vpc_id
   ecs_sg_id    = module.networking.fr_ecs_sg_id
   rds_endpoint = module.rds.rds_endpoint
+  S3_KEY       = module.iam.S3_KEY
+  SES_KEY      = module.iam.SES_KEY
+  S3_SECRET    = module.iam.SES_SECRET
+  SES_SECRET   = module.iam.SES_SECRET
 }
 
 module "rds" {

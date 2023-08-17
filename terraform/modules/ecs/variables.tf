@@ -34,3 +34,19 @@ variable "ecs_role_arn" {
 variable "rds_endpoint" {
   description = "security group for ecs task to access things"
 }
+
+variable "S3_KEY" {
+  description = "security group for ecs task to access things"
+}
+
+variable "SES_KEY" {
+  description = "security group for ecs task to access things"
+}
+
+variable "S3_SECRET" {
+  description = "security group for ecs task to access things"
+}
+
+variable "SES_SECRET" {
+  description = "security group for ecs task to access things"
+}

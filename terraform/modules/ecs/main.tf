@@ -78,11 +78,11 @@ resource "aws_ecs_task_definition" "fr_ecs_task_definition" {
       "secrets" : [
         {
           "name": "SES_KEY",
-          "valueFrom": "${var.ssm_arn}:SES_KEY::"
+          "valueFrom": "${var.SES_KEY}"
         },
         {
           "name": "SES_SECRET",
-          "valueFrom": "${var.ssm_arn}:SES_SECRET::"
+          "valueFrom": "${var.SES_SECRET}"
         },
         {
           "name": "CRYPTO_KEY",
@@ -94,11 +94,11 @@ resource "aws_ecs_task_definition" "fr_ecs_task_definition" {
         },
         {
           "name": "S3_SECRET",
-          "valueFrom": "${var.ssm_arn}:S3_SECRET::"
+          "valueFrom": "${var.S3_SECRET}"
         },
         {
           "name": "S3_KEY",
-          "valueFrom": "${var.ssm_arn}:S3_KEY::"
+          "valueFrom": "${var.S3_KEY}"
         },
         {
           "name": "RDS_USER",
