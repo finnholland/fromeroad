@@ -24,10 +24,6 @@ data "aws_availability_zone" "fr-az-b" {
   name = "ap-southeast-2b"
 }
 
-data "aws_iam_role" "ecs_task_execution_role" {
-  name = "ecsTaskExecutionRole"
-}
-
 module "networking" {
   source = "./modules/networking"
   env    = var.env
@@ -40,7 +36,7 @@ module "ecs" {
   env          = var.env
   region       = var.region
   ssm_arn      = module.secrets_manager.ssm_arn
-  ecs_role_arn = data.aws_iam_role.ecs_task_execution_role.arn
+  ecs_role_arn = module.iam.ecs_task_execution_role
   subn_a_id    = module.networking.fr_subn_a_id
   subn_b_id    = module.networking.fr_subn_b_id
   vpc_id       = module.networking.fr_vpc_id

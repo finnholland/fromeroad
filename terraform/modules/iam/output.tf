@@ -10,3 +10,6 @@ output "S3_SECRET" {
 output "SES_SECRET" {
   value = aws_iam_access_key.SES_KEY.secret
 }
+output "ecs_task_execution_role" {
+  value = aws_iam_role.ecsTaskExecutionRole.arn
+}
