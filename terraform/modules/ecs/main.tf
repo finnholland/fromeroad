@@ -74,16 +74,12 @@ resource "aws_ecs_task_definition" "fr_ecs_task_definition" {
       "environment": [
         { "name": "ENV", "value": "${var.env}" },
         { "name": "RDS_DB", "value": "${var.rds_endpoint}" },
+        { "name": "SES_KEY", "value": "${var.SES_KEY}" },
+        { "name": "SES_SECRET", "value": "${var.SES_SECRET}" },
+        { "name": "S3_SECRET", "value": "${var.S3_SECRET}" },
+        { "name": "S3_KEY", "value": "${var.S3_KEY}" },
       ],
       "secrets" : [
-        {
-          "name": "SES_KEY",
-          "valueFrom": "${var.SES_KEY}"
-        },
-        {
-          "name": "SES_SECRET",
-          "valueFrom": "${var.SES_SECRET}"
-        },
         {
           "name": "CRYPTO_KEY",
           "valueFrom": "${var.ssm_arn}:CRYPTO_KEY::"
@@ -91,14 +87,6 @@ resource "aws_ecs_task_definition" "fr_ecs_task_definition" {
         {
           "name": "JWT_SECRET",
           "valueFrom": "${var.ssm_arn}:JWT_SECRET::"
-        },
-        {
-          "name": "S3_SECRET",
-          "valueFrom": "${var.S3_SECRET}"
-        },
-        {
-          "name": "S3_KEY",
-          "valueFrom": "${var.S3_KEY}"
         },
         {
           "name": "RDS_USER",
