@@ -106,7 +106,7 @@ resource "aws_ecs_task_definition" "fr_ecs_task_definition" {
         },
         {
           "name": "RDS_PASSWORD",
-          "valueFrom": "${var.ssm_arn}:RDS_PASSWORD::"
+          "valueFrom": "${var.ssm_arn}:RDS_PWD::"
         }
       ],
       "healthCheck": {
