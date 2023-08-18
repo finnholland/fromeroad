@@ -1,8 +1,8 @@
 output "S3_KEY" {
-  value = aws_iam_access_key.S3_KEY
+  value = aws_iam_access_key.S3_KEY.id
 }
 output "SES_KEY" {
-  value = aws_iam_access_key.SES_KEY
+  value = aws_iam_access_key.SES_KEY.id
 }
 output "S3_SECRET" {
   value = aws_iam_access_key.S3_KEY.secret
