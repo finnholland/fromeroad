@@ -211,6 +211,11 @@ resource "aws_lb_target_group" "target_group" {
 ########### LOAD BALANCER ###########
 #####################################
 
+data "aws_acm_certificate" "certificate" {
+  domain   = "www.fromeroad.com"
+  statuses = ["ISSUED"]
+}
+
 resource "aws_lb" "load_balancer" {
   name               = "fr-lb-${var.env}"
   load_balancer_type = "application"
@@ -223,7 +228,7 @@ resource "aws_lb_listener" "listener" {
   load_balancer_arn = aws_lb.load_balancer.arn
   port              = 443
   protocol          = "HTTPS"
-  certificate_arn   = "arn:aws:acm:ap-southeast-2:384402655318:certificate/961c7e63-2e5c-4be4-90db-196b9cd85c3d"
+  certificate_arn   = aws_acm_certificate.certificate.arn
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.target_group.arn
