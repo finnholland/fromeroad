@@ -73,11 +73,11 @@ resource "aws_iam_role_policy_attachment" "attach_ecs_execution" {
 
 
 resource "aws_iam_user" "S3_USER" {
-  name = "S3_USER_${var.env}"
+  name = "fr_S3_USER_${var.env}"
 }
 
 resource "aws_iam_user" "SES_USER" {
-  name = "SES_USER_${var.env}"
+  name = "fr_SES_USER_${var.env}"
 }
 
 resource "aws_iam_user_policy" "S3_policy" {
