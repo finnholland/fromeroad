@@ -5,7 +5,7 @@ output "SES_KEY" {
   value = aws_iam_access_key.SES_KEY
 }
 output "S3_SECRET" {
-  value = aws_iam_access_key.S3_KEY.status
+  value = aws_iam_access_key.S3_KEY.secret
 }
 output "SES_SECRET" {
   value = aws_iam_access_key.SES_KEY.secret
