@@ -1,0 +1,100 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "sts:AssumeRole",
+      "Resource": "arn:aws:iam::<account_id>:role/ecr_pushPull"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "secretsmanager:GetSecretValue",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage",
+        "ecr:CompleteLayerUpload",
+        "s3:ListBucket",
+        "ecr:UploadLayerPart",
+        "s3:DeleteObject",
+        "ecr:InitiateLayerUpload",
+        "s3:GetBucketLocation",
+        "ecr:BatchCheckLayerAvailability"
+      ],
+      "Resource": [
+        "arn:aws:ecr:*:<account_id>:*",
+        "arn:aws:secretsmanager:ap-southeast-2:<account_id>:secret:<secret-name>",
+        "arn:aws:s3:::<bucket-name>",
+        "arn:aws:s3:::<bucket-name>/*.tfstate"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ecr:*",
+        "ecr:GetAuthorizationToken"
+      ],
+      "Resource": "arn:aws:ecr:*:<account_id>:*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:ap-southeast-2:<account_id>:secret:/CodeBuild/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:logs:ap-southeast-2:<account_id>:log-group:/aws/codebuild/<codebuild-proj-name>",
+        "arn:aws:logs:ap-southeast-2:<account_id>:log-group:/aws/codebuild/<codebuild-proj-name>:*"
+      ],
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::codepipeline-ap-southeast-2-*"
+      ],
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:GetBucketAcl",
+        "s3:GetBucketLocation"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::<bucket-name>",
+        "arn:aws:s3:::<bucket-name>/*"
+      ],
+      "Action": [
+        "s3:PutObject",
+        "s3:GetBucketAcl",
+        "s3:GetBucketLocation"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codebuild:CreateReportGroup",
+        "codebuild:CreateReport",
+        "codebuild:UpdateReport",
+        "codebuild:BatchPutTestCases",
+        "codebuild:BatchPutCodeCoverages"
+      ],
+      "Resource": [
+        "arn:aws:codebuild:ap-southeast-2:<account_id>:report-group/<codebuild-proj-name>-*"
+      ]
+    }
+  ]
+}
