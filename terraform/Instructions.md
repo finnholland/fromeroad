@@ -41,11 +41,11 @@ This part is pretty simple you buy a domain (register on Route53) and then creat
 
 
 ### Amplify
-Create an amplify project and select "Host web app" and connect it to your GitHub repo by choosing GitHub on the next screen. Follow the steps to add your repo remembering to give AWS privileges you can assign to only specific repos if you would like. Also pick the branch you want. Next set the name and adjust the build settings, this is most usually left as default.
+Create an amplify project and select "Host web app" and connect it to your GitHub repo by choosing GitHub on the next screen. Follow the steps to add your repo remembering to give AWS privileges you can assign to only specific repos if you would like. Also pick the branch you want. Next set the name and adjust the build settings, this is most usually left as default. You can also drop down Advanced and set the environment variables, or do this later.
 After you have created it, it will run an initial deploy. You can edit all the previous settings on the project homepage. 
 In order to link the frontend with a domain, you can go to domain management and hit "Add domain", here if you have a domain and zone in Route53 it will automatically detect and can set up the linking for you. If you went with a different registrar you will have to read the [Amplify](https://docs.amplify.aws/) docs sorry I only use AWS as my zone creation.
 
-One step you will have to do is add in environment variables:
+Environment variables:
 | Variable             | Value                                        |
 |--                    | --                                           |
 | REACT_APP_API_KEY    | https://<apiurl\>.com                        |

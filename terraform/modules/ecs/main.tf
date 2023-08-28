@@ -212,7 +212,7 @@ resource "aws_lb_target_group" "target_group" {
 #####################################
 
 data "aws_acm_certificate" "certificate" {
-  domain   = "www.fromeroad.com"
+  domain   = "*.finnholland.dev"
   statuses = ["ISSUED"]
 }
 

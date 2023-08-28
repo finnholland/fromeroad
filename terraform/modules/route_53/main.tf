@@ -1,13 +1,13 @@
 
 # Create a Route 53 zone
 data "aws_route53_zone" "fromeroad" {
-  name = "fromeroad.com"
+  name = "finnholland.dev"
 }
 
 # Create a DNS record in Route 53
 resource "aws_route53_record" "fr_api_record" {
   zone_id = data.aws_route53_zone.fromeroad.id
-  name    = "api.fromeroad.com"
+  name    = "api.fromeroad.finnholland.dev"
   type    = "A"
 
   alias {
