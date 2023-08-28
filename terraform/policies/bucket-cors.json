@@ -1,0 +1,17 @@
+[
+  {
+    "AllowedHeaders": [
+      "*"
+    ],
+    "AllowedMethods": [
+      "GET"
+    ],
+    "AllowedOrigins": [
+      "https://<yourdomain>.com",
+      "https://www.<yourdomain>.com",
+      "http://localhost:3000"
+    ],
+    "ExposeHeaders": [],
+    "MaxAgeSeconds": 3000
+  }
+]
