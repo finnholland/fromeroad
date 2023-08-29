@@ -53,5 +53,5 @@ Or you can change from multers3 to multer in `image.js` and `post.js`
 
 **AWS - Terraform**
 
-See cloud [docs](finnholland/fromeroad/blob/master/terraform/Instructions.md)
+See cloud [docs](terraform/Instructions.md)
 
