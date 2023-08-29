@@ -37,16 +37,16 @@ Or you can change from multers3 to multer in `image.js` and `post.js`
 
 | variable  | value  |
 |--|--|
-| SES_KEY | AWS user access key |
-|SES_SECRET  | AWS user secret key |
-|S3_KEY | AWS user access key|
-|S3_SECRET | AWS user secret key |
-|RDS_DB | localhost |
-|RDS_USER|admin_fromeroad_local (or rename in the sql script)  |
-|RDS_PASSWORD | abc123 |  
-| JWT_SECRET | run `npm run crypto` and use value |
-| CRYPTO_KEY | run `npm run crypto` and use value |
-|ENV|local|
+| SES_KEY      | AWS user access key                                  |
+| SES_SECRET   | AWS user secret key                                  |
+| S3_KEY       | AWS user access key                                  |
+| S3_SECRET    | AWS user secret key                                  |
+| RDS_DB       | localhost                                            |
+| RDS_USER     | admin_fromeroad_local (or rename in the sql script)  |
+| RDS_PASSWORD | abc123                                               |  
+| JWT_SECRET   | run `npm run crypto` and use value                   |
+| CRYPTO_KEY   | run `npm run crypto` and use value                   |
+| ENV          | local                                                |
 8. Start the local API `npm run api` from the root directory
 9. Change the line `const  API  =  API_URLS.env;` to `const  API  =  API_URLS.local;` in `/web/src/constants.ts`
 10. Check if you can access the API by going to [localhost](http://localhost:8080/)
