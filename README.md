@@ -23,7 +23,7 @@ clone project with `git clone https://github.com/finnholland/fromeroad.git`
 3. It is possible to develop without the API by updating the `API_URLS` constant in `/web/src/constants.ts` to `const  API  =  API_URLS.dev;` this assumes you have an environment in AWS and have edited the `constants` values. But for local development, see below.  
 
 **API - NodeJS**
-To use the default configuration you will need: an s3 bucket for uploading. a super user IAM and the access/secret keys. You can follow and tailor the cloud [instructions](finnholland/fromeroad/blob/master/terraform/Instructions.md) to do these steps.
+To use the default configuration you will need: an s3 bucket for uploading. a super user IAM and the access/secret keys. You can follow and tailor the cloud [instructions](terraform/Instructions.md) to do these steps.
 Or you can change from multers3 to multer in `image.js` and `post.js`
 
 
